@@ -1,0 +1,114 @@
+plugins {
+    alias(libs.plugins.android.application)
+}
+
+android {
+    namespace 'com.aksofts.mgamerapp'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId "com.aksofts.mgamerapp"
+        minSdk 25
+        targetSdk 35
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+
+    implementation libs.appcompat
+    implementation libs.material
+    implementation libs.activity
+    implementation libs.constraintlayout
+    testImplementation libs.junit
+    androidTestImplementation libs.ext.junit
+    androidTestImplementation libs.espresso.core
+
+
+    // ViewPager2 for onboarding screens
+    implementation 'androidx.viewpager2:viewpager2:1.0.0'
+
+    // Dots Indicator for ViewPager2
+    implementation 'com.tbuonomo:dotsindicator:4.3'
+//
+//
+//    // ADMOB
+//    implementation 'com.google.android.gms:play-services-ads:21.5.0'
+
+    // Kotlin Standard Library
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.20"
+
+    // Image and GIF Libraries
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.27'
+    implementation 'com.squareup.picasso:picasso:2.8'
+    implementation 'com.airbnb.android:lottie:6.1.0'
+
+    // Gson for JSON parsing
+    implementation 'com.google.code.gson:gson:2.11.0'
+
+    // Networking
+    implementation 'com.android.volley:volley:1.2.1'
+
+    // OneSignal for push notifications
+    implementation 'com.onesignal:OneSignal:5.1.18'
+
+    // Firebase Libraries
+    implementation platform('com.google.firebase:firebase-bom:32.7.1')
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-crashlytics'
+
+    // Ads
+    implementation 'com.unity3d.ads:unity-ads:4.12.2'
+
+    // Shimmer and Image Slideshow Libraries
+    implementation 'com.facebook.shimmer:shimmer:0.1.0'
+    implementation 'com.github.denzcoskun:ImageSlideshow:0.1.2'
+
+    // AppLovin SDK
+    implementation 'com.applovin:applovin-sdk:13.2.0'
+    implementation 'com.applovin.mediation:unityads-adapter:4.14.2.0'
+
+    // Akash Libs
+    implementation("com.google.androidbrowserhelper:androidbrowserhelper:2.5.0")
+    implementation 'androidx.browser:browser:1.6.0'
+
+    // Exclude conflicting protobuf dependencies
+    implementation('com.google.protobuf:protobuf-javalite:3.21.12') {
+        exclude group: 'com.google.protobuf', module: 'protobuf-java'
+    }
+
+    // Testing Libraries
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
+
+    // Chip Navigation Bar
+    implementation 'com.github.ismaeldivita:chip-navigation-bar:1.4.0'
+
+    // Ads Lib for recycler view
+    implementation 'com.github.saitawngpha:NativeAds-RecyclerView:1.0.2'
+
+    implementation 'com.github.bumptech.glide:glide:4.16.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
+
+    // Shimmer
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
+
+//    implementation fileTree(include: ['tapjoyconnectlibrary'], dir: 'libs')
+
+    implementation 'com.tapjoy:tapjoy-android-sdk:14.3.1'
+}

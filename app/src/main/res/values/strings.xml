@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">pGamer</string>
+    <string name="app_url">https://mg.amsit.in</string>
+    <string name="login_eneter_phone_text">Login with Number</string>
+</resources>

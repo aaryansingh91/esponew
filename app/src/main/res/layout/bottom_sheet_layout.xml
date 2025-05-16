@@ -1,0 +1,57 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/white">
+
+    <TextView
+        android:fontFamily="@font/poppins_bold"
+        android:id="@+id/bottom_sheet_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:paddingBottom="8dp"/>
+
+
+    <TextView
+        android:fontFamily="@font/poppins_black"
+        android:id="@+id/bottom_sheet_notice_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:paddingBottom="8dp"/>
+
+    <TextView
+        android:fontFamily="@font/poppins"
+        android:id="@+id/bottom_sheet_notice_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="@color/grey_font"
+        android:paddingBottom="8dp"/>
+
+    <TextView
+        android:fontFamily="@font/poppins"
+        android:id="@+id/bottom_sheet_notice_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="@color/grey_font"
+        android:paddingBottom="16dp"/>
+
+    <Button
+        android:fontFamily="@font/poppins_bold"
+        android:id="@+id/bottom_sheet_confirm_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:background="@color/purple_bg"
+        android:backgroundTint="@color/purple_bg"
+        android:textSize="16sp"/>
+
+</LinearLayout>

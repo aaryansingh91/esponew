@@ -1,0 +1,29 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.MgamerApp" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+         <item name="colorPrimary">@color/purple_bg</item>
+    </style>
+
+    <style name="Theme.MgamerApp" parent="Base.Theme.MgamerApp" />
+
+
+    <style name="custom_card_view_style" parent="Widget.MaterialComponents.CardView">
+        <item name="shapeAppearanceOverlay">@style/custom_card_view</item>
+    </style>
+    <style name="custom_card_view" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">48sp</item>
+        <item name="cornerSizeTopLeft">48sp</item>
+        <item name="cornerSizeBottomLeft">0sp</item>
+        <item name="cornerSizeBottomRight">0sp</item>
+    </style>
+
+
+    <!-- Circle Image View style -->
+    <style name="CircleImageView">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+</resources>

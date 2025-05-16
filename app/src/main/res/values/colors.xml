@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="purple_bg">#6924f9</color>
+    <color name="yellow">#FFEB3B</color>
+    <color name="dark_yellow">#D8AC09</color>
+    <color name="dark_blue">#4860EA</color>
+    <color name="dark_purple">#6924f9</color>
+    <color name="dark_skyblue">#049CB0</color>
+    <color name="light_gray">#EEEEEE</color>
+
+
+    <color name="darker_gray">#373737</color>
+    <color name="badge_light_blue_bg">#edf1fd</color>
+    <color name="bottomnavbar_activecard_bg_color">#F3E8FF</color>
+    <color name="bottomnavbar_unselected_color">#444444</color>
+    <color name="bottomnavbar_selected_color">#8000FF</color>
+
+</resources>

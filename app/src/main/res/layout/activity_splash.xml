@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/purple_bg"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context=".SplashActivity">
+
+
+    <LinearLayout
+        android:visibility="visible"
+        android:gravity="center"
+        android:id="@+id/main_splash_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:gravity="center">
+            <ImageView
+                android:id="@+id/splash_anim_image_icon"
+                android:visibility="visible"
+                android:src="@mipmap/ic_launcher"
+                android:layout_width="250dp"
+                android:layout_height="250dp"/>
+
+                <ProgressBar
+                    android:layout_marginTop="50dp"
+                    android:indeterminateTint="@color/white"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginBottom="20dp"
+            android:visibility="visible"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:textColor="@color/white"
+                android:fontFamily="@font/poppins_bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Made with "
+                android:textSize="13sp"/>
+            <TextView
+                android:id="@+id/iconTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text=" ❤️" />
+
+            <TextView
+                android:textColor="@color/white"
+                android:fontFamily="@font/poppins_bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="  in India"
+                android:textSize="13sp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:visibility="gone"
+        android:gravity="center"
+        android:id="@+id/updateavailable_splash_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:textSize="20sp"
+            android:fontFamily="@font/poppins_bold"
+            android:textColor="@color/white"
+            android:text="App Update Available"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:textSize="13sp"
+            android:fontFamily="@font/poppins_bold"
+            android:textColor="@color/white"
+            android:text="Something new is available checkout now"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottie_splash_update_available"
+            android:layout_margin="10dp"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/update_available" />
+
+
+        <Button
+            android:background="@color/black"
+            android:textColor="@color/white"
+            android:paddingTop="15dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="40dp"
+            android:paddingRight="40dp"
+            android:onClick="update_app"
+            android:layout_margin="10dp"
+            android:textSize="20sp"
+            android:fontFamily="@font/poppins"
+            android:text="Update Now!"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:visibility="gone"
+        android:gravity="center"
+        android:id="@+id/maintenance_splash_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:textAlignment="center"
+            android:id="@+id/maintenance_message_lbl"
+            android:textSize="20sp"
+            android:fontFamily="@font/poppins"
+            android:textColor="@color/white"
+            android:text="App Under Maintenance"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottie_splash_maintenance"
+            android:layout_margin="10dp"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/update_available" />
+
+        <TextView
+            android:id="@+id/maintenance_progress_message_lbl"
+            android:textSize="17sp"
+            android:fontFamily="@font/poppins_bold"
+            android:textColor="@color/white"
+            android:text="In Progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:visibility="gone"
+        android:gravity="center"
+        android:id="@+id/blocked_splash_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:fontFamily="@font/poppins_bold"
+            android:textColor="@color/dark_yellow"
+            android:text="Account Blocked"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottie_splash_acc_locked"
+            android:layout_margin="10dp"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/account_blocked" />
+
+        <TextView
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:textAlignment="center"
+            android:textSize="17sp"
+            android:fontFamily="@font/poppins_bold"
+            android:textColor="@color/dark_yellow"
+            android:text="Your account has been blocked due to invalid activity\nContact Support via Website to know more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>

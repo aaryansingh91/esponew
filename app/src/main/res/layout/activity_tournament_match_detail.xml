@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+
+    <!-- Scrollable Content -->
+    <ScrollView
+        android:id="@+id/scroll_area"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/join_button"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:id="@+id/content_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Top Image with Match Type Overlay -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/top_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/freefire" />
+
+                <TextView
+                    android:id="@+id/match_type_overlay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_margin="8dp"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="4dp"
+                    android:background="#80000000"
+                    android:text="SOLO"
+                    android:textColor="@color/yellow"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </RelativeLayout>
+
+            <!-- Tabs -->
+            <LinearLayout
+                android:id="@+id/tab_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/description_tab"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="DESCRIPTION"
+                    android:gravity="center"
+                    android:padding="12dp"
+                    android:textColor="@color/white"
+                    android:background="@color/purple_bg"
+                    android:fontFamily="@font/poppins_bold" />
+
+                <TextView
+                    android:id="@+id/joined_member_tab"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="JOINED MEMBER"
+                    android:gravity="center"
+                    android:padding="12dp"
+                    android:textColor="@color/white"
+                    android:background="@color/grey_font"
+                    android:fontFamily="@font/poppins_bold" />
+            </LinearLayout>
+
+            <!-- Match Title -->
+            <TextView
+                android:id="@+id/match_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"
+                android:text="FF MAX - Match #702"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:fontFamily="@font/poppins_bold" />
+
+            <!-- Match Details Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_match_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:backgroundTint="@color/white"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <!-- Left Column -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Match Type"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/black"
+                                android:fontFamily="@font/poppins_bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/match_type_text"
+                                android:text="Solo"
+                                android:textSize="13sp"
+                                android:textColor="@color/black"
+                                android:fontFamily="@font/poppins"
+                                android:layout_marginBottom="8dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Map"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/black"
+                                android:fontFamily="@font/poppins_bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/match_map_text"
+                                android:text="Bermuda"
+                                android:textSize="13sp"
+                                android:textColor="@color/black"
+                                android:fontFamily="@font/poppins"
+                                android:layout_marginBottom="8dp" />
+                        </LinearLayout>
+
+                        <!-- Right Column -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Entry Fee:"
+                                android:textSize="14sp"
+                                android:textColor="@color/black"
+                                android:fontFamily="@font/poppins_bold" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:layout_marginBottom="8dp">
+
+                                <ImageView
+                                    android:id="@+id/entry_fee_icon"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:src="@drawable/ic_coin_24"
+                                    android:layout_marginEnd="4dp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/entry_fee_text"
+                                    android:text="3"
+                                    android:textSize="14sp"
+                                    android:textColor="@color/black"
+                                    android:fontFamily="@font/poppins" />
+                            </LinearLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Per Kill"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/black"
+                                android:fontFamily="@font/poppins_bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/per_kill_text"
+                                android:text="2"
+                                android:textSize="13sp"
+                                android:textColor="@color/black"
+                                android:fontFamily="@font/poppins"
+                                android:layout_marginBottom="8dp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Match Schedule -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Match Schedule"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layout_marginTop="8dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/match_schedule_text"
+                        android:text="05/05/2025 05:00 PM"
+                        android:textSize="13sp"
+                        android:textColor="@color/black"
+                        android:fontFamily="@font/poppins" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Prize Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_prize_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:backgroundTint="@color/white"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Prize Details"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp"
+                        android:fontFamily="@font/poppins_bold" />
+
+                    <TextView
+                        android:id="@+id/prize_details_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Winning Prize: 1000\n1st prize: 500\n2nd prize: 300\n3rd prize: 200"
+                        android:fontFamily="@font/poppins"
+                        android:textSize="14sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Description -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Match Description"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp"
+                    android:fontFamily="@font/poppins_bold" />
+
+                <TextView
+                    android:id="@+id/match_description_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="This is a Live match"
+                    android:textSize="13sp"
+                    android:fontFamily="@font/poppins" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Fixed Join Button -->
+    <Button
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:id="@+id/join_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="Join Match"
+        android:textAllCaps="true"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/purple_bg"
+        android:textStyle="bold"
+        android:padding="12dp" />
+
+</RelativeLayout>
