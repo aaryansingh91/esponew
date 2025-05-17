@@ -87,13 +87,13 @@
                 android:layout_marginEnd="8dp" />
 
             <Button
+                android:id="@+id/btn_get_free_entry"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="48dp"
                 android:text="Get Free Entry"
-                android:backgroundTint="#6C3BFF"
                 android:textColor="#FFFFFF"
-                android:background="@drawable/button_outline"
+                android:background="@drawable/btn_lucky_draw"
                 android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>

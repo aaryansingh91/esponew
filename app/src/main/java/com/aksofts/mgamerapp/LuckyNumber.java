@@ -94,7 +94,7 @@ public class LuckyNumber extends AppCompatActivity {
 
     private void addLuckyDrawCard(String id, String coins, int totalSlots, int takenSlots) {
         LayoutInflater inflater = LayoutInflater.from(this);
-        View cardView = inflater.inflate(R.layout.card_lucky_draw, container, false);
+        View cardView = inflater.inflate(R.layout.item_lucky_draw, container, false);
 
         TextView tvWinAmount = cardView.findViewById(R.id.tv_win_amount);
         TextView tvDrawId = cardView.findViewById(R.id.tv_draw_id);
