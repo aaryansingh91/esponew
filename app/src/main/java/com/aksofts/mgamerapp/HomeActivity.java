@@ -508,7 +508,7 @@ public class HomeActivity extends AppCompatActivity {
 
     public void goto_tournaments_activity_ff(View view) {
         try {
-            Intent intent = new Intent(this, TournamentMatchesActivity.class);
+            Intent intent = new Intent(this, TournamentListActivity.class);
             startActivity(intent);
         } catch (Exception e) {
             System.out.println(e.getMessage());
