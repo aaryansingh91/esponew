@@ -195,10 +195,12 @@ public class LuckyDrawActivity extends AppCompatActivity {
                     String message = jsonObject.getString("message");
 
                     Toast.makeText(LuckyDrawActivity.this, message, Toast.LENGTH_SHORT).show();
-//                    if (status.equals("success")) {
+                    if (status.equals("success")) {
+                        recreate();
 //                        button.setEnabled(false);
 //                        button.setText("Already Joined");
-//                    }
+
+                   }
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Toast.makeText(LuckyDrawActivity.this, "Error parsing response", Toast.LENGTH_SHORT).show();
