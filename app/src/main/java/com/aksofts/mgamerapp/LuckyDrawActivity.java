@@ -63,7 +63,10 @@ public class LuckyDrawActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(Void... voids) {
             try {
-                URL url = new URL("https://mg.amsit.in/amsit-adm/lucky_draw_api.php?user_id=" + USER_ID);
+                String baseUrl = getString(R.string.app_url); // from strings.xml
+                String finalUrl = baseUrl + "/amsit-adm/lucky_draw_api.php?user_id=" + USER_ID;
+                URL url = new URL(finalUrl);
+
 
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
@@ -105,7 +108,7 @@ public class LuckyDrawActivity extends AppCompatActivity {
                         int leftSlots = totalSlots - takenSlots;
 
                         LayoutInflater inflater = LayoutInflater.from(LuckyDrawActivity.this);
-                        View cardView = inflater.inflate(R.layout.item_lucky_draw, null);
+                        View cardView = inflater.inflate(R.layout.item_lucky_draw, luckyDrawContainer, false);
 
                         ((TextView) cardView.findViewById(R.id.tvTitle)).setText("Win " + coins);
                         ((TextView) cardView.findViewById(R.id.tvDrawId)).setText("#" + id);
@@ -157,7 +160,10 @@ public class LuckyDrawActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(Void... voids) {
             try {
-                URL url = new URL("https://mg.amsit.in/amsit-adm/join_lucky_draw.php");
+                String baseUrl = getString(R.string.app_url); // from strings.xml
+                String finalUrl = baseUrl + "/amsit-adm/join_lucky_draw.php?user_id=" + USER_ID;
+                URL url = new URL(finalUrl);
+
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setDoOutput(true);

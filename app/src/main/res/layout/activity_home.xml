@@ -117,6 +117,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="Playtime Games"
                                 android:textSize="16sp"
+                                android:textColor="@color/black"
                                 android:textStyle="bold" />
 
                             <TextView
@@ -125,6 +126,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="Earn Per Minute 🪙"
                                 android:textSize="12sp"
+                                android:textColor="@color/black"
                                 android:layout_marginTop="5dp" />
                             <Button
                                 android:fontFamily="@font/poppins"
@@ -952,6 +954,8 @@
                 <com.google.android.material.card.MaterialCardView
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="20px"
+                    android:layout_marginRight="20px"
                     app:cardCornerRadius="0dp"
                     app:strokeWidth="0dp"
                     android:elevation="2dp"
@@ -965,7 +969,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center"
-                        android:padding="15dp">
+                        android:padding="10dp">
                         <ImageView
                             android:layout_marginLeft="15dp"
                             android:layout_width="25dp"
@@ -1006,6 +1010,8 @@
                     app:cardCornerRadius="0dp"
                     app:strokeWidth="0dp"
                     android:elevation="2dp"
+                    android:layout_marginLeft="20px"
+                    android:layout_marginRight="20px"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
@@ -1016,7 +1022,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center"
-                        android:padding="15dp">
+                        android:padding="10dp">
                         <ImageView
                             android:layout_marginLeft="15dp"
                             android:layout_width="25dp"
@@ -1057,6 +1063,8 @@
                     app:cardCornerRadius="0dp"
                     app:strokeWidth="0dp"
                     android:elevation="2dp"
+                    android:layout_marginLeft="20px"
+                    android:layout_marginRight="20px"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
@@ -1067,7 +1075,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center"
-                        android:padding="15dp">
+                        android:padding="10dp">
                         <ImageView
                             android:layout_marginLeft="15dp"
                             android:layout_width="25dp"
@@ -1108,6 +1116,8 @@
                     app:cardCornerRadius="0dp"
                     app:strokeWidth="0dp"
                     android:elevation="2dp"
+                    android:layout_marginLeft="20px"
+                    android:layout_marginRight="20px"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
@@ -1118,7 +1128,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center"
-                        android:padding="15dp">
+                        android:padding="10dp">
                         <ImageView
                             android:layout_marginLeft="15dp"
                             android:layout_width="25dp"
