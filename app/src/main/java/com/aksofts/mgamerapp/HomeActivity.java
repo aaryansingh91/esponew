@@ -3,11 +3,16 @@ package com.aksofts.mgamerapp;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -18,6 +23,10 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.card.MaterialCardView;
 
@@ -26,6 +35,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
@@ -36,6 +46,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
+
+    RecyclerView recyclerView, withdrawRecyclerView ;
+    List<GameModel> gameList;
+    GameAdapter adapter;
 
     ScrollView home_scroll_section, game_scroll_section, reward_scroll_section, profile_scroll_section;
     ImageView icon_home, icon_game, icon_reward, icon_profile;
@@ -50,7 +64,6 @@ public class HomeActivity extends AppCompatActivity {
 
     String withdraw_list_data_setting;
 
-    RecyclerView recyclerView;
     WithdrawSelectionItem withdraw_selection_adapter;
     List<WithdrawSelectionItem> withdraw_selection_ItemList;
 
@@ -59,6 +72,16 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        recyclerView = findViewById(R.id.recyclerViewGames);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
+        gameList = new ArrayList<>();
+        adapter = new GameAdapter(gameList);
+        recyclerView.setAdapter(adapter);
+
+        fetchGames();
+
         icon_home = findViewById(R.id.icon_home);
 
         icon_game = findViewById(R.id.icon_game);
@@ -115,8 +138,8 @@ public class HomeActivity extends AppCompatActivity {
         // Withdraw LIST ENABLE DISABLE SETTINGS and ICONS setting
         withdraw_list_data_setting = sharedPreferences.getString("withdraw_list_data_setting", "NULL");
 
-        recyclerView = findViewById(R.id.withdraw_selctionlist_recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        withdrawRecyclerView  = findViewById(R.id.withdraw_selctionlist_recyclerView);
+        withdrawRecyclerView .setLayoutManager(new LinearLayoutManager(this));
         withdraw_selection_ItemList = new ArrayList<>();
 
         String jsonData = withdraw_list_data_setting;
@@ -147,7 +170,7 @@ public class HomeActivity extends AppCompatActivity {
             Toast.makeText(HomeActivity.this, "Opening", Toast.LENGTH_SHORT).show();
             startWithdrawListActivity(item.getAbbrevation());
         });
-        recyclerView.setAdapter(adapter);
+        withdrawRecyclerView .setAdapter(adapter);
 
         if (app_home_top_sec_1_game.toLowerCase().equals("off")) {
             home_sec1_layout_game_tab.setVisibility(View.GONE);
@@ -514,4 +537,126 @@ public class HomeActivity extends AppCompatActivity {
             System.out.println(e.getMessage());
         }
     }
+
+    public class GameModel {
+        public String game_id;
+        public String game_name;
+        public String package_name;
+        public String game_image;
+        public String game_rules;
+    }
+
+    private void fetchGames() {
+        String url = "https://mg.amsit.in/amsit-adm/game_list_api.php";
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                response -> {
+                    try {
+                        if (response.getBoolean("status")) {
+                            JSONArray dataArray = response.getJSONArray("data");
+                            for (int i = 0; i < dataArray.length(); i++) {
+                                JSONObject obj = dataArray.getJSONObject(i);
+                                GameModel game = new GameModel();
+                                game.game_id = obj.getString("game_id");
+                                game.game_name = obj.getString("game_name");
+                                game.package_name = obj.getString("package_name");
+                                game.game_image = obj.getString("game_image");
+                                game.game_rules = obj.getString("game_rules");
+                                gameList.add(game);
+                            }
+                            adapter.notifyDataSetChanged();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                },
+                error -> Log.e("API_ERROR", error.toString())
+        );
+
+        queue.add(request);
+    }
+
+    // Adapter Class
+    class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder> {
+        List<GameModel> games;
+
+        GameAdapter(List<GameModel> games) {
+            this.games = games;
+        }
+
+        @NonNull
+        @Override
+        public GameViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(HomeActivity.this).inflate(R.layout.item_game_card, parent, false);
+            return new GameViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull GameViewHolder holder, int position) {
+            GameModel game = games.get(position);
+            holder.title.setText(game.game_name);
+            new DownloadImageTask(holder.image).execute(game.game_image);
+
+            // Set click listener on the entire itemView
+            holder.itemView.setOnClickListener(v -> {
+                Toast.makeText(HomeActivity.this, "Clicked: " + game.game_name, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(HomeActivity.this, TournamentListActivity.class);
+                intent.putExtra("game_id", game.game_id);
+                intent.putExtra("game_name", game.game_name);
+                intent.putExtra("package_name", game.package_name);
+                intent.putExtra("game_image", game.game_image);
+                intent.putExtra("game_rules", game.game_rules);
+                HomeActivity.this.startActivity(intent);
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return games.size();
+        }
+
+        class GameViewHolder extends RecyclerView.ViewHolder {
+            ImageView image;
+            TextView title;
+
+            GameViewHolder(@NonNull View itemView) {
+                super(itemView);
+                image = itemView.findViewById(R.id.game_image);
+                title = itemView.findViewById(R.id.game_title);
+            }
+        }
+    }
+
+    // Image Downloader
+    private static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView imageView;
+
+        public DownloadImageTask(ImageView imageView) {
+            this.imageView = imageView;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urlDisplay = urls[0];
+            Bitmap bitmap = null;
+            try {
+                URL url = new URL(urlDisplay);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                InputStream in = connection.getInputStream();
+                bitmap = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return bitmap;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            if (result != null) {
+                imageView.setImageBitmap(result);
+            }
+        }
+    }
+
 }

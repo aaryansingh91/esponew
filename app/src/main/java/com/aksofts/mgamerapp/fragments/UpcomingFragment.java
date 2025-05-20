@@ -30,9 +30,16 @@ public class UpcomingFragment extends Fragment {
     private TournamentMatchesAdaptor adapter;
     private List<TournamentMatchesItem> matches = new ArrayList<>();
     private LinearLayout loadingAnim;
+    // 🔥 Declare gameId as a class-level variable
+    private String gameId;
+
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // ✅ Retrieve game_id and store it in the class variable
+        if (getArguments() != null) {
+            gameId = getArguments().getString("game_id");
+        }
         View view = inflater.inflate(R.layout.fragment_upcoming, container, false);
 
         recyclerView = view.findViewById(R.id.recycler_upcoming);
@@ -46,7 +53,8 @@ public class UpcomingFragment extends Fragment {
 
     private void fetchMatches() {
         loadingAnim.setVisibility(View.VISIBLE);
-        String url = getString(R.string.app_url) + "/app-apis/tournaments/all-tournaments-matches.php?id=1";
+        // ✅ Use class-level gameId here
+        String url = getString(R.string.app_url) + "/app-apis/tournaments/all-tournaments-matches.php?id=" + gameId;
 
         RequestQueue queue = Volley.newRequestQueue(requireContext());
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,

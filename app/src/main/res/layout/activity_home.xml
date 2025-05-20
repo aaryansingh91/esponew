@@ -925,54 +925,12 @@
                     android:textStyle="bold"
                     android:layout_marginTop="10dp" />
 
-                <com.google.android.material.card.MaterialCardView
-                    android:onClick="goto_tournaments_activity_ff"
-                    android:clickable="true"
-                    app:cardCornerRadius="15dp"
-                    app:strokeWidth="1dp"
-                    android:elevation="15dp"
-                    android:outlineSpotShadowColor="@color/black"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewGames"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginRight="50dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-                        <LinearLayout
-                            android:background="@color/white"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:gravity="center_vertical">
-                            <ImageView
-                                android:scaleType="fitXY"
-                                android:layout_width="match_parent"
-                                android:layout_height="150dp"
-                                android:src="@drawable/ic_freefire_banner"/>
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_marginLeft="15dp"
-                                android:padding="5dp"
-                                android:fontFamily="@font/poppins"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="FreeFire"
-                                android:textSize="18sp"
-                                android:textStyle="bold" />
-
-                        </LinearLayout>
-                    </LinearLayout>
-
-                </com.google.android.material.card.MaterialCardView>
+                    android:padding="8dp"
+                    android:clipToPadding="false"/>
 
                 <TextView
                     android:fontFamily="@font/poppins_black"

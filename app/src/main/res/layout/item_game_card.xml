@@ -7,7 +7,6 @@
     <com.google.android.material.card.MaterialCardView
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:clickable="true"
         app:cardCornerRadius="15dp"
         app:strokeWidth="1dp"
         android:elevation="15dp"
@@ -15,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:layout_marginRight="50dp"
+        android:layout_marginRight="30dp"
         tools:ignore="MissingConstraints">
 
         <LinearLayout
