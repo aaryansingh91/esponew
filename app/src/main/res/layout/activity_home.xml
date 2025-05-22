@@ -292,7 +292,8 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:padding="10dp"
-                        android:gravity="center_horizontal">
+                        android:gravity="center_horizontal"
+                        android:background="@color/white">
 
                         <TextView
                             android:fontFamily="@font/poppins"
@@ -342,7 +343,8 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:padding="10dp"
-                        android:gravity="center_horizontal">
+                        android:gravity="center_horizontal"
+                        android:background="@color/white">
 
                         <TextView
                             android:fontFamily="@font/poppins"
@@ -391,7 +393,8 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:padding="10dp"
-                        android:gravity="center_horizontal">
+                        android:gravity="center_horizontal"
+                        android:background="@color/white">
 
                         <TextView
                             android:fontFamily="@font/poppins"
@@ -932,7 +935,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="8dp"
-                    android:clipToPadding="false"/>
+                    android:clipToPadding="false"
+                    android:clipChildren="false" />
 
                 <TextView
                     android:fontFamily="@font/poppins_black"
@@ -954,70 +958,74 @@
                 <com.google.android.material.card.MaterialCardView
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="20px"
-                    android:layout_marginRight="20px"
-                    app:cardCornerRadius="0dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    app:cardCornerRadius="12dp"
                     app:strokeWidth="0dp"
-                    android:elevation="2dp"
+                    app:cardElevation="6dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/white">
 
-                    <LinearLayout
-                        android:background="@drawable/rounded_background"
-                        android:layout_width="match_parent"
+                <LinearLayout
+                    android:background="@color/white"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:layout_marginLeft="15dp"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:src="@drawable/ic_ak_dailytasks" />
+
+                    <TextView
+                        android:layout_weight="1"
+                        android:layout_marginLeft="25dp"
+                        android:fontFamily="@font/poppins"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center"
-                        android:padding="10dp">
-                        <ImageView
-                            android:layout_marginLeft="15dp"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
-                            android:src="@drawable/ic_ak_dailytasks" />
-                        <TextView
-                            android:layout_weight="1"
-                            android:layout_marginLeft="25dp"
-                            android:fontFamily="@font/poppins"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Daily Bonus"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
+                        android:text="Daily Bonus"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
 
-                        <Button
-                            android:fontFamily="@font/poppins"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Get"
-                            android:textSize="12sp"
-                            android:backgroundTint="@color/purple_bg"
-                            android:textColor="#FFFFFF"
-                            android:paddingLeft="20dp"
-                            android:paddingRight="20dp"
-                            android:paddingTop="8dp"
-                            android:paddingBottom="8dp"
-                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                            app:cornerRadius="20dp" />
+                    <Button
+                        android:fontFamily="@font/poppins"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Get"
+                        android:textSize="12sp"
+                        android:backgroundTint="@color/purple_bg"
+                        android:textColor="#FFFFFF"
+                        android:paddingLeft="20dp"
+                        android:paddingRight="20dp"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        app:cornerRadius="20dp" />
 
-                    </LinearLayout>
+                </LinearLayout>
 
-                </com.google.android.material.card.MaterialCardView>
+            </com.google.android.material.card.MaterialCardView>
+
 
                 <com.google.android.material.card.MaterialCardView
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
-                    app:cardCornerRadius="0dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    app:cardCornerRadius="12dp"
                     app:strokeWidth="0dp"
-                    android:elevation="2dp"
-                    android:layout_marginLeft="20px"
-                    android:layout_marginRight="20px"
+                    app:cardElevation="6dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/white">
 
                     <LinearLayout
-                        android:background="@drawable/rounded_background"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
@@ -1060,17 +1068,17 @@
                 <com.google.android.material.card.MaterialCardView
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
-                    app:cardCornerRadius="0dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    app:cardCornerRadius="12dp"
                     app:strokeWidth="0dp"
-                    android:elevation="2dp"
-                    android:layout_marginLeft="20px"
-                    android:layout_marginRight="20px"
+                    app:cardElevation="6dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/white">
 
                     <LinearLayout
-                        android:background="@drawable/rounded_background"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
@@ -1112,18 +1120,18 @@
 
                 <com.google.android.material.card.MaterialCardView
                     android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    app:cardCornerRadius="0dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    app:cardCornerRadius="12dp"
                     app:strokeWidth="0dp"
-                    android:elevation="2dp"
-                    android:layout_marginLeft="20px"
-                    android:layout_marginRight="20px"
+                    app:cardElevation="6dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/white">
 
                     <LinearLayout
-                        android:background="@drawable/rounded_background"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
