@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -46,6 +48,8 @@ public class TournamentMatchesAdaptor extends RecyclerView.Adapter<TournamentMat
         holder.versionTextView.setText(currentItem.getVersion());
         holder.mapTextView.setText(currentItem.getMap());
         holder.slotsTextView.setText(currentItem.getSlots());
+        int filled = currentItem.getFilledPositions();
+        int total = currentItem.getNoOfPlayer();
 
         // Load image with Glide, with fallback to imageResource
         if (currentItem.getImageUrl() != null && !currentItem.getImageUrl().isEmpty()) {
@@ -57,9 +61,26 @@ public class TournamentMatchesAdaptor extends RecyclerView.Adapter<TournamentMat
         } else {
             holder.matchImageView.setImageResource(currentItem.getImageResource());
         }
+        if (total > 0) {
+            int progressPercent = (int) ((filled / (float) total) * 100);
+            holder.slotProgressBar.setMax(100);
+            holder.slotProgressBar.setProgress(progressPercent);
+            holder.slotProgressText.setText(filled + "/" + total + " Slots Filled");
+        } else {
+            // fallback if total is zero
+            holder.slotProgressBar.setProgress(0);
+            holder.slotProgressText.setText("0/0 Slots Filled");
+        }
 
         // Handle join button click
         holder.joinButton.setOnClickListener(v -> {
+            Log.d("TournamentMatchesAdaptor", "Clicked ID: " + currentItem.getId());
+            Context context = holder.itemView.getContext();
+            Intent intent = new Intent(context, TournamentMatchDetail.class);
+            intent.putExtra("TOURNAMENT_ID", currentItem.getId()); // Pass m_id only
+            context.startActivity(intent);
+        });
+        holder.match_item_click.setOnClickListener(v -> {
             Log.d("TournamentMatchesAdaptor", "Clicked ID: " + currentItem.getId());
             Context context = holder.itemView.getContext();
             Intent intent = new Intent(context, TournamentMatchDetail.class);
@@ -76,8 +97,11 @@ public class TournamentMatchesAdaptor extends RecyclerView.Adapter<TournamentMat
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView matchImageView;
         TextView matchTitleTextView, matchTimeTextView, prizePoolTextView, perKillTextView,
-                entryFeeTextView, typeTextView, versionTextView, mapTextView, slotsTextView;
+                entryFeeTextView, typeTextView, versionTextView, mapTextView, slotsTextView, slotProgressText;
         Button joinButton;
+        ProgressBar slotProgressBar;
+        RelativeLayout match_item_click;
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -92,6 +116,9 @@ public class TournamentMatchesAdaptor extends RecyclerView.Adapter<TournamentMat
             mapTextView = itemView.findViewById(R.id.map_text_view);
             slotsTextView = itemView.findViewById(R.id.slots_text_view);
             joinButton = itemView.findViewById(R.id.join_button);
+            slotProgressBar = itemView.findViewById(R.id.slot_progress_bar);
+            slotProgressText = itemView.findViewById(R.id.slot_progress_text);
+            match_item_click = itemView.findViewById(R.id.match_item_click);
         }
     }
 }

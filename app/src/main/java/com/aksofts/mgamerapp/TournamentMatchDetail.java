@@ -2,6 +2,7 @@ package com.aksofts.mgamerapp;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -47,7 +49,8 @@ public class TournamentMatchDetail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match_details);
-
+        // Get userId and tournamentId values before this
+        checkIfAlreadyJoinedAndSetupUI();
         // Initialize views
         ViewPager2 viewPager = findViewById(R.id.view_pager);
         TabLayout tabLayout = findViewById(R.id.tab_layout);
@@ -58,17 +61,9 @@ public class TournamentMatchDetail extends AppCompatActivity {
 
         // Get tournament ID from Intent
         tournamentId = getIntent().getIntExtra("TOURNAMENT_ID", -1);
-        Log.d(TAG, "Intent extras: " + (getIntent().getExtras() != null ? getIntent().getExtras().toString() : "null"));
-        Log.d(TAG, "Received tournament ID: " + tournamentId);
-        if (tournamentId <= 0) {
-            Toast.makeText(this, "Invalid tournament ID: " + tournamentId, Toast.LENGTH_LONG).show();
-            finish();
-            return;
-        }
 
         // Fetch user ID from SharedPreferences
         SharedPreferences prefs = getSharedPreferences("pgamerapp", MODE_PRIVATE);
-        Log.d(TAG, "All SharedPreferences: " + prefs.getAll().toString());
         String userIdStr = prefs.getString("userID", null);
         try {
             userId = (userIdStr != null && !userIdStr.isEmpty()) ? Integer.parseInt(userIdStr) : -1;
@@ -77,13 +72,6 @@ public class TournamentMatchDetail extends AppCompatActivity {
             userId = -1;
         }
         Log.d(TAG, "User ID from SharedPreferences: " + userId);
-
-        if (userId <= 0) {
-            Toast.makeText(this, "Please log in to join the tournament", Toast.LENGTH_LONG).show();
-            startActivity(new Intent(this, OnboardingDisclosureActivity.class).putExtra("FORCE_LOGIN", true));
-            finish();
-            return;
-        }
 
         // Set up ViewPager2 and TabLayout
         MatchDetailsAdapter adapter = new MatchDetailsAdapter(this);
@@ -104,7 +92,7 @@ public class TournamentMatchDetail extends AppCompatActivity {
         updateMatchDetails(tournamentId);
 
         // Join Button Logic
-        joinButton.setOnClickListener(v -> sendJoinRequest());
+//        joinButton.setOnClickListener(v -> sendJoinRequest());
     }
 
     private void sendJoinRequest() {
@@ -122,7 +110,7 @@ public class TournamentMatchDetail extends AppCompatActivity {
 
         String url = getString(R.string.app_url) + "/amsit-adm/join_tournament_api.php";
         Log.d(TAG, "Join API URL: " + url);
-
+        Toast.makeText(this, userId + matchType +tournamentId, Toast.LENGTH_LONG).show();
         Map<String, String> params = new HashMap<>();
         params.put("user_id", String.valueOf(userId));
         params.put("match_id", String.valueOf(tournamentId));
@@ -309,4 +297,42 @@ public class TournamentMatchDetail extends AppCompatActivity {
         queue.add(request);
         Log.d(TAG, "Match details API request queued");
     }
+    private void checkIfAlreadyJoinedAndSetupUI() {
+        String checkUrl = getString(R.string.app_url) +
+                "/amsit-adm/join_tournament_api.php?user=" + userId + "&match=" + tournamentId;
+
+        StringRequest request = new StringRequest(Request.Method.GET, checkUrl,
+                response -> {
+                    try {
+                        JSONObject jsonResponse = new JSONObject(response);
+                        if (jsonResponse.optBoolean("status", false)) {
+                            boolean alreadyJoined = jsonResponse.optBoolean("already_joined", false);
+
+                            Toast.makeText(this, "Already Joined: " + alreadyJoined, Toast.LENGTH_SHORT).show();
+
+                            if (alreadyJoined) {
+                                joinButton.setEnabled(false);
+                                joinButton.setText("Already Joined");
+                                joinButton.setBackgroundTintList(ColorStateList.valueOf(0xFF888888));
+                            } else {
+                                joinButton.setEnabled(true);
+                                joinButton.setOnClickListener(v -> sendJoinRequest());
+                            }
+                        } else {
+                            Toast.makeText(this, "API error: " + jsonResponse.optString("message"), Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        Toast.makeText(this, "Error parsing join status", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> Toast.makeText(this, "Failed to check join status", Toast.LENGTH_SHORT).show()
+        );
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(request);
+    }
+
+
+
+
 }

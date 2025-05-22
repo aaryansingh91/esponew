@@ -13,10 +13,12 @@ public class TournamentMatchesItem {
     private String version;
     private String map;
     private String slots;
+    private int filledPositions;
+    private int noOfPlayer;
 
-    public TournamentMatchesItem(int id, String banner, String title, String time, int entryFee,
-                                 int prizePool, int perKill, String type, String version,
-                                 String map, String slots) {
+    public TournamentMatchesItem(int id, String imageUrl, String title, String time, int entryFee, int prizePool,
+                                 int perKill, String type, String version, String map, String slots,
+                                 int filledPositions, int noOfPlayer) {
         this.id = id;
         this.imageResource = R.drawable.ic_freefire_banner;
         this.banner = banner;
@@ -29,6 +31,8 @@ public class TournamentMatchesItem {
         this.version = version;
         this.map = map;
         this.slots = slots;
+        this.filledPositions = filledPositions;
+        this.noOfPlayer = noOfPlayer;
     }
 
     public int getId() { return id; }
@@ -43,4 +47,6 @@ public class TournamentMatchesItem {
     public String getMap() { return map; }
     public String getSlots() { return slots; }
     public String getImageUrl() { return banner; }
+    public int getFilledPositions() {return filledPositions;}
+    public int getNoOfPlayer() {return noOfPlayer;}
 }

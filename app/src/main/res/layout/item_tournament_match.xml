@@ -11,12 +11,14 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:id="@+id/match_item_click"
+        android:background="@color/white">
 
         <ImageView
             android:id="@+id/match_image_view"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
+            android:layout_height="180dp"
             android:scaleType="fitXY"
             android:src="@drawable/ic_freefirelogo"
             tools:ignore="ContentDescription" />
@@ -62,14 +64,17 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 android:layout_marginTop="12dp"
-                android:orientation="horizontal">
+                android:layout_marginBottom="10dp">
 
+                <!-- Column 1 -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -105,6 +110,7 @@
                     </LinearLayout>
                 </LinearLayout>
 
+                <!-- Column 2 -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -126,12 +132,13 @@
                         android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
                 </LinearLayout>
 
+                <!-- Column 3 -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:gravity="end"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -162,17 +169,21 @@
                 </LinearLayout>
             </LinearLayout>
 
+            <!-- Second row -->
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginTop="12dp">
 
+                <!-- Column 1 -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -188,11 +199,13 @@
                         android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
                 </LinearLayout>
 
+                <!-- Column 2 -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -208,11 +221,13 @@
                         android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
                 </LinearLayout>
 
+                <!-- Column 3 -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -224,21 +239,53 @@
                         android:id="@+id/map_text_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Barmuda"
+                        android:text="Bermuda"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
                 </LinearLayout>
             </LinearLayout>
-
-            <Button
-                android:onClick="goto_matchejoin"
-                android:id="@+id/join_button"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
                 android:layout_marginTop="16dp"
-                android:backgroundTint="#7B1FA2"
-                android:text="JOIN"
-                android:textColor="@android:color/white" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/slot_progress_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="1/2 Slots Filled"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+
+                    <ProgressBar
+                        android:id="@+id/slot_progress_bar"
+                        style="@android:style/Widget.ProgressBar.Horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="3dp"
+                        android:progress="50"
+                        android:max="100"
+                        android:layout_marginTop="4dp"
+                        android:progressTint="@color/purple_bg" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/join_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:backgroundTint="@color/purple_bg"
+                    android:text="JOIN"
+                    android:onClick="goto_matchejoin"
+                    android:textColor="@android:color/white" />
+            </LinearLayout>
+
+
         </LinearLayout>
 
         <TextView

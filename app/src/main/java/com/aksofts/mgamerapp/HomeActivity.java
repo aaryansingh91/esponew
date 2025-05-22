@@ -53,7 +53,7 @@ public class HomeActivity extends AppCompatActivity {
 
     ScrollView home_scroll_section, game_scroll_section, reward_scroll_section, profile_scroll_section;
     ImageView icon_home, icon_game, icon_reward, icon_profile;
-    TextView text_home, text_game, text_reward, text_profile;
+    TextView text_home, text_game, text_reward, text_profile, username_profile;
     MaterialCardView nav_home, nav_game, nav_reward, nav_profile;
     private MaterialCardView btnLogout; // Changed from Button to MaterialCardView
     MaterialCardView home_sec1_layout_game_tab, home_sec1_layout_apptask_tab, home_sec1_layout_survey_tab;
@@ -83,6 +83,8 @@ public class HomeActivity extends AppCompatActivity {
         fetchGames();
 
         icon_home = findViewById(R.id.icon_home);
+
+        username_profile = findViewById(R.id.username_profile);
 
         icon_game = findViewById(R.id.icon_game);
         icon_profile = findViewById(R.id.icon_profile);
@@ -116,6 +118,8 @@ public class HomeActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("pgamerapp", MODE_PRIVATE);
 
         String storedID = sharedPreferences.getString("userID", "NULL");
+        String userName = sharedPreferences.getString("userName", "NULL");
+        username_profile.setText(userName);
         get_user_data_thread(storedID);
         app_home_top_sec_1_game = sharedPreferences.getString("app_home_top_sec_1_game", "NULL");
         app_home_top_sec_1_game_url = sharedPreferences.getString("app_home_top_sec_1_game_url", "NULL");

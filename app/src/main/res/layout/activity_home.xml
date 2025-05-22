@@ -67,7 +67,7 @@
 
 <!--    home screen-->
     <ScrollView
-        android:visibility="visible"
+        android:visibility="gone"
         android:id="@+id/home_scroll_section"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -1663,7 +1663,7 @@
 
 <!--profile Screen-->
     <ScrollView
-        android:visibility="gone"
+        android:visibility="visible"
         android:background="@color/white"
         android:id="@+id/account_scroll_section"
         android:layout_width="match_parent"
@@ -1691,7 +1691,7 @@
                     app:shapeAppearanceOverlay="@style/CircleImageView" />
 
                 <TextView
-                    android:id="@+id/userName"
+                    android:id="@+id/username_profile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -1700,6 +1700,7 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:visibility="gone"
                     android:id="@+id/userCode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

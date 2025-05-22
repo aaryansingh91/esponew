@@ -25,7 +25,7 @@
             android:layout_weight="1"
             android:text="CS 1V1"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            android:textColor="?attr/colorOnPrimary" />
+            android:textColor="@color/white" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -33,7 +33,7 @@
             android:layout_marginEnd="16dp"
             android:text="₹ 0.00"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="?attr/colorOnPrimary" />
+            android:textColor="@color/white" />
     </LinearLayout>
 
     <!-- TabLayout for Tabs -->
@@ -42,9 +42,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
-        app:tabIndicatorColor="?attr/colorOnPrimary"
-        app:tabTextColor="?attr/colorOnPrimary"
-        app:tabSelectedTextColor="?attr/colorOnPrimary" />
+        app:tabIndicatorColor="@color/white"
+        app:tabTextColor="@color/white"
+        app:tabSelectedTextColor="@color/white" />
 
 
 
@@ -53,5 +53,6 @@
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:background="@color/white"/>
 </LinearLayout>

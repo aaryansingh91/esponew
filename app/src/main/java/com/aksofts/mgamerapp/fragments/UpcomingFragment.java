@@ -78,7 +78,9 @@ public class UpcomingFragment extends Fragment {
                                         obj.getString("type"),
                                         obj.optString("match_type", "TPP"),
                                         obj.getString("MAP"),
-                                        obj.getString("no_of_player")
+                                        obj.getString("no_of_player"),
+                                        obj.optInt("filled_positions", 0), // new field filled_positions
+                                        obj.optInt("no_of_player", 0) // no_of_player as int
                                 );
                                 matches.add(item);
                             }
