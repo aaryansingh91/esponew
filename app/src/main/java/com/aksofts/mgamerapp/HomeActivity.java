@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.card.MaterialCardView;
@@ -53,7 +54,7 @@ public class HomeActivity extends AppCompatActivity {
 
     ScrollView home_scroll_section, game_scroll_section, reward_scroll_section, profile_scroll_section;
     ImageView icon_home, icon_game, icon_reward, icon_profile;
-    TextView text_home, text_game, text_reward, text_profile, username_profile;
+    TextView text_home, text_game, text_reward, text_profile, username_profile, coinsHeader, ticketsHeader, account_page_coins_text_value, account_page_tickets_text_value, coins_rewards_screen;
     MaterialCardView nav_home, nav_game, nav_reward, nav_profile;
     private MaterialCardView btnLogout; // Changed from Button to MaterialCardView
     MaterialCardView home_sec1_layout_game_tab, home_sec1_layout_apptask_tab, home_sec1_layout_survey_tab;
@@ -80,7 +81,15 @@ public class HomeActivity extends AppCompatActivity {
         adapter = new GameAdapter(gameList);
         recyclerView.setAdapter(adapter);
 
+        coinsHeader = findViewById(R.id.coins_header);
+        coins_rewards_screen = findViewById(R.id.coins_rewards_screen);
+        account_page_coins_text_value = findViewById(R.id.account_page_coins_text_value);
+        ticketsHeader = findViewById(R.id.tickets_header);
+        account_page_tickets_text_value = findViewById(R.id.account_page_tickets_text_value);
+
         fetchGames();
+        int userId = 3; // pass the actual user ID here
+        fetchUserData(userId);
 
         icon_home = findViewById(R.id.icon_home);
 
@@ -230,6 +239,38 @@ public class HomeActivity extends AppCompatActivity {
                 startWithdrawListActivity("ff_diamonds");
             }
         });
+    }
+
+    private void fetchUserData(int userId) {
+        String url = getString(R.string.app_url) +"/amsit-adm/get_user_info_api.php?id=" + userId;
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                response -> {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        if (jsonObject.getString("status").equals("success")) {
+                            JSONObject user = jsonObject.getJSONObject("user");
+
+                            int coins = user.getInt("coins");
+                            int tickets = user.getInt("tickets");
+
+                            coinsHeader.setText(String.valueOf(coins));
+                            account_page_coins_text_value.setText(String.valueOf(coins));
+                            coins_rewards_screen.setText(String.valueOf(coins));
+                            ticketsHeader.setText(String.valueOf(tickets));
+                            account_page_tickets_text_value.setText(String.valueOf(tickets));
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "Error parsing data", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> {
+                    Toast.makeText(this, "Failed to fetch user data", Toast.LENGTH_SHORT).show();
+                });
+
+        queue.add(stringRequest);
     }
 
     // Logout method for the MaterialCardView onClick

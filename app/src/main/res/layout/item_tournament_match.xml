@@ -147,25 +147,47 @@
                         android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
                     <LinearLayout
+                        android:orientation="horizontal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
+                        android:gravity="center_vertical">
 
                         <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:src="@drawable/ic_coin_24"
-                            tools:ignore="ContentDescription" />
+                            android:id="@+id/coinIcon"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_coin_24" />
 
                         <TextView
-                            android:id="@+id/entry_fee_text_view"
+                            android:id="@+id/coinText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="4dp"
-                            android:text="25"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+                            android:paddingStart="4dp"
+                            android:text="100" />
+
+                        <TextView
+                            android:id="@+id/slashText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=" | "
+                            android:paddingStart="4dp"
+                            android:paddingEnd="4dp" />
+
+                        <ImageView
+                            android:id="@+id/ticketIcon"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_ticket_24" />
+
+                        <TextView
+                            android:id="@+id/ticketText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="4dp"
+                            android:text="50" />
+
                     </LinearLayout>
+
                 </LinearLayout>
             </LinearLayout>
 

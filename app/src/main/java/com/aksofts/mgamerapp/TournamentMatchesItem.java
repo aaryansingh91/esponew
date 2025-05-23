@@ -15,16 +15,22 @@ public class TournamentMatchesItem {
     private String slots;
     private int filledPositions;
     private int noOfPlayer;
+    private String entryType;
+    private int entryFeeCoins;
+    private int entryFeeTickets;
 
-    public TournamentMatchesItem(int id, String imageUrl, String title, String time, int entryFee, int prizePool,
-                                 int perKill, String type, String version, String map, String slots,
-                                 int filledPositions, int noOfPlayer) {
+    public TournamentMatchesItem(int id, String imageUrl, String title, String time,
+                                 int entryFeeCoins, int entryFeeTickets, String entryType,
+                                 int prizePool, int perKill, String type, String version,
+                                 String map, String slots, int filledPositions, int noOfPlayer) {
         this.id = id;
         this.imageResource = R.drawable.ic_freefire_banner;
-        this.banner = banner;
+        this.banner = imageUrl;
         this.title = title;
         this.time = time;
-        this.entryFee = entryFee;
+        this.entryFeeCoins = entryFeeCoins;
+        this.entryFeeTickets = entryFeeTickets;
+        this.entryType = entryType;
         this.prizePool = prizePool;
         this.perKill = perKill;
         this.type = type;
@@ -49,4 +55,7 @@ public class TournamentMatchesItem {
     public String getImageUrl() { return banner; }
     public int getFilledPositions() {return filledPositions;}
     public int getNoOfPlayer() {return noOfPlayer;}
+    public int getEntryFeeCoins() { return entryFeeCoins; }
+    public int getEntryFeeTickets() { return entryFeeTickets; }
+    public String getEntryType() { return entryType; }
 }

@@ -83,13 +83,14 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="vertical"
+            android:background="@color/white"
             android:backgroundTint="@null">
 
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/right_arrow"
-                android:tint="@color/purple_bg" />
+                app:tint="@color/purple_bg" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 

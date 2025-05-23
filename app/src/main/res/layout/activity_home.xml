@@ -49,25 +49,40 @@
                 android:layout_height="30dp"
                 android:src="@drawable/coin_icon" />
             <TextView
+                android:id="@+id/coins_header"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="100"
+                android:text="0"
                 android:textSize="16sp"
                 android:layout_marginStart="5dp" />
 
         </LinearLayout>
 
+        <LinearLayout
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
         <ImageView
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:src="@drawable/ic_ticket_24"
             android:layout_marginStart="15dp" />
+            <TextView
+                android:id="@+id/tickets_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textSize="16sp"
+                android:layout_marginStart="5dp" />
+        </LinearLayout>
     </LinearLayout>
 
 
 <!--    home screen-->
     <ScrollView
-        android:visibility="gone"
+        android:visibility="visible"
         android:id="@+id/home_scroll_section"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -1176,7 +1191,7 @@
         </LinearLayout>
     </ScrollView>
 
-
+<!--Rewards Screen-->
     <ScrollView
         android:fillViewport="true"
         android:visibility="gone"
@@ -1233,11 +1248,12 @@
                            android:padding="15dp">
 
                            <TextView
+                               android:id="@+id/coins_rewards_screen"
                                android:textColor="@color/dark_yellow"
                                android:fontFamily="@font/poppins_black"
                                android:layout_width="wrap_content"
                                android:layout_height="wrap_content"
-                               android:text="100"
+                               android:text="0"
                                android:textSize="25sp"
                                android:textStyle="bold" />
 
@@ -1663,7 +1679,7 @@
 
 <!--profile Screen-->
     <ScrollView
-        android:visibility="visible"
+        android:visibility="gone"
         android:background="@color/white"
         android:id="@+id/account_scroll_section"
         android:layout_width="match_parent"
@@ -1686,7 +1702,7 @@
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:background="@color/dark_yellow"
-                    android:src="@drawable/coin_icon"
+                    android:src="@mipmap/ic_launcher"
                     android:scaleType="centerCrop"
                     app:shapeAppearanceOverlay="@style/CircleImageView" />
 
@@ -1750,7 +1766,7 @@
                                     android:id="@+id/account_page_coins_text_value"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="100"
+                                    android:text="0"
                                     android:textColor="@color/dark_yellow"
                                     android:textStyle="bold"
                                     android:textSize="20sp"

@@ -72,15 +72,17 @@ public class UpcomingFragment extends Fragment {
                                         obj.getString("match_banner"),
                                         obj.getString("match_name"),
                                         obj.getString("match_time"),
-                                        obj.getInt("entry_fee"),
+                                        obj.getInt("entry_fee_coins"),
+                                        obj.getInt("entry_fee_tickets"),
+                                        obj.getString("entry_type"),
                                         obj.getInt("win_prize"),
                                         obj.getInt("per_kill"),
                                         obj.getString("type"),
                                         obj.optString("match_type", "TPP"),
                                         obj.getString("MAP"),
                                         obj.getString("no_of_player"),
-                                        obj.optInt("filled_positions", 0), // new field filled_positions
-                                        obj.optInt("no_of_player", 0) // no_of_player as int
+                                        obj.optInt("filled_positions", 0),
+                                        obj.optInt("no_of_player", 0)
                                 );
                                 matches.add(item);
                             }
