@@ -17,4 +17,12 @@
     <color name="bottomnavbar_unselected_color">#444444</color>
     <color name="bottomnavbar_selected_color">#8000FF</color>
 
+
+<color name="card_background">#ffffff</color> <!-- Dark grey for dark mode -->
+<color name="text_primary">#FFFFFF</color> <!-- White for dark mode -->
+<color name="text_secondary">#B0B0B0</color> <!-- Light grey for dark mode -->
+<color name="text_input_border">#FFFFFF</color> <!-- White border -->
+<color name="text_input_text">#FFFFFF</color> <!-- White text -->
+<color name="text_input_hint">#B0B0B0</color> <!-- Light grey hint -->
+<color name="link_color">@color/purple_bg</color> <!-- Keep purple for links -->
 </resources>
