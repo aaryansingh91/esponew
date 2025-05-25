@@ -4,6 +4,8 @@
         <!-- Customize your light theme here. -->
         <item name="colorPrimary">@color/purple_bg</item>
         <item name="android:textViewStyle">@style/AppTextViewStyle</item>
+
+        <item name="colorOnSurface">@color/dark_black</item>
     </style>
 
     <style name="Theme.MgamerApp" parent="Base.Theme.MgamerApp" />

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="CustomTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/dark_purple</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="boxStrokeWidthFocused">1dp</item>
+        <item name="hintTextColor">@color/dark_black</item>
+        <item name="android:textColor">@color/dark_black</item>
+    </style>
+
+    <style name="BlackHintText" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="android:textColor">@color/dark_black</item>
+    </style>
+
+
+
+
+</resources>
