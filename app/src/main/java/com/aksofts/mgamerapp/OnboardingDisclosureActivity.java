@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -40,8 +41,9 @@ public class OnboardingDisclosureActivity extends AppCompatActivity {
     TextInputEditText signup_name_input,signup_email_input, signup_number_input, signup_password_input;
     Dialog loading_dialog;
 
-    MaterialCardView login_section_number_pass, signup_with_number_layout ;
+//    MaterialCardView  signup_with_number_layout ;
     MaterialCardView disclosure_box , login_selectionbox;
+    ScrollView signup_with_number_layout, login_section_number_pass;
 
     int retry = 0;
     @Override

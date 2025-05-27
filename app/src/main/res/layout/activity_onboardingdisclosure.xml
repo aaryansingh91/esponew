@@ -413,8 +413,16 @@
 
 
     <!-- Login With Number Box -->
-    <com.google.android.material.card.MaterialCardView
+
+    <ScrollView
         android:id="@+id/login_with_number_1st_box"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/white"
@@ -595,10 +603,21 @@
 
     </com.google.android.material.card.MaterialCardView>
 
+    </ScrollView>
+
     <!-- Signup With Number Box -->
+
+
+    <ScrollView
+        android:id="@+id/signup_with_number_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:orientation="vertical"
+        android:padding="10dp">
+
     <com.google.android.material.card.MaterialCardView
         android:visibility="visible"
-        android:id="@+id/signup_with_number_layout"
         android:backgroundTint="@color/white"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -624,7 +643,7 @@
                 android:contentDescription="Back" />
 
             <ImageView
-                android:id="@+id/login_image"
+                android:id="@+id/signup_image"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:layout_gravity="center"
@@ -770,4 +789,6 @@
     </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
+
+    </ScrollView>
 </LinearLayout>

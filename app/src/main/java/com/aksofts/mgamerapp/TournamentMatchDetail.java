@@ -49,8 +49,8 @@ public class TournamentMatchDetail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match_details);
-        // Get userId and tournamentId values before this
-        checkIfAlreadyJoinedAndSetupUI();
+
+
         // Initialize views
         ViewPager2 viewPager = findViewById(R.id.view_pager);
         TabLayout tabLayout = findViewById(R.id.tab_layout);
@@ -73,6 +73,13 @@ public class TournamentMatchDetail extends AppCompatActivity {
         }
         Log.d(TAG, "User ID from SharedPreferences: " + userId);
 
+        // Get userId and tournamentId values before this
+        if (userId > 0 && tournamentId > 0) {
+            checkIfAlreadyJoinedAndSetupUI();
+        } else {
+            Toast.makeText(this, "No Data", Toast.LENGTH_SHORT).show();
+        }
+
         // Set up ViewPager2 and TabLayout
         MatchDetailsAdapter adapter = new MatchDetailsAdapter(this);
         viewPager.setAdapter(adapter);
@@ -91,8 +98,6 @@ public class TournamentMatchDetail extends AppCompatActivity {
         // Fetch and show match details
         updateMatchDetails(tournamentId);
 
-        // Join Button Logic
-//        joinButton.setOnClickListener(v -> sendJoinRequest());
     }
 
     private void sendJoinRequest() {
@@ -297,6 +302,7 @@ public class TournamentMatchDetail extends AppCompatActivity {
         queue.add(request);
         Log.d(TAG, "Match details API request queued");
     }
+
     private void checkIfAlreadyJoinedAndSetupUI() {
         String checkUrl = getString(R.string.app_url) +
                 "/amsit-adm/join_tournament_api.php?user=" + userId + "&match=" + tournamentId;
@@ -306,7 +312,8 @@ public class TournamentMatchDetail extends AppCompatActivity {
                     try {
                         JSONObject jsonResponse = new JSONObject(response);
                         if (jsonResponse.optBoolean("status", false)) {
-                            boolean alreadyJoined = jsonResponse.optBoolean("already_joined", false);
+                            boolean alreadyJoined = jsonResponse.optBoolean("already_joined", false); // your key is `joined`
+                            boolean slotsFull = jsonResponse.optBoolean("slots_full", false);
 
                             Toast.makeText(this, "Already Joined: " + alreadyJoined, Toast.LENGTH_SHORT).show();
 
@@ -314,14 +321,19 @@ public class TournamentMatchDetail extends AppCompatActivity {
                                 joinButton.setEnabled(false);
                                 joinButton.setText("Already Joined");
                                 joinButton.setBackgroundTintList(ColorStateList.valueOf(0xFF888888));
+                            } else if (slotsFull) {
+                                joinButton.setEnabled(false);
+                                joinButton.setText("Match Full");
+                                joinButton.setBackgroundTintList(ColorStateList.valueOf(0xFF888888));
                             } else {
                                 joinButton.setEnabled(true);
+                                joinButton.setText("Join Match");
                                 joinButton.setOnClickListener(v -> sendJoinRequest());
                             }
                         } else {
                             Toast.makeText(this, "API error: " + jsonResponse.optString("message"), Toast.LENGTH_SHORT).show();
                         }
-                    } catch (JSONException e) {
+                    }catch (JSONException e) {
                         Toast.makeText(this, "Error parsing join status", Toast.LENGTH_SHORT).show();
                     }
                 },
