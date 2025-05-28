@@ -89,7 +89,7 @@ public class GameOfferwall extends AppCompatActivity {
 
             @Override
             public void onContentDismiss(TJPlacement placement) {
-                placement.requestContent(); // Request again when dismissed
+//                placement.requestContent(); // Request again when dismissed
                 finish(); // ✅ Close the activity
             }
 
