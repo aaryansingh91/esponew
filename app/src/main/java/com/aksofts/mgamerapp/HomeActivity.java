@@ -88,8 +88,7 @@ public class HomeActivity extends AppCompatActivity {
         account_page_tickets_text_value = findViewById(R.id.account_page_tickets_text_value);
 
         fetchGames();
-        int userId = 3; // pass the actual user ID here
-        fetchUserData(userId);
+
 
         icon_home = findViewById(R.id.icon_home);
 
@@ -130,6 +129,10 @@ public class HomeActivity extends AppCompatActivity {
         String userName = sharedPreferences.getString("userName", "NULL");
         username_profile.setText(userName);
         get_user_data_thread(storedID);
+
+        int userId = Integer.parseInt(storedID); // pass the actual user ID here
+        fetchUserData(userId);
+
         app_home_top_sec_1_game = sharedPreferences.getString("app_home_top_sec_1_game", "NULL");
         app_home_top_sec_1_game_url = sharedPreferences.getString("app_home_top_sec_1_game_url", "NULL");
 

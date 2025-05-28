@@ -3,12 +3,20 @@ package com.aksofts.mgamerapp;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.Html;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -32,7 +40,9 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class TournamentMatchDetail extends AppCompatActivity {
@@ -44,6 +54,14 @@ public class TournamentMatchDetail extends AppCompatActivity {
     private int retryCount = 0;
     private static final int MAX_RETRIES = 2;
     private static final String TAG = "TournamentMatchDetail";
+
+    int userCoins = 0;
+    int userTickets = 0;
+    int entryFeeCoins = 0;
+    int entryFeeTickets = 0;
+    String entryType = "coin";
+    String joinType = "coin";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,10 +115,39 @@ public class TournamentMatchDetail extends AppCompatActivity {
 
         // Fetch and show match details
         updateMatchDetails(tournamentId);
+        fetchUserData(userId);
 
     }
+    private void fetchUserData(int userId) {
+        String url = getString(R.string.app_url) +"/amsit-adm/get_user_info_api.php?id=" + userId;
 
-    private void sendJoinRequest() {
+        RequestQueue queue = Volley.newRequestQueue(this);
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                response -> {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        if (jsonObject.getString("status").equals("success")) {
+                            JSONObject user = jsonObject.getJSONObject("user");
+
+                            userCoins = user.getInt("coins");
+                            userTickets = user.getInt("tickets");
+
+//                            Toast.makeText(this, "Error parsing data" + coins, Toast.LENGTH_SHORT).show();
+
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "Error parsing data", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> {
+                    Toast.makeText(this, "Failed to fetch user data", Toast.LENGTH_SHORT).show();
+                });
+
+        queue.add(stringRequest);
+    }
+    private void sendJoinRequest(String joinType)
+    {
         if (matchType.isEmpty() || matchType.equalsIgnoreCase("Unknown")) {
             Toast.makeText(this, "Match type not loaded: " + matchType, Toast.LENGTH_LONG).show();
             return;
@@ -117,9 +164,10 @@ public class TournamentMatchDetail extends AppCompatActivity {
         Log.d(TAG, "Join API URL: " + url);
         Toast.makeText(this, userId + matchType +tournamentId, Toast.LENGTH_LONG).show();
         Map<String, String> params = new HashMap<>();
-        params.put("user_id", String.valueOf(userId));
-        params.put("match_id", String.valueOf(tournamentId));
+        params.put("user", String.valueOf(userId));
+        params.put("match", String.valueOf(tournamentId));
         params.put("match_type", matchType);
+        params.put("entry_type", joinType);
 
         // Log raw request body
         StringBuilder requestBody = new StringBuilder();
@@ -145,7 +193,7 @@ public class TournamentMatchDetail extends AppCompatActivity {
                         if (retryCount < MAX_RETRIES) {
                             retryCount++;
                             Log.d(TAG, "Retrying request (attempt " + retryCount + ")");
-                            sendJoinRequest();
+                            sendJoinRequest(joinType);
                         } else {
                             Toast.makeText(this, "Empty server response after retries", Toast.LENGTH_LONG).show();
                         }
@@ -168,7 +216,7 @@ public class TournamentMatchDetail extends AppCompatActivity {
                         if (retryCount < MAX_RETRIES) {
                             retryCount++;
                             Log.d(TAG, "Retrying request due to JSON error (attempt " + retryCount + ")");
-                            sendJoinRequest();
+                            sendJoinRequest(joinType);
                         } else {
                             Toast.makeText(this, "Invalid server response: " + response, Toast.LENGTH_LONG).show();
                         }
@@ -195,7 +243,7 @@ public class TournamentMatchDetail extends AppCompatActivity {
                     if (retryCount < MAX_RETRIES && error instanceof ServerError) {
                         retryCount++;
                         Log.d(TAG, "Retrying request due to server error (attempt " + retryCount + ")");
-                        sendJoinRequest();
+                        sendJoinRequest(joinType);
                     } else {
                         Toast.makeText(this, errorMsg + " (Response: " + responseData + ")", Toast.LENGTH_LONG).show();
                     }
@@ -245,13 +293,19 @@ public class TournamentMatchDetail extends AppCompatActivity {
                         bundle.putString("match_type", matchType);
                         bundle.putString("match_name", match.optString("match_name", "Unknown"));
                         bundle.putString("map", match.optString("MAP", "Unknown"));
-                        bundle.putInt("entry_fee", match.optInt("entry_fee", 0));
+                        bundle.putInt("entry_fee_coins", match.optInt("entry_fee_coins", 0));
+                        bundle.putInt("entry_fee_tickets", match.optInt("entry_fee_tickets", 0));
+                        bundle.putString("entry_type", match.optString("entry_type", "any"));
                         bundle.putInt("per_kill", match.optInt("per_kill", 0));
                         bundle.putString("match_time", match.optString("match_time", "Unknown"));
                         bundle.putString("prize_details", "Winning Prize: " + match.optInt("win_prize", 0) +
                                 "\n" + match.optString("prize_description", ""));
                         bundle.putString("match_desc", match.optString("match_desc", ""));
                         bundle.putString("match_banner", match.optString("match_banner", ""));
+
+                        entryFeeCoins = match.optInt("entry_fee_coins", 0);
+                        entryFeeTickets = match.optInt("entry_fee_tickets", 0);
+                        entryType = match.optString("entry_type", "any");
 
                         // Update DescriptionFragment with match data
                         Fragment fragment = getSupportFragmentManager().findFragmentByTag("f0");
@@ -301,6 +355,7 @@ public class TournamentMatchDetail extends AppCompatActivity {
 
         queue.add(request);
         Log.d(TAG, "Match details API request queued");
+
     }
 
     private void checkIfAlreadyJoinedAndSetupUI() {
@@ -315,7 +370,7 @@ public class TournamentMatchDetail extends AppCompatActivity {
                             boolean alreadyJoined = jsonResponse.optBoolean("already_joined", false); // your key is `joined`
                             boolean slotsFull = jsonResponse.optBoolean("slots_full", false);
 
-                            Toast.makeText(this, "Already Joined: " + alreadyJoined, Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(this, "Already Joined: " + alreadyJoined, Toast.LENGTH_SHORT).show();
 
                             if (alreadyJoined) {
                                 joinButton.setEnabled(false);
@@ -328,7 +383,8 @@ public class TournamentMatchDetail extends AppCompatActivity {
                             } else {
                                 joinButton.setEnabled(true);
                                 joinButton.setText("Join Match");
-                                joinButton.setOnClickListener(v -> sendJoinRequest());
+                                joinButton.setOnClickListener(v -> showJoinMethodPopup(userCoins, userTickets, entryFeeCoins, entryFeeTickets, entryType)
+);
                             }
                         } else {
                             Toast.makeText(this, "API error: " + jsonResponse.optString("message"), Toast.LENGTH_SHORT).show();
@@ -343,6 +399,79 @@ public class TournamentMatchDetail extends AppCompatActivity {
         RequestQueue queue = Volley.newRequestQueue(this);
         queue.add(request);
     }
+
+    private void showJoinMethodPopup(int userCoins, int userTickets, int entryCoins, int entryTickets, String entryType) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Select Join Method");
+
+        // Prepare list items based on entryType
+        List<String> methodsList = new ArrayList<>();
+        if (entryType.equals("coin")) {
+            methodsList.add("coin");
+        } else if (entryType.equals("tickets")) {
+            methodsList.add("tickets");
+        } else {
+            methodsList.add("coin");
+            methodsList.add("tickets");
+        }
+
+        // Create custom adapter
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.select_dialog_item, methodsList) {
+            @NonNull
+            @Override
+            public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                TextView textView = view.findViewById(android.R.id.text1);
+                Drawable icon;
+
+                if (getItem(position).equals("coin")) {
+                    textView.setText("Join with Coins (" + entryCoins + ")");
+                    icon = ContextCompat.getDrawable(getContext(), R.drawable.ic_coin_24); // your coin icon
+                } else {
+                    textView.setText("Join with Tickets (" + entryTickets + ")");
+                    icon = ContextCompat.getDrawable(getContext(), R.drawable.ic_ticket_24); // your ticket icon
+                }
+
+                // Set icon
+                if (icon != null) {
+                    int iconSize = (int) (40 * getContext().getResources().getDisplayMetrics().density); // 40dp size
+                    icon.setBounds(0, 0, iconSize, iconSize);
+                    textView.setCompoundDrawables(icon, null, null, null);
+                    textView.setCompoundDrawablePadding((int) (5 * getContext().getResources().getDisplayMetrics().density)); // 8dp padding
+                }
+
+            // Set text size smaller (e.g., 14sp)
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                return view;
+            }
+        };
+
+        builder.setAdapter(adapter, (dialog, which) -> {
+            String selected = methodsList.get(which);
+            if (selected.equals("coin")) {
+                if (userCoins >= entryCoins) {
+                    joinType = "coin";
+                    sendJoinRequest(joinType);
+                    Toast.makeText(this, "Not enough tickets" + joinType, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Not enough coins", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                if (userTickets >= entryTickets) {
+                    joinType = "tickets";
+                    sendJoinRequest(joinType);
+                    Toast.makeText(this, "Not enough tickets" + joinType, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Not enough tickets", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        builder.setNegativeButton("Cancel", null);
+        builder.show();
+    }
+
+
 
 
 

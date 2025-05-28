@@ -17,10 +17,12 @@ import com.bumptech.glide.Glide;
 
 public class DescriptionFragment extends Fragment {
 
-    private TextView matchTypeOverlay, matchTitle, matchTypeText, matchMapText, entryFeeText,
-            perKillText, matchScheduleText, prizeDetailsText, matchDescriptionText;
-    private ImageView topImage;
+    private TextView matchTypeOverlay, matchTitle, matchTypeText, matchMapText, entryFeeText, entryFeeTextTicket,
+            perKillText, matchScheduleText, prizeDetailsText, matchDescriptionText, entryFeeSeparator ;
+    private ImageView topImage, entryFeeIcon, entryFeeIconTicket;
     private static final String TAG = "DescriptionFragment";
+
+
 
     @Nullable
     @Override
@@ -40,6 +42,12 @@ public class DescriptionFragment extends Fragment {
         matchScheduleText = view.findViewById(R.id.match_schedule_text);
         prizeDetailsText = view.findViewById(R.id.prize_details_text);
         matchDescriptionText = view.findViewById(R.id.match_description_text);
+
+         entryFeeIcon = view.findViewById(R.id.entry_fee_icon);
+         entryFeeIconTicket = view.findViewById(R.id.entry_fee_icon_ticket);
+         entryFeeTextTicket = view.findViewById(R.id.entry_fee_text_ticket);
+         entryFeeSeparator = view.findViewById(R.id.entry_fee_separator);
+
 
         // Apply arguments if available
         if (getArguments() != null) {
@@ -67,6 +75,50 @@ public class DescriptionFragment extends Fragment {
         matchScheduleText.setText(bundle.getString("match_time", "Unknown"));
         prizeDetailsText.setText(bundle.getString("prize_details", ""));
         matchDescriptionText.setText(Html.fromHtml(bundle.getString("match_desc", "")));
+
+        String entryType = bundle.getString("entry_type", "any");
+        int coinFee = bundle.getInt("entry_fee_coins", 0);
+        int ticketFee = bundle.getInt("entry_fee_tickets", 0);
+
+        switch (entryType) {
+            case "coin":
+                entryFeeIcon.setVisibility(View.VISIBLE);
+                entryFeeIcon.setImageResource(R.drawable.ic_coin_24);
+                entryFeeText.setVisibility(View.VISIBLE);
+                entryFeeText.setText(String.valueOf(coinFee));
+
+                entryFeeSeparator.setVisibility(View.GONE);
+                entryFeeIconTicket.setVisibility(View.GONE);
+                entryFeeTextTicket.setVisibility(View.GONE);
+                break;
+
+            case "tickets":
+                entryFeeIcon.setVisibility(View.VISIBLE);
+                entryFeeIcon.setImageResource(R.drawable.ic_ticket_24);
+                entryFeeText.setVisibility(View.VISIBLE);
+                entryFeeText.setText(String.valueOf(ticketFee));
+
+                entryFeeSeparator.setVisibility(View.GONE);
+                entryFeeIconTicket.setVisibility(View.GONE);
+                entryFeeTextTicket.setVisibility(View.GONE);
+                break;
+
+            case "any":
+            default:
+                entryFeeIcon.setVisibility(View.VISIBLE);
+                entryFeeIcon.setImageResource(R.drawable.ic_coin_24);
+                entryFeeText.setVisibility(View.VISIBLE);
+                entryFeeText.setText(String.valueOf(coinFee));
+
+                entryFeeSeparator.setVisibility(View.VISIBLE);
+
+                entryFeeIconTicket.setVisibility(View.VISIBLE);
+                entryFeeTextTicket.setVisibility(View.VISIBLE);
+                entryFeeTextTicket.setText(String.valueOf(ticketFee));
+                break;
+        }
+
+
 
         // Load image
         String bannerUrl = bundle.getString("match_banner", "");
