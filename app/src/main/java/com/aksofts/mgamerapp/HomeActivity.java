@@ -46,9 +46,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class HomeActivity extends AppCompatActivity {
@@ -141,6 +144,15 @@ public class HomeActivity extends AppCompatActivity {
         username_profile.setText(userName);
         get_user_data_thread(storedID);
 
+        String lastClaimDate = sharedPreferences.getString("lastClaimDate", null);
+        String todayDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+
+        if (todayDate.equals(lastClaimDate)) {
+            bonusBtn.setText("CLAIMED");
+            bonusBtn.setEnabled(false);
+        }
+
+
         int userId = Integer.parseInt(storedID); // pass the actual user ID here
         fetchUserData(userId);
 
@@ -156,6 +168,17 @@ public class HomeActivity extends AppCompatActivity {
                                 int amount = obj.getInt("amount");
                                 popupText.setText("+" + amount + " Coins Credited!");
                                 bonusPopup.setVisibility(View.VISIBLE);
+                                SharedPreferences prefs = getSharedPreferences("pgamerapp", MODE_PRIVATE);
+                                SharedPreferences.Editor editor = prefs.edit();
+
+                            // Save today's date as string (e.g., 2025-06-02)
+                                String claimDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                                editor.putString("lastClaimDate", claimDate);
+                                editor.apply();
+
+                            // Disable button
+                                bonusBtn.setText("CLAIMED");
+                                bonusBtn.setEnabled(false);
 
                                 new Handler().postDelayed(() -> bonusPopup.setVisibility(View.GONE), 3000);
 
@@ -180,6 +203,8 @@ public class HomeActivity extends AppCompatActivity {
             RequestQueue queue = Volley.newRequestQueue(this);
             queue.add(stringRequest);
         });
+
+
 
         app_home_top_sec_1_game = sharedPreferences.getString("app_home_top_sec_1_game", "NULL");
         app_home_top_sec_1_game_url = sharedPreferences.getString("app_home_top_sec_1_game_url", "NULL");

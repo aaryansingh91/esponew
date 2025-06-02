@@ -82,7 +82,7 @@
 
 <!--    home screen-->
     <ScrollView
-        android:visibility="gone"
+        android:visibility="visible"
         android:id="@+id/home_scroll_section"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -867,7 +867,7 @@
 
 <!--game?-->
     <ScrollView
-        android:visibility="visible"
+        android:visibility="gone"
         android:background="@color/white"
         android:id="@+id/game_scroll_section"
         android:layout_width="match_parent"
@@ -1020,38 +1020,11 @@
                         android:paddingRight="20dp"
                         android:paddingTop="8dp"
                         android:paddingBottom="8dp"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                         app:cornerRadius="20dp" />
 
                 </LinearLayout>
 
-                    <!-- Popup layout -->
-                    <LinearLayout
-                        android:id="@+id/bonus_popup"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:background="@color/white"
-                        android:padding="20dp"
-                        android:visibility="gone"
-                        android:layout_gravity="center"
-                        android:elevation="8dp">
 
-                        <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:src="@drawable/coin_icon" />
-
-                        <TextView
-                            android:id="@+id/popup_text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="+20 Coins Credited!"
-                            android:textStyle="bold"
-                            android:textSize="18sp"
-                            android:gravity="center"
-                            android:paddingTop="10dp" />
-                    </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
 
@@ -1102,7 +1075,6 @@
                             android:paddingRight="20dp"
                             android:paddingTop="8dp"
                             android:paddingBottom="8dp"
-                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                             app:cornerRadius="20dp" />
 
                     </LinearLayout>
@@ -1155,7 +1127,6 @@
                             android:paddingRight="20dp"
                             android:paddingTop="8dp"
                             android:paddingBottom="8dp"
-                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                             app:cornerRadius="20dp" />
 
                     </LinearLayout>
@@ -1208,7 +1179,6 @@
                             android:paddingRight="20dp"
                             android:paddingTop="8dp"
                             android:paddingBottom="8dp"
-                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                             app:cornerRadius="20dp" />
 
                     </LinearLayout>
@@ -1219,7 +1189,33 @@
 
         </LinearLayout>
     </ScrollView>
+    <!-- Popup layout -->
+    <LinearLayout
+        android:id="@+id/bonus_popup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/white"
+        android:padding="20dp"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:elevation="8dp">
 
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/coin_icon" />
+
+        <TextView
+            android:id="@+id/popup_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+20 Coins Credited!"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:paddingTop="10dp" />
+    </LinearLayout>
 <!--Rewards Screen-->
     <ScrollView
         android:fillViewport="true"
