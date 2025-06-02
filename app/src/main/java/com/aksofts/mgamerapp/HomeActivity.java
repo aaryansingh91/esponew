@@ -8,12 +8,15 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,7 +47,9 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -73,6 +78,8 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+
 
         recyclerView = findViewById(R.id.recyclerViewGames);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -122,6 +129,10 @@ public class HomeActivity extends AppCompatActivity {
 
         btnLogout = findViewById(R.id.btnLogout); // Initialize as MaterialCardView
 
+        Button bonusBtn = findViewById(R.id.bonus_get);
+        LinearLayout bonusPopup = findViewById(R.id.bonus_popup);
+        TextView popupText = findViewById(R.id.popup_text);
+
         // Storing Into Shared preferences
         SharedPreferences sharedPreferences = getSharedPreferences("pgamerapp", MODE_PRIVATE);
 
@@ -132,6 +143,43 @@ public class HomeActivity extends AppCompatActivity {
 
         int userId = Integer.parseInt(storedID); // pass the actual user ID here
         fetchUserData(userId);
+
+        bonusBtn.setOnClickListener(v -> {
+
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, "https://mg.amsit.in/amsit-adm/get_daily_bonus.php ",
+                    response -> {
+                        try {
+                            JSONObject obj = new JSONObject(response);
+                            String status = obj.getString("status");
+
+                            if (status.equals("success")) {
+                                int amount = obj.getInt("amount");
+                                popupText.setText("+" + amount + " Coins Credited!");
+                                bonusPopup.setVisibility(View.VISIBLE);
+
+                                new Handler().postDelayed(() -> bonusPopup.setVisibility(View.GONE), 3000);
+
+                            } else if (status.equals("already_claimed")) {
+                                Toast.makeText(this, "Bonus already claimed today", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(this, "Error parsing response", Toast.LENGTH_SHORT).show();
+                        }
+                    },
+                    error -> Toast.makeText(this, "Network error", Toast.LENGTH_SHORT).show()
+            ) {
+                @Override
+                protected Map<String, String> getParams() {
+                    Map<String, String> map = new HashMap<>();
+                    map.put("user_id", storedID);
+                    return map;
+                }
+            };
+
+            RequestQueue queue = Volley.newRequestQueue(this);
+            queue.add(stringRequest);
+        });
 
         app_home_top_sec_1_game = sharedPreferences.getString("app_home_top_sec_1_game", "NULL");
         app_home_top_sec_1_game_url = sharedPreferences.getString("app_home_top_sec_1_game_url", "NULL");
@@ -243,6 +291,8 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
     private void fetchUserData(int userId) {
         String url = getString(R.string.app_url) +"/amsit-adm/get_user_info_api.php?id=" + userId;
@@ -625,6 +675,7 @@ public class HomeActivity extends AppCompatActivity {
         queue.add(request);
     }
 
+
     // Adapter Class
     class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder> {
         List<GameModel> games;
@@ -705,6 +756,7 @@ public class HomeActivity extends AppCompatActivity {
                 imageView.setImageBitmap(result);
             }
         }
+
     }
 
 }

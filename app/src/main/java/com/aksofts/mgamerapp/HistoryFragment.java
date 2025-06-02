@@ -6,6 +6,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,21 +65,48 @@ public class HistoryFragment extends Fragment {
     }
 
     private void populateHistoryList() {
-        // Clear any existing items
         historyItems.clear();
 
-        // Add dummy data for demonstration.  Replace with your actual data source.
-        if (type == HistoryItem.TYPE_COIN) {
-            historyItems.add(new HistoryItem("1st May", "Coin Reward", "CR123", 10, HistoryItem.TYPE_COIN));
-            historyItems.add(new HistoryItem("1st May", "Coin Bonus", "CB456", 5, HistoryItem.TYPE_COIN));
-            historyItems.add(new HistoryItem("30th April", "Coin Gift", "CG789", 20, HistoryItem.TYPE_COIN));
-            // Add more coin-related history items
-        } else if (type == HistoryItem.TYPE_TICKET) {
-            historyItems.add(new HistoryItem("1st May", "Video Task", "1L3PEBBCIO", 1, HistoryItem.TYPE_TICKET));
-            historyItems.add(new HistoryItem("1st May", "Daily Bonus", "kCW82ZTTGc", 2, HistoryItem.TYPE_TICKET));
-            historyItems.add(new HistoryItem("30th April", "Ticket Prize", "TP246", 3, HistoryItem.TYPE_TICKET));
-            // Add more ticket-related history items
-        }
-        adapter.notifyDataSetChanged();
+        String userId = "3"; // You can dynamically fetch this from SharedPreferences or login session
+        String url = "https://mg.amsit.in/amsit-adm/get_user_account_statement.php?user_id=" + userId;
+
+        RequestQueue queue = Volley.newRequestQueue(requireContext());
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                response -> {
+                    try {
+                        JSONArray records = response.getJSONArray("records");
+                        for (int i = 0; i < records.length(); i++) {
+                            JSONObject obj = records.getJSONObject(i);
+
+                            String note = obj.getString("note");
+                            String createdDate = obj.getString("created_date");
+                            String typeStr = obj.getString("currency_type"); // coins or tickets
+                            String creditDebit = obj.getString("type"); // <-- Add this
+                            double amount = obj.getDouble("amount");
+
+                            int itemType = typeStr.equalsIgnoreCase("coins") ? HistoryItem.TYPE_COIN : HistoryItem.TYPE_TICKET;
+
+                            if (itemType == type) { // Only add items that match tab type
+                                historyItems.add(new HistoryItem(
+                                        createdDate,
+                                        note,
+                                        creditDebit,
+                                        amount,
+                                        itemType
+                                ));
+                            }
+                        }
+                        adapter.notifyDataSetChanged();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                },
+                error -> {
+                    Toast.makeText(getContext(), "Failed to load data", Toast.LENGTH_SHORT).show();
+                });
+
+        queue.add(jsonObjectRequest);
     }
+
 }

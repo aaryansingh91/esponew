@@ -31,7 +31,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     public void onBindViewHolder(@NonNull HistoryViewHolder holder, int position) {
         HistoryItem currentItem = historyItems.get(position);
         holder.textDescription.setText(currentItem.getDescription());
-        holder.textTransactionId.setText(currentItem.getTransactionId());
+        holder.textTransactionId.setText(currentItem.getCreditDebit().toUpperCase());
         holder.textAmount.setText(String.valueOf(currentItem.getAmount()));
         holder.textDate.setText(currentItem.getDate()); // Make sure your data has a date
 
