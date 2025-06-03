@@ -38,7 +38,7 @@ import java.security.NoSuchAlgorithmException;
 public class OnboardingDisclosureActivity extends AppCompatActivity {
 
     TextInputEditText phone_number_input,login_password_input;
-    TextInputEditText signup_name_input,signup_email_input, signup_number_input, signup_password_input;
+    TextInputEditText signup_name_input,signup_email_input, signup_number_input, signup_password_input, signup_refer_input;
     Dialog loading_dialog;
 
 //    MaterialCardView  signup_with_number_layout ;
@@ -65,6 +65,8 @@ public class OnboardingDisclosureActivity extends AppCompatActivity {
         signup_email_input = findViewById(R.id.signup_email_input);
         signup_number_input = findViewById(R.id.signup_number_input);
         signup_password_input = findViewById(R.id.signup_password_input);
+
+        signup_refer_input = findViewById(R.id.signup_refer_input);
 
         login_section_number_pass = findViewById(R.id.login_with_number_1st_box);
         signup_with_number_layout = findViewById(R.id.signup_with_number_layout);
@@ -361,7 +363,8 @@ public class OnboardingDisclosureActivity extends AppCompatActivity {
     }
 
     public void signup_thread(){
-        String Referedby = "NA";
+//        String Referedby = "NA";
+        String Referedby = signup_refer_input.getText().toString().trim();
         String DeviceID;
         // Get the device serial number
         String androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -376,7 +379,7 @@ public class OnboardingDisclosureActivity extends AppCompatActivity {
         }
         if (Referedby.isEmpty())
         {
-            Referedby="N";
+            Referedby="NA";
         }
 
         String deviceModel = Build.MODEL;
@@ -430,6 +433,9 @@ public class OnboardingDisclosureActivity extends AppCompatActivity {
                 } else if (data.equals("4")){
                     Toast.makeText(getApplicationContext(), "Mobile Number Already Registered With us", Toast.LENGTH_SHORT).show();
                     loading_dialog.hide();
+                } else if (data.equals("5")){
+                    Toast.makeText(getApplicationContext(), "Invalid Refer Code", Toast.LENGTH_SHORT).show();
+                    loading_dialog.hide();
                 } else if (data.equals("2")){
                     Toast.makeText(getApplicationContext(), "Email Already Registered With us", Toast.LENGTH_SHORT).show();
                     loading_dialog.hide();
@@ -458,12 +464,6 @@ public class OnboardingDisclosureActivity extends AppCompatActivity {
 
                         loading_dialog.hide();
                     }
-
-
-                    //                    SharedPreferences sharedPreferences = getSharedPreferences("pgamerapp", MODE_PRIVATE);
-                    //                    String app_login_signup_issue_contact_link = sharedPreferences.getString("app_login_signup_issue_contact_link","");
-                    //                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(app_login_signup_issue_contact_link));
-                    //                    startActivity(browserIntent);
 
 
                 }

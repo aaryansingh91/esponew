@@ -138,7 +138,7 @@ public class HomeActivity extends AppCompatActivity {
 
         Button bonusBtn = findViewById(R.id.bonus_get);
 //        LinearLayout bonusPopup = findViewById(R.id.bonus_popup);
-        TextView popupText = findViewById(R.id.popup_text);
+//        TextView popupText = findViewById(R.id.popup_text);
 
         // Storing Into Shared preferences
         SharedPreferences sharedPreferences = getSharedPreferences("pgamerapp", MODE_PRIVATE);
@@ -167,9 +167,13 @@ public class HomeActivity extends AppCompatActivity {
                         try {
                             JSONObject obj = new JSONObject(response);
                             String status = obj.getString("status");
+                            LayoutInflater inflater = LayoutInflater.from(HomeActivity.this);
+                            View popupView = inflater.inflate(R.layout.popup_bonus, null);
 
                             if (status.equals("success")) {
                                 int amount = obj.getInt("amount");
+                                // Now initialize popupText from popupView
+                                TextView popupText = popupView.findViewById(R.id.popup_text);
                                 popupText.setText("+" + amount + " Coins Credited!");
 //                                bonusPopup.setVisibility(View.VISIBLE);
                                 SharedPreferences prefs = getSharedPreferences("pgamerapp", MODE_PRIVATE);
@@ -184,8 +188,7 @@ public class HomeActivity extends AppCompatActivity {
                                 bonusBtn.setText("CLAIMED");
                                 bonusBtn.setEnabled(false);
 
-                                LayoutInflater inflater = LayoutInflater.from(HomeActivity.this);
-                                View popupView = inflater.inflate(R.layout.popup_bonus, null);
+
 
                         // Create rounded background programmatically
                                 GradientDrawable background = new GradientDrawable();
@@ -212,6 +215,17 @@ public class HomeActivity extends AppCompatActivity {
 
                             } else if (status.equals("already_claimed")) {
                                 Toast.makeText(this, "Bonus already claimed today", Toast.LENGTH_SHORT).show();
+                                SharedPreferences prefs = getSharedPreferences("pgamerapp", MODE_PRIVATE);
+                                SharedPreferences.Editor editor = prefs.edit();
+
+                                // Save today's date as string (e.g., 2025-06-02)
+                                String claimDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                                editor.putString("lastClaimDate", claimDate);
+                                editor.apply();
+
+                                // Disable button
+                                bonusBtn.setText("CLAIMED");
+                                bonusBtn.setEnabled(false);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -311,38 +325,6 @@ public class HomeActivity extends AppCompatActivity {
 
         showBottomSheetDialog();
 
-        findViewById(R.id.upiButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startWithdrawListActivity("upi");
-            }
-        });
-
-        findViewById(R.id.googlePlayButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startWithdrawListActivity("google_play");
-            }
-        });
-        findViewById(R.id.mobileLegendsButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startWithdrawListActivity("mobile_legends_diamonds");
-            }
-        });
-        findViewById(R.id.lordsMobileButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startWithdrawListActivity("lords_mobile_diamonds");
-            }
-        });
-
-        findViewById(R.id.ffDiamondsButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startWithdrawListActivity("ff_diamonds");
-            }
-        });
     }
 
 
@@ -601,9 +583,10 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void btn_fn_sec1_apptask(View view) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(app_home_top_sec_1_apptask_url));
-        startActivity(intent);
+        TaskOffersBottomSheet bottomSheet = new TaskOffersBottomSheet();
+        bottomSheet.show(getSupportFragmentManager(), bottomSheet.getTag());
     }
+
 
     public void btn_fn_sec1_survey(View view) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(app_home_top_sec_1_survey_url));
