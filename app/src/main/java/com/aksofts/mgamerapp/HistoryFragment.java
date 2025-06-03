@@ -1,8 +1,12 @@
 package com.aksofts.mgamerapp;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,9 +31,11 @@ public class HistoryFragment extends Fragment {
     private RecyclerView recyclerView;
     private HistoryAdapter adapter;
     private List<HistoryItem> historyItems;
+    int storedID ;
 
     public HistoryFragment() {
         // Required empty public constructor
+
     }
 
     public static HistoryFragment newInstance(int type) {
@@ -51,6 +57,18 @@ public class HistoryFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("pgamerapp", Context.MODE_PRIVATE);
+
+        String userIdStr = sharedPreferences.getString("userID", "0");
+        try {
+            storedID = Integer.parseInt(userIdStr);
+        } catch (NumberFormatException e) {
+            storedID = 0;
+        }
+
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_history, container, false);
         recyclerView = view.findViewById(R.id.recyclerViewHistory);
@@ -67,8 +85,8 @@ public class HistoryFragment extends Fragment {
     private void populateHistoryList() {
         historyItems.clear();
 
-        String userId = "3"; // You can dynamically fetch this from SharedPreferences or login session
-        String url = "https://mg.amsit.in/amsit-adm/get_user_account_statement.php?user_id=" + userId;
+        int userId = storedID; // You can dynamically fetch this from SharedPreferences or login session
+        String url = getString(R.string.app_url) +"/amsit-adm/get_user_account_statement.php?user_id=" + userId;
 
         RequestQueue queue = Volley.newRequestQueue(requireContext());
 

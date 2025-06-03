@@ -1189,33 +1189,6 @@
 
         </LinearLayout>
     </ScrollView>
-    <!-- Popup layout -->
-    <LinearLayout
-        android:id="@+id/bonus_popup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/white"
-        android:padding="20dp"
-        android:visibility="gone"
-        android:layout_gravity="center"
-        android:elevation="8dp">
-
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/coin_icon" />
-
-        <TextView
-            android:id="@+id/popup_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="+20 Coins Credited!"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            android:gravity="center"
-            android:paddingTop="10dp" />
-    </LinearLayout>
 <!--Rewards Screen-->
     <ScrollView
         android:fillViewport="true"

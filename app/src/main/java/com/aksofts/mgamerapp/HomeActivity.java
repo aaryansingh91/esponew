@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,6 +24,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -133,7 +137,7 @@ public class HomeActivity extends AppCompatActivity {
         btnLogout = findViewById(R.id.btnLogout); // Initialize as MaterialCardView
 
         Button bonusBtn = findViewById(R.id.bonus_get);
-        LinearLayout bonusPopup = findViewById(R.id.bonus_popup);
+//        LinearLayout bonusPopup = findViewById(R.id.bonus_popup);
         TextView popupText = findViewById(R.id.popup_text);
 
         // Storing Into Shared preferences
@@ -158,7 +162,7 @@ public class HomeActivity extends AppCompatActivity {
 
         bonusBtn.setOnClickListener(v -> {
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, "https://mg.amsit.in/amsit-adm/get_daily_bonus.php ",
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, getString(R.string.app_url) +"/amsit-adm/get_daily_bonus.php",
                     response -> {
                         try {
                             JSONObject obj = new JSONObject(response);
@@ -167,7 +171,7 @@ public class HomeActivity extends AppCompatActivity {
                             if (status.equals("success")) {
                                 int amount = obj.getInt("amount");
                                 popupText.setText("+" + amount + " Coins Credited!");
-                                bonusPopup.setVisibility(View.VISIBLE);
+//                                bonusPopup.setVisibility(View.VISIBLE);
                                 SharedPreferences prefs = getSharedPreferences("pgamerapp", MODE_PRIVATE);
                                 SharedPreferences.Editor editor = prefs.edit();
 
@@ -180,7 +184,31 @@ public class HomeActivity extends AppCompatActivity {
                                 bonusBtn.setText("CLAIMED");
                                 bonusBtn.setEnabled(false);
 
-                                new Handler().postDelayed(() -> bonusPopup.setVisibility(View.GONE), 3000);
+                                LayoutInflater inflater = LayoutInflater.from(HomeActivity.this);
+                                View popupView = inflater.inflate(R.layout.popup_bonus, null);
+
+                        // Create rounded background programmatically
+                                GradientDrawable background = new GradientDrawable();
+                                background.setColor(Color.WHITE); // Background color
+                                background.setCornerRadius(30f);  // Radius in pixels
+
+                                popupView.setBackground(background);
+
+                                AlertDialog dialog = new AlertDialog.Builder(HomeActivity.this)
+                                        .setView(popupView)
+                                        .setCancelable(false)
+                                        .create();
+
+                            // Make background transparent to see rounded corners
+                                if (dialog.getWindow() != null) {
+                                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                }
+
+                                dialog.show();
+
+                            // Auto-dismiss after 3 seconds
+                                new Handler().postDelayed(dialog::dismiss, 3000);
+
 
                             } else if (status.equals("already_claimed")) {
                                 Toast.makeText(this, "Bonus already claimed today", Toast.LENGTH_SHORT).show();
@@ -670,7 +698,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void fetchGames() {
-        String url = "https://mg.amsit.in/amsit-adm/game_list_api.php";
+        String url = getString(R.string.app_url) +"/amsit-adm/game_list_api.php";
         RequestQueue queue = Volley.newRequestQueue(this);
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,

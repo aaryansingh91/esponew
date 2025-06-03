@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,7 +39,8 @@ public class WithdrawListActivity extends AppCompatActivity {
         withdrawItemList = new ArrayList<>();
         adapter = new WithdrawAdapter(this, withdrawItemList);
         recyclerView.setAdapter(adapter);
-
+        ImageView backArrow = findViewById(R.id.backArrow);
+        backArrow.setOnClickListener(v -> onBackPressed());
         // Get the selected category from the intent
         String selectedCategory = getIntent().getStringExtra("category");
 

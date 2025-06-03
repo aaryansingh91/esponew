@@ -28,8 +28,8 @@
 
                 <ImageView
                     android:id="@+id/itemImage"
-                    android:layout_width="75dp"
-                    android:layout_height="75dp"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
                     android:scaleType="fitCenter" />
 
                 <LinearLayout
@@ -54,13 +54,12 @@
                         android:layout_height="wrap_content"
                         android:text="Description"
                         android:textSize="13sp"
-                        android:textStyle="bold"
                         android:fontFamily="@font/poppins" />
                 </LinearLayout>
 
                 <ImageView
-                    android:layout_width="35dp"
-                    android:layout_height="40dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:src="@drawable/baseline_keyboard_arrow_right_24"
                     android:scaleType="fitXY"/>
             </LinearLayout>
