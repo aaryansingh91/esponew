@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="320dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:background="@drawable/bg_dialog_rounded"
+    android:elevation="10dp"
+    android:gravity="center"
+    android:layout_gravity="center">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Withdraw Request"
+        android:textSize="20sp"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:paddingBottom="12dp" />
+
+    <EditText
+        android:id="@+id/etNumber"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="Enter UPI / Phone / Bank"
+        android:background="@drawable/bg_input"
+        android:padding="12dp"
+        android:textColor="@android:color/black"
+        android:textColorHint="#888888"
+        android:layout_marginBottom="12dp" />
+
+
+    <Button
+        android:id="@+id/btnSubmit"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Submit"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/purple_bg"/>
+
+</LinearLayout>

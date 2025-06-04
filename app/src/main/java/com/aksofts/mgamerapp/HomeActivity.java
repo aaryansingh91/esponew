@@ -299,7 +299,7 @@ public class HomeActivity extends AppCompatActivity {
 
         WithdrawSelectionAdapter adapter = new WithdrawSelectionAdapter(withdraw_selection_ItemList, item -> {
             Toast.makeText(HomeActivity.this, "Opening", Toast.LENGTH_SHORT).show();
-            startWithdrawListActivity(item.getAbbrevation());
+            startWithdrawListActivity(item.getAbbrevation(), item.getTitle());
         });
         withdrawRecyclerView .setAdapter(adapter);
 
@@ -385,9 +385,10 @@ public class HomeActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void startWithdrawListActivity(String category) {
+    private void startWithdrawListActivity(String category, String name) {
         Intent intent = new Intent(this, WithdrawListActivity.class);
         intent.putExtra("category", category);
+        intent.putExtra("name", name);
         startActivity(intent);
     }
 
@@ -488,6 +489,10 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void goto_rewards_history(View view) {
+        startActivity(new Intent(HomeActivity.this, MyRewardActivity.class));
+
+    }
+    public void goto_account_history(View view) {
         startActivity(new Intent(HomeActivity.this, HistoryActivity.class));
     }
 

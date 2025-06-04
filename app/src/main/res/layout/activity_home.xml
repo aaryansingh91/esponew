@@ -1529,7 +1529,7 @@
                     android:layout_marginTop="10dp">
 
                     <com.google.android.material.card.MaterialCardView
-                        android:onClick="goto_rewards_history"
+                        android:onClick="goto_account_history"
                         android:clickable="true"
                         android:layout_marginTop="5dp"
                         android:layout_marginBottom="0dp"
