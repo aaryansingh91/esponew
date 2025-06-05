@@ -5,6 +5,7 @@ public class WithdrawItem {
     private String name;
     private String type;
     private String coins_amount;
+    private String tickets_amount;
     private String reward_amount;
     private String category;
     private String status;
@@ -15,6 +16,7 @@ public class WithdrawItem {
         this.name = name;
         this.type = type;
         this.coins_amount = coins_amount;
+        this.tickets_amount = tickets_amount;
         this.reward_amount = reward_amount;
         this.category = category;
         this.status = status;
@@ -35,6 +37,10 @@ public class WithdrawItem {
 
     public String getCoins_amount() {
         return coins_amount;
+    }
+
+    public String getTickets_amount() {
+        return tickets_amount;
     }
 
     public String getReward_amount() {

@@ -63,7 +63,17 @@ public class WithdrawAdapter extends RecyclerView.Adapter<WithdrawAdapter.Withdr
         WithdrawItem currentItem = withdrawItems.get(position);
         holder.nameTextView.setText(currentItem.getName());
         holder.rewardAmountTextView.setText(currentItem.getReward_amount());
-        holder.coinsAmountTextView.setText(currentItem.getCoins_amount());
+        String coins = currentItem.getCoins_amount();
+        String tickets = currentItem.getTickets_amount();
+
+        if (tickets != null && !tickets.equals("0") && !tickets.isEmpty()) {
+            holder.coinsAmountTextView.setText(tickets);
+            holder.coinOrTicketImageView.setImageResource(R.drawable.ic_ticket_24); // ticket.png
+        } else {
+            holder.coinsAmountTextView.setText(coins);
+            holder.coinOrTicketImageView.setImageResource(R.drawable.ic_coin_24); // ticket.png
+        }
+
 
         if (currentItem.getType().equals("diamonds")) {
             holder.iconImageView.setImageResource(R.drawable.ic_ticket_24);
@@ -71,11 +81,18 @@ public class WithdrawAdapter extends RecyclerView.Adapter<WithdrawAdapter.Withdr
             holder.iconImageView.setImageResource(R.drawable.ic_rupee_24);
         }
 
+
+
         holder.itemView.setOnClickListener(v -> {
             // Convert required coins to integer
             int requiredCoins;
             try {
-                requiredCoins = Integer.parseInt(currentItem.getCoins_amount());
+                if (currentItem.getTickets_amount() != null && !currentItem.getTickets_amount().equals("0") && !currentItem.getTickets_amount().isEmpty()) {
+                    requiredCoins = Integer.parseInt(currentItem.getTickets_amount());
+                } else {
+                    requiredCoins = Integer.parseInt(currentItem.getCoins_amount());
+                }
+
             } catch (NumberFormatException e) {
                 Toast.makeText(context, "Invalid coin amount", Toast.LENGTH_SHORT).show();
                 return;
@@ -123,6 +140,7 @@ public class WithdrawAdapter extends RecyclerView.Adapter<WithdrawAdapter.Withdr
         TextView rewardAmountTextView;
         TextView coinsAmountTextView;
         ImageView iconImageView;
+        ImageView coinOrTicketImageView;
 
         public WithdrawViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -130,6 +148,8 @@ public class WithdrawAdapter extends RecyclerView.Adapter<WithdrawAdapter.Withdr
             rewardAmountTextView = itemView.findViewById(R.id.rewardAmountTextView);
             coinsAmountTextView = itemView.findViewById(R.id.coinsAmountTextView);
             iconImageView = itemView.findViewById(R.id.iconImageView);
+            coinOrTicketImageView = itemView.findViewById(R.id.coinOrTicketImageView); //
+
         }
     }
     private void sendWithdrawRequest(Context context, String userId, String number, String amount, String type, int coins){
