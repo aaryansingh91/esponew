@@ -15,9 +15,11 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -29,6 +31,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -63,6 +66,7 @@ public class HomeActivity extends AppCompatActivity {
     RecyclerView recyclerView, withdrawRecyclerView ;
     List<GameModel> gameList;
     GameAdapter adapter;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     ScrollView home_scroll_section, game_scroll_section, reward_scroll_section, profile_scroll_section;
     ImageView icon_home, icon_game, icon_reward, icon_profile;
@@ -77,6 +81,7 @@ public class HomeActivity extends AppCompatActivity {
 
     String withdraw_list_data_setting;
 
+    HorizontalScrollView top_horizontal ;
     WithdrawSelectionItem withdraw_selection_adapter;
     List<WithdrawSelectionItem> withdraw_selection_ItemList;
 
@@ -87,7 +92,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
 
-
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         recyclerView = findViewById(R.id.recyclerViewGames);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
@@ -136,6 +141,7 @@ public class HomeActivity extends AppCompatActivity {
 
         btnLogout = findViewById(R.id.btnLogout); // Initialize as MaterialCardView
 
+        top_horizontal = findViewById(R.id.top_horizontal);
         Button bonusBtn = findViewById(R.id.bonus_get);
 //        LinearLayout bonusPopup = findViewById(R.id.bonus_popup);
 //        TextView popupText = findViewById(R.id.popup_text);
@@ -148,6 +154,7 @@ public class HomeActivity extends AppCompatActivity {
         username_profile.setText(userName);
         get_user_data_thread(storedID);
 
+
         String lastClaimDate = sharedPreferences.getString("lastClaimDate", null);
         String todayDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
@@ -155,11 +162,38 @@ public class HomeActivity extends AppCompatActivity {
             bonusBtn.setText("CLAIMED");
             bonusBtn.setEnabled(false);
         }
+        top_horizontal.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        swipeRefreshLayout.setEnabled(false); // disable while touching (scrolling)
+                        break;
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
+                        swipeRefreshLayout.setEnabled(true); // enable again when scrolling ends
+                        break;
+                }
+                return false;  // allow normal scrolling
+            }
+        });
+
 
 
         int userId = Integer.parseInt(storedID); // pass the actual user ID here
         fetchUserData(userId);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            // Simple activity refresh
+//            finish();
+            fetchGames();
+            get_user_data_thread(storedID);
+            fetchUserData(userId);
+//            overridePendingTransition(0, 0);
+//            startActivity(getIntent());
+            swipeRefreshLayout.setRefreshing(false);
 
+            overridePendingTransition(0, 0);
+        });
         bonusBtn.setOnClickListener(v -> {
 
             StringRequest stringRequest = new StringRequest(Request.Method.POST, getString(R.string.app_url) +"/amsit-adm/get_daily_bonus.php",
@@ -330,7 +364,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
     private void fetchUserData(int userId) {
-        String url = getString(R.string.app_url) +"/amsit-adm/get_user_info_api.php?id=" + userId;
+        String url = getString(R.string.app_url) + "/amsit-adm/get_user_info_api.php?id=" + userId;
 
         RequestQueue queue = Volley.newRequestQueue(this);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -343,11 +377,23 @@ public class HomeActivity extends AppCompatActivity {
                             int coins = user.getInt("coins");
                             int tickets = user.getInt("tickets");
 
-                            coinsHeader.setText(String.valueOf(coins));
-                            account_page_coins_text_value.setText(String.valueOf(coins));
-                            coins_rewards_screen.setText(String.valueOf(coins));
-                            ticketsHeader.setText(String.valueOf(tickets));
-                            account_page_tickets_text_value.setText(String.valueOf(tickets));
+                            // Save to SharedPreferences
+                            SharedPreferences sharedPreferences = getSharedPreferences("pgamerapp", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putInt("coins", coins);
+                            editor.putInt("tickets", tickets);
+                            editor.apply();
+
+                            // Now read from SharedPreferences and set TextViews
+                            int savedCoins = sharedPreferences.getInt("coins", 0);
+                            int savedTickets = sharedPreferences.getInt("tickets", 0);
+
+                            coinsHeader.setText(String.valueOf(savedCoins));
+                            account_page_coins_text_value.setText(String.valueOf(savedCoins));
+                            coins_rewards_screen.setText(String.valueOf(savedCoins));
+
+                            ticketsHeader.setText(String.valueOf(savedTickets));
+                            account_page_tickets_text_value.setText(String.valueOf(savedTickets));
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -356,10 +402,23 @@ public class HomeActivity extends AppCompatActivity {
                 },
                 error -> {
                     Toast.makeText(this, "Failed to fetch user data", Toast.LENGTH_SHORT).show();
+
+                    // On error, load last saved values from SharedPreferences anyway
+                    SharedPreferences sharedPreferences = getSharedPreferences("pgamerapp", MODE_PRIVATE);
+                    int savedCoins = sharedPreferences.getInt("coins", 0);
+                    int savedTickets = sharedPreferences.getInt("tickets", 0);
+
+                    coinsHeader.setText(String.valueOf(savedCoins));
+                    account_page_coins_text_value.setText(String.valueOf(savedCoins));
+                    coins_rewards_screen.setText(String.valueOf(savedCoins));
+
+                    ticketsHeader.setText(String.valueOf(savedTickets));
+                    account_page_tickets_text_value.setText(String.valueOf(savedTickets));
                 });
 
         queue.add(stringRequest);
     }
+
 
     // Logout method for the MaterialCardView onClick
     public void logoutUser(View view) {
@@ -690,10 +749,15 @@ public class HomeActivity extends AppCompatActivity {
         RequestQueue queue = Volley.newRequestQueue(this);
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+
                 response -> {
                     try {
                         if (response.getBoolean("status")) {
                             JSONArray dataArray = response.getJSONArray("data");
+
+                            // Clear old data before adding new items
+                            gameList.clear();
+
                             for (int i = 0; i < dataArray.length(); i++) {
                                 JSONObject obj = dataArray.getJSONObject(i);
                                 GameModel game = new GameModel();

@@ -2,6 +2,7 @@ package com.aksofts.mgamerapp;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -10,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
@@ -29,14 +31,18 @@ public class WithdrawListActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private WithdrawAdapter adapter;
     private List<WithdrawItem> withdrawItemList;
-    TextView coinCount, titleText;
+    TextView coinCount, titleText, ticketCount;
+    private LottieAnimationView animationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_withdraw_list);
 
+
+
         coinCount = findViewById(R.id.coinCount);
+        ticketCount = findViewById(R.id.ticketCount);
         titleText = findViewById(R.id.titleText);
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
@@ -54,9 +60,13 @@ public class WithdrawListActivity extends AppCompatActivity {
         // Get user ID
         SharedPreferences sharedPreferences = getSharedPreferences("pgamerapp", MODE_PRIVATE);
         String userIdStr = sharedPreferences.getString("userID", "0");
+        int coins = sharedPreferences.getInt("coins", 0);
+        int tickets = sharedPreferences.getInt("tickets", 0);
 
         try {
             int userId = Integer.parseInt(userIdStr);
+            coinCount.setText(String.valueOf(coins));
+            ticketCount.setText(String.valueOf(tickets));
             fetchUserData(userId, selectedCategory);
         } catch (NumberFormatException e) {
             Toast.makeText(this, "Invalid user ID", Toast.LENGTH_SHORT).show();

@@ -47,11 +47,12 @@ public class HistoryActivity extends AppCompatActivity {
 
         // 🪙 Fetch coin count and show in TextView
         TextView coinTextView = findViewById(R.id.coinCount);
+        TextView ticketCount = findViewById(R.id.ticketCount);
         SharedPreferences sharedPreferences = getSharedPreferences("pgamerapp", MODE_PRIVATE);
         String userId = sharedPreferences.getString("userID", "0");
-        fetchUserData(Integer.parseInt(userId), coinTextView);
+        fetchUserData(Integer.parseInt(userId), coinTextView, ticketCount);
     }
-    private void fetchUserData(int userId, TextView coinTextView) {
+    private void fetchUserData(int userId, TextView coinTextView,TextView ticketCount) {
         String url = getString(R.string.app_url) + "/amsit-adm/get_user_info_api.php?id=" + userId;
 
         RequestQueue queue = com.android.volley.toolbox.Volley.newRequestQueue(this);
@@ -64,7 +65,9 @@ public class HistoryActivity extends AppCompatActivity {
                         org.json.JSONObject jsonObject = new org.json.JSONObject(response);
                         if (jsonObject.getString("status").equals("success")) {
                             int coins = jsonObject.getJSONObject("user").getInt("coins");
+                            int tickets = jsonObject.getJSONObject("user").getInt("tickets");
                             coinTextView.setText(String.valueOf(coins)); // ✅ Correct
+                            ticketCount.setText(String.valueOf(tickets)); // ✅ Correct
 
                         }
                     } catch (org.json.JSONException e) {

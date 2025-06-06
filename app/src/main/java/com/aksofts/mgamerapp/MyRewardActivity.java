@@ -3,6 +3,7 @@ package com.aksofts.mgamerapp;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,17 +28,23 @@ public class MyRewardActivity extends AppCompatActivity {
     List<RewardModel> rewardList = new ArrayList<>();
     RewardAdapter adapter;
     String userId;
+    TextView coinCount, ticketCount;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_reward);
 
+        TextView coinCount = findViewById(R.id.coinCount);
+        TextView ticketCount = findViewById(R.id.ticketCount);
         rewardRecyclerView = findViewById(R.id.rewardRecyclerView);
         rewardRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         SharedPreferences sp = getSharedPreferences("pgamerapp", MODE_PRIVATE);
         userId = sp.getString("userID", "0");
+        int coins = sp.getInt("coins", 0);
+        int tickets = sp.getInt("tickets", 0);
 
         adapter = new RewardAdapter(this, rewardList);
         rewardRecyclerView.setAdapter(adapter);
@@ -45,7 +52,8 @@ public class MyRewardActivity extends AppCompatActivity {
         // Back button
         ImageView backArrow = findViewById(R.id.backArrow);
         backArrow.setOnClickListener(v -> onBackPressed());
-
+        coinCount.setText(String.valueOf(coins));
+        ticketCount.setText(String.valueOf(tickets));
 
         fetchRewards();
     }

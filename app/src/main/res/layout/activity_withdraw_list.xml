@@ -46,32 +46,71 @@
 
             <!-- Coin Pill -->
             <LinearLayout
-                android:id="@+id/coinPill"
+                android:id="@+id/coinTicketContainer"
                 android:layout_width="wrap_content"
                 android:layout_height="32dp"
                 android:orientation="horizontal"
-                android:paddingHorizontal="12dp"
-                android:background="@drawable/bg_coin_pill"
-                android:gravity="center_vertical"
                 android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true">
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical"
+                android:spacing="8dp"> <!-- optional spacing -->
 
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/coin_icon"
-                    android:contentDescription="Coin" />
-
-                <TextView
-                    android:id="@+id/coinCount"
+                <!-- Coin Pill -->
+                <LinearLayout
+                    android:id="@+id/coinPill"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textColor="#000000"
-                    android:textStyle="bold"
-                    android:textSize="14sp"
-                    android:layout_marginStart="6dp"/>
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="12dp"
+                    android:background="@drawable/bg_coin_pill"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/coin_icon"
+                        android:contentDescription="Coin" />
+
+                    <TextView
+                        android:id="@+id/coinCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="#000000"
+                        android:textStyle="bold"
+                        android:textSize="14sp"
+                        android:layout_marginStart="6dp"/>
+                </LinearLayout>
+
+                <!-- Ticket Pill -->
+                <LinearLayout
+                    android:id="@+id/ticketPill"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="12dp"
+                    android:background="@drawable/bg_ticket_pill"
+                    android:gravity="center_vertical"
+                    android:layout_marginStart="8dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_ticket_24"
+                        android:contentDescription="Ticket" />
+
+                    <TextView
+                        android:id="@+id/ticketCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="#000000"
+                        android:textStyle="bold"
+                        android:textSize="14sp"
+                        android:layout_marginStart="6dp"/>
+                </LinearLayout>
             </LinearLayout>
+
         </RelativeLayout>
 
         <!-- Bottom Divider Line -->
@@ -94,5 +133,11 @@
         android:background="@color/white"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:spanCount="2" />
-
+    <com.airbnb.lottie.LottieAnimationView
+        android:visibility="gone"
+        android:id="@+id/animation_view"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true" />
 </LinearLayout>

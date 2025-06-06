@@ -1,11 +1,11 @@
 package com.aksofts.mgamerapp;
-import static android.provider.Settings.System.getString;
 
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,13 +22,10 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +46,6 @@ public class WithdrawAdapter extends RecyclerView.Adapter<WithdrawAdapter.Withdr
         this.userId = sharedPreferences.getString("userID", "0");
     }
 
-
     @NonNull
     @Override
     public WithdrawViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -63,17 +59,20 @@ public class WithdrawAdapter extends RecyclerView.Adapter<WithdrawAdapter.Withdr
         WithdrawItem currentItem = withdrawItems.get(position);
         holder.nameTextView.setText(currentItem.getName());
         holder.rewardAmountTextView.setText(currentItem.getReward_amount());
+
         String coins = currentItem.getCoins_amount();
         String tickets = currentItem.getTickets_amount();
+        String currencyType;
 
         if (tickets != null && !tickets.equals("0") && !tickets.isEmpty()) {
             holder.coinsAmountTextView.setText(tickets);
-            holder.coinOrTicketImageView.setImageResource(R.drawable.ic_ticket_24); // ticket.png
+            holder.coinOrTicketImageView.setImageResource(R.drawable.ic_ticket_24);
+            currencyType = "tickets";
         } else {
             holder.coinsAmountTextView.setText(coins);
-            holder.coinOrTicketImageView.setImageResource(R.drawable.ic_coin_24); // ticket.png
+            holder.coinOrTicketImageView.setImageResource(R.drawable.ic_coin_24);
+            currencyType = "coins";
         }
-
 
         if (currentItem.getType().equals("diamonds")) {
             holder.iconImageView.setImageResource(R.drawable.ic_ticket_24);
@@ -81,18 +80,16 @@ public class WithdrawAdapter extends RecyclerView.Adapter<WithdrawAdapter.Withdr
             holder.iconImageView.setImageResource(R.drawable.ic_rupee_24);
         }
 
-
+        String finalCurrencyType = currencyType;
 
         holder.itemView.setOnClickListener(v -> {
-            // Convert required coins to integer
             int requiredCoins;
             try {
-                if (currentItem.getTickets_amount() != null && !currentItem.getTickets_amount().equals("0") && !currentItem.getTickets_amount().isEmpty()) {
-                    requiredCoins = Integer.parseInt(currentItem.getTickets_amount());
+                if (finalCurrencyType.equals("tickets")) {
+                    requiredCoins = Integer.parseInt(tickets);
                 } else {
-                    requiredCoins = Integer.parseInt(currentItem.getCoins_amount());
+                    requiredCoins = Integer.parseInt(coins);
                 }
-
             } catch (NumberFormatException e) {
                 Toast.makeText(context, "Invalid coin amount", Toast.LENGTH_SHORT).show();
                 return;
@@ -103,7 +100,6 @@ public class WithdrawAdapter extends RecyclerView.Adapter<WithdrawAdapter.Withdr
                 return;
             }
 
-            // Proceed with dialog if coins are enough
             Dialog dialog = new Dialog(context);
             dialog.setContentView(R.layout.dialog_withdraw_form);
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -119,8 +115,7 @@ public class WithdrawAdapter extends RecyclerView.Adapter<WithdrawAdapter.Withdr
                 if (number.isEmpty() || amount.isEmpty()) {
                     Toast.makeText(context, "Fill Details", Toast.LENGTH_SHORT).show();
                 } else {
-                    sendWithdrawRequest(context, userId, number, amount, currentItem.getType(), requiredCoins);
-
+                    sendWithdrawRequest(context, userId, number, amount, currentItem.getType(), requiredCoins, finalCurrencyType);
                     dialog.dismiss();
                 }
             });
@@ -128,7 +123,6 @@ public class WithdrawAdapter extends RecyclerView.Adapter<WithdrawAdapter.Withdr
             dialog.show();
         });
     }
-
 
     @Override
     public int getItemCount() {
@@ -148,25 +142,61 @@ public class WithdrawAdapter extends RecyclerView.Adapter<WithdrawAdapter.Withdr
             rewardAmountTextView = itemView.findViewById(R.id.rewardAmountTextView);
             coinsAmountTextView = itemView.findViewById(R.id.coinsAmountTextView);
             iconImageView = itemView.findViewById(R.id.iconImageView);
-            coinOrTicketImageView = itemView.findViewById(R.id.coinOrTicketImageView); //
-
+            coinOrTicketImageView = itemView.findViewById(R.id.coinOrTicketImageView);
         }
     }
-    private void sendWithdrawRequest(Context context, String userId, String number, String amount, String type, int coins){
-    String url = context.getString(R.string.app_url) + "/amsit-adm/withdraw_request_api.php";
 
+    private void sendWithdrawRequest(Context context, String userId, String number, String amount, String type, int value, String currencyType) {
+        // Show progress dialog
+        final android.app.ProgressDialog progressDialog = new android.app.ProgressDialog(context);
+        progressDialog.setMessage("Submitting withdrawal...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+        String url = context.getString(R.string.app_url) + "/amsit-adm/withdraw_request_api.php";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 response -> {
+                    progressDialog.dismiss();
                     try {
                         JSONObject obj = new JSONObject(response);
                         Toast.makeText(context, obj.getString("message"), Toast.LENGTH_SHORT).show();
+
+                        // Update SharedPreferences with new values
+                        SharedPreferences sharedPreferences = context.getSharedPreferences("pgamerapp", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                        int currentCoins = sharedPreferences.getInt("coins", 0);
+                        int currentTickets = sharedPreferences.getInt("tickets", 0);
+
+                        if (currencyType.equals("tickets")) {
+                            // Subtract from tickets
+                            int newTickets = currentTickets - value;
+                            if (newTickets < 0) newTickets = 0; // prevent negative
+                            editor.putInt("tickets", newTickets);
+                        } else {
+                            // Subtract from coins
+                            int newCoins = currentCoins - value;
+                            if (newCoins < 0) newCoins = 0;
+                            editor.putInt("coins", newCoins);
+                        }
+                        editor.apply();
+
+                        // Reload activity to refresh data
+                        if (context instanceof android.app.Activity) {
+                            android.app.Activity activity = (android.app.Activity) context;
+                            activity.recreate();  // This restarts activity, refreshing UI/data
+                        }
+
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        Toast.makeText(context, "Response parsing error", Toast.LENGTH_SHORT).show();
                     }
                 },
-                error -> Toast.makeText(context, "Network Error", Toast.LENGTH_SHORT).show()) {
-
+                error -> {
+                    progressDialog.dismiss();
+                    Toast.makeText(context, "Network error", Toast.LENGTH_SHORT).show();
+                }) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
@@ -174,14 +204,21 @@ public class WithdrawAdapter extends RecyclerView.Adapter<WithdrawAdapter.Withdr
                 params.put("number", number);
                 params.put("amount", amount);
                 params.put("withdraw_type", type);
-                params.put("coins", String.valueOf(coins));
+
+                if (currencyType.equals("tickets")) {
+                    params.put("tickets", String.valueOf(value));
+                } else {
+                    params.put("coins", String.valueOf(value));
+                }
 
                 return params;
             }
         };
 
+
         RequestQueue queue = Volley.newRequestQueue(context);
         queue.add(stringRequest);
     }
+
 
 }
