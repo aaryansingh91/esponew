@@ -59,7 +59,7 @@ public class OngoingFragment extends Fragment {
     private void fetchMatches() {
         loadingAnim.setVisibility(View.VISIBLE);
 
-        String url = getString(R.string.app_url) + "/app-apis/tournaments/all-tournaments-matches.php?id=" + gameId;
+        String url = getString(R.string.app_url) + "/all-tournaments-matches.php?id=" + gameId;
         Toast.makeText(requireContext(), "Game ID: " + gameId, Toast.LENGTH_SHORT).show();
 
         RequestQueue queue = Volley.newRequestQueue(requireContext());

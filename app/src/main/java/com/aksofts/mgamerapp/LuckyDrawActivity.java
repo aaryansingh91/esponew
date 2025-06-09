@@ -64,7 +64,7 @@ public class LuckyDrawActivity extends AppCompatActivity {
         protected String doInBackground(Void... voids) {
             try {
                 String baseUrl = getString(R.string.app_url); // from strings.xml
-                String finalUrl = baseUrl + "/amsit-adm/lucky_draw_api.php?user_id=" + USER_ID;
+                String finalUrl = baseUrl + "/lucky_draw_api.php?user_id=" + USER_ID;
                 URL url = new URL(finalUrl);
 
 
@@ -161,7 +161,7 @@ public class LuckyDrawActivity extends AppCompatActivity {
         protected String doInBackground(Void... voids) {
             try {
                 String baseUrl = getString(R.string.app_url); // from strings.xml
-                String finalUrl = baseUrl + "/amsit-adm/join_lucky_draw.php?user_id=" + USER_ID;
+                String finalUrl = baseUrl + "/join_lucky_draw.php?user_id=" + USER_ID;
                 URL url = new URL(finalUrl);
 
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();

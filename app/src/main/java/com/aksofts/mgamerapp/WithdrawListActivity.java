@@ -74,7 +74,7 @@ public class WithdrawListActivity extends AppCompatActivity {
     }
 
     private void fetchUserData(int userId, String selectedCategory) {
-        String url = getString(R.string.app_url) + "/amsit-adm/get_user_info_api.php?id=" + userId;
+        String url = getString(R.string.app_url) + "/get_user_info_api.php?id=" + userId;
 
         RequestQueue queue = Volley.newRequestQueue(this);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,

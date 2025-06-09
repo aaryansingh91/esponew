@@ -165,7 +165,7 @@ public class OnboardingDisclosureActivity extends AppCompatActivity {
             loginpass_encoded = login_password_input.getText().toString().trim();
         }
 
-        String qry = getResources().getString(R.string.app_url) + "/app-apis/accounts/loginapi.php?u=" + loginid_encoded + "&p=" + loginpass_encoded;
+        String qry = getResources().getString(R.string.app_url) + "/accounts/loginapi.php?u=" + loginid_encoded + "&p=" + loginpass_encoded;
         class dbprocess extends AsyncTask<String, Void, String> implements com.aksofts.mgamerapp.dbprocess {
             @Override
             protected void onPostExecute(String data) {
@@ -178,10 +178,25 @@ public class OnboardingDisclosureActivity extends AppCompatActivity {
                         throw new RuntimeException(e);
                     }
                     try {
-                        sendErrortoServer.sendErrorToServer(phone_number_input.getText().toString().trim(),"Login Failed - Data "+data + " Request - "+ URLEncoder.encode(qry, "UTF-8"),"Login Screen Issue", preview_message,"GameFever App");
-                    } catch (Exception e){
-                        sendErrortoServer.sendErrorToServer(phone_number_input.getText().toString().trim(),"Login Failed - Data "+data + " Request - "+ " Try catch got catch with "+e.getMessage() ,"Login Screen Issue", preview_message , "GameFever App");
+                        sendErrortoServer.sendErrorToServer(
+                                OnboardingDisclosureActivity.this,  // Context
+                                phone_number_input.getText().toString().trim(),
+                                "Login Failed - Data " + data + " Request - " + URLEncoder.encode(qry, "UTF-8"),
+                                "Login Screen Issue",
+                                preview_message,
+                                "GameFever App"
+                        );
+                    } catch (Exception e) {
+                        sendErrortoServer.sendErrorToServer(
+                                OnboardingDisclosureActivity.this,  // Context
+                                phone_number_input.getText().toString().trim(),
+                                "Login Failed - Data " + data + " Request - Try catch got catch with " + e.getMessage(),
+                                "Login Screen Issue",
+                                preview_message,
+                                "GameFever App"
+                        );
                     }
+
 
                     loading_dialog.hide();
                     //            login_btn_lottie.setVisibility(View.GONE);
@@ -226,10 +241,25 @@ public class OnboardingDisclosureActivity extends AppCompatActivity {
                             throw new RuntimeException(e);
                         }
                         try {
-                            sendErrortoServer.sendErrorToServer(phone_number_input.getText().toString().trim(),"Login Failed - Data "+data + " Request - "+ URLEncoder.encode(qry, "UTF-8"),"Login Screen Issue", preview_message,"GameFever App");
-                        } catch (Exception e){
-                            sendErrortoServer.sendErrorToServer(phone_number_input.getText().toString().trim(),"Login Failed - Data "+data + " Request - "+ " Try catch got catch with "+e.getMessage() ,"Login Screen Issue", preview_message , "GameFever App");
+                            sendErrortoServer.sendErrorToServer(
+                                    OnboardingDisclosureActivity.this,  // Context
+                                    phone_number_input.getText().toString().trim(),
+                                    "Login Failed - Data " + data + " Request - " + URLEncoder.encode(qry, "UTF-8"),
+                                    "Login Screen Issue",
+                                    preview_message,
+                                    "GameFever App"
+                            );
+                        } catch (Exception e) {
+                            sendErrortoServer.sendErrorToServer(
+                                    OnboardingDisclosureActivity.this,  // Context
+                                    phone_number_input.getText().toString().trim(),
+                                    "Login Failed - Data " + data + " Request - Try catch got catch with " + e.getMessage(),
+                                    "Login Screen Issue",
+                                    preview_message,
+                                    "GameFever App"
+                            );
                         }
+
                     }
                 }
             }
@@ -419,10 +449,28 @@ public class OnboardingDisclosureActivity extends AppCompatActivity {
                 if (data.isEmpty()){
                     Toast.makeText(getApplicationContext(), "Something Went Wrong ! - Please Try Restarting application and try again", Toast.LENGTH_SHORT).show();
                     try {
-                        sendErrortoServer.sendErrorToServer(signup_number_input.getText().toString().trim(),"Signup Failed - Data "+data + " Request - "+ URLEncoder.encode(signup_email_input.getText().toString().trim(), "UTF-8") + " and pass = " + URLEncoder.encode(signup_password_input.getText().toString().trim(), "UTF-8"),"Login Screen Issue", preview_message , "GameFever App");
-                    } catch (Exception e){
-                        sendErrortoServer.sendErrorToServer(signup_number_input.getText().toString().trim(),"Signup Failed - Data "+data + " Request - "+ " Try catch got catch with "+e.getMessage() ,"Login Screen Issue", preview_message,"GameFever App");
+                        sendErrortoServer.sendErrorToServer(
+                                OnboardingDisclosureActivity.this,  // <-- Context
+                                signup_number_input.getText().toString().trim(),
+                                "Signup Failed - Data " + data + " Request - " +
+                                        URLEncoder.encode(signup_email_input.getText().toString().trim(), "UTF-8") +
+                                        " and pass = " +
+                                        URLEncoder.encode(signup_password_input.getText().toString().trim(), "UTF-8"),
+                                "Login Screen Issue",
+                                preview_message,
+                                "GameFever App"
+                        );
+                    } catch (Exception e) {
+                        sendErrortoServer.sendErrorToServer(
+                                OnboardingDisclosureActivity.this,  // <-- Context
+                                signup_number_input.getText().toString().trim(),
+                                "Signup Failed - Data " + data + " Request - Try catch got catch with " + e.getMessage(),
+                                "Login Screen Issue",
+                                preview_message,
+                                "GameFever App"
+                        );
                     }
+
                     loading_dialog.hide();
                 } else if (data.equals("0")){
                     Toast.makeText(getApplicationContext(), "Something Went Wrong ! - Please Try Again", Toast.LENGTH_SHORT).show();
@@ -456,11 +504,31 @@ public class OnboardingDisclosureActivity extends AppCompatActivity {
                     } else {
                         Toast.makeText(getApplicationContext(), "Something Went Wrong ! - Please Try Again Later", Toast.LENGTH_SHORT).show();
                         try {
-                            preview_message = "Signup Failed - Data "+data + " <br>Request - "+ URLEncoder.encode(signup_number_input.getText().toString().trim(), "UTF-8") + " and pass = " + URLEncoder.encode(signup_password_input.getText().toString().trim(), "UTF-8") +" and name =" + URLEncoder.encode(signup_name_input.getText().toString().trim(), "UTF-8") + " and mobile =" + URLEncoder.encode(signup_name_input.getText().toString().trim(), "UTF-8");
-                            sendErrortoServer.sendErrorToServer(signup_number_input.getText().toString().trim(),"Signup Failed - Data "+data + " Request -  " + finalSignup_qry + "   datatohash = "+ finalDatatohash,"Login Screen Issue", preview_message , "GameFever App");
-                        } catch (Exception e){
-                            sendErrortoServer.sendErrorToServer(signup_email_input.getText().toString().trim(),"Signup Failed - Data "+data + " Request - "+ " Try catch got catch with "+e.getMessage() ,"Login Screen Issue", preview_message , "GameFever App");
+                            preview_message = "Signup Failed - Data " + data +
+                                    " <br>Request - " + URLEncoder.encode(signup_number_input.getText().toString().trim(), "UTF-8") +
+                                    " and pass = " + URLEncoder.encode(signup_password_input.getText().toString().trim(), "UTF-8") +
+                                    " and name = " + URLEncoder.encode(signup_name_input.getText().toString().trim(), "UTF-8") +
+                                    " and mobile = " + URLEncoder.encode(signup_name_input.getText().toString().trim(), "UTF-8");
+
+                            sendErrortoServer.sendErrorToServer(
+                                    OnboardingDisclosureActivity.this,  // ✅ Context
+                                    signup_number_input.getText().toString().trim(),
+                                    "Signup Failed - Data " + data + " Request - " + finalSignup_qry + "   datatohash = " + finalDatatohash,
+                                    "Login Screen Issue",
+                                    preview_message,
+                                    "GameFever App"
+                            );
+                        } catch (Exception e) {
+                            sendErrortoServer.sendErrorToServer(
+                                    OnboardingDisclosureActivity.this,  // ✅ Context
+                                    signup_email_input.getText().toString().trim(),
+                                    "Signup Failed - Data " + data + " Request - Try catch got catch with " + e.getMessage(),
+                                    "Login Screen Issue",
+                                    preview_message,
+                                    "GameFever App"
+                            );
                         }
+
 
                         loading_dialog.hide();
                     }

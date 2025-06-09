@@ -85,7 +85,7 @@ public class HomeActivity extends AppCompatActivity {
     WithdrawSelectionItem withdraw_selection_adapter;
     List<WithdrawSelectionItem> withdraw_selection_ItemList;
 
-    @SuppressLint("MissingInflatedId")
+    @SuppressLint({"MissingInflatedId", "ClickableViewAccessibility"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -146,6 +146,7 @@ public class HomeActivity extends AppCompatActivity {
 //        LinearLayout bonusPopup = findViewById(R.id.bonus_popup);
 //        TextView popupText = findViewById(R.id.popup_text);
 
+
         // Storing Into Shared preferences
         SharedPreferences sharedPreferences = getSharedPreferences("pgamerapp", MODE_PRIVATE);
 
@@ -178,6 +179,18 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    swipeRefreshLayout.setEnabled(false);  // disable swipe refresh while dragging
+                } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    swipeRefreshLayout.setEnabled(true);   // enable swipe refresh after scroll ends
+                }
+            }
+        });
+
 
 
         int userId = Integer.parseInt(storedID); // pass the actual user ID here
@@ -196,7 +209,7 @@ public class HomeActivity extends AppCompatActivity {
         });
         bonusBtn.setOnClickListener(v -> {
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, getString(R.string.app_url) +"/amsit-adm/get_daily_bonus.php",
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, getString(R.string.app_url) +"/get_daily_bonus.php",
                     response -> {
                         try {
                             JSONObject obj = new JSONObject(response);
@@ -364,7 +377,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
     private void fetchUserData(int userId) {
-        String url = getString(R.string.app_url) + "/amsit-adm/get_user_info_api.php?id=" + userId;
+        String url = getString(R.string.app_url) + "/get_user_info_api.php?id=" + userId;
 
         RequestQueue queue = Volley.newRequestQueue(this);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -572,7 +585,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void get_user_data_thread(String user_id) {
-        String get_user_data_qry = getResources().getString(R.string.app_url) + "/app-apis/user/get_view_homescrdata.php?";
+        String get_user_data_qry = getResources().getString(R.string.app_url) + "/user/get_view_homescrdata.php?";
         String datatohash = "";
         try {
             datatohash = "i=" + URLEncoder.encode(user_id, "UTF-8");
@@ -745,7 +758,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void fetchGames() {
-        String url = getString(R.string.app_url) +"/amsit-adm/game_list_api.php";
+        String url = getString(R.string.app_url) +"/game_list_api.php";
         RequestQueue queue = Volley.newRequestQueue(this);
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,

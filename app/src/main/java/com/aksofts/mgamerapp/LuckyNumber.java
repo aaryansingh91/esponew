@@ -94,7 +94,7 @@ public class LuckyNumber extends AppCompatActivity {
     }
 
     private void fetchLuckyNumbers() {
-        String url = "https://mg.amsit.in/amsit-adm/lucky_number_api.php";
+        String url = getResources().getString(R.string.app_url) + "/lucky_number_api.php";
         // अगर API की जरूरी हो, तो इस लाइन को अनकमेंट करें:
         // String url = "https://mg.amsit.in/amsit-adm/lucky_number_api.php?api_key=" + API_KEY + "&user_id=" + userId;
         Log.d(TAG, "Fetching lucky numbers from: " + url);
@@ -274,7 +274,7 @@ public class LuckyNumber extends AppCompatActivity {
     }
 
     private void joinLuckyNumber(String coinId, int uniqueNumber) {
-        String url = "https://mg.amsit.in/amsit-adm/join_lucky_number.php";
+        String url = getResources().getString(R.string.app_url) + "/join_lucky_number.php";
         Log.d(TAG, "Joining lucky number for coinId: " + coinId + ", uniqueNumber: " + uniqueNumber);
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,

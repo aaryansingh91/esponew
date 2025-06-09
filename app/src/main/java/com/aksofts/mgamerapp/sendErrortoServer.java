@@ -1,5 +1,6 @@
 package com.aksofts.mgamerapp;
 
+import android.content.Context;
 import android.os.AsyncTask;
 
 import java.io.BufferedReader;
@@ -10,10 +11,10 @@ import java.net.URLEncoder;
 import java.security.NoSuchAlgorithmException;
 
 public interface sendErrortoServer {
-        static void sendErrorToServer(String user_id, String errorMessage, String errortype, String previewMessage, String network_type) {
+        static void sendErrorToServer(Context context, String user_id, String errorMessage, String errortype, String previewMessage, String network_type) {
         try {
 
-            String qry = "https://mg.amsit.in/app-apis/user/update_error.php?";
+            String qry = context.getResources().getString(R.string.app_url) + "/user/update_error.php?";
             String datatohash = "a=" + user_id.trim() + "&m=" + URLEncoder.encode(errorMessage, "UTF-8") + "&p=" + URLEncoder.encode(previewMessage, "UTF-8") + "&t=" + URLEncoder.encode(errortype, "UTF-8") + "&n=" + URLEncoder.encode(network_type, "UTF-8").trim();
             try {
                 String token = temp.sha256_temp(datatohash);

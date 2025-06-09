@@ -86,7 +86,7 @@ public class HistoryFragment extends Fragment {
         historyItems.clear();
 
         int userId = storedID; // You can dynamically fetch this from SharedPreferences or login session
-        String url = getString(R.string.app_url) +"/amsit-adm/get_user_account_statement.php?user_id=" + userId;
+        String url = getString(R.string.app_url) +"/get_user_account_statement.php?user_id=" + userId;
 
         RequestQueue queue = Volley.newRequestQueue(requireContext());
 

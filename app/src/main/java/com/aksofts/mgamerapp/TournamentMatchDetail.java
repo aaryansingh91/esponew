@@ -119,7 +119,7 @@ public class TournamentMatchDetail extends AppCompatActivity {
 
     }
     private void fetchUserData(int userId) {
-        String url = getString(R.string.app_url) +"/amsit-adm/get_user_info_api.php?id=" + userId;
+        String url = getString(R.string.app_url) +"/get_user_info_api.php?id=" + userId;
 
         RequestQueue queue = Volley.newRequestQueue(this);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -160,7 +160,7 @@ public class TournamentMatchDetail extends AppCompatActivity {
 
         Log.d(TAG, "Join button clicked - user_id: " + userId + ", match_id: " + tournamentId + ", match_type: " + matchType);
 
-        String url = getString(R.string.app_url) + "/amsit-adm/join_tournament_api.php";
+        String url = getString(R.string.app_url) + "/join_tournament_api.php";
         Log.d(TAG, "Join API URL: " + url);
         Toast.makeText(this, userId + matchType +tournamentId, Toast.LENGTH_LONG).show();
         Map<String, String> params = new HashMap<>();
@@ -268,7 +268,7 @@ public class TournamentMatchDetail extends AppCompatActivity {
     }
 
     private void updateMatchDetails(int tournamentId) {
-        String url = getResources().getString(R.string.app_url) + "/amsit-adm/tournament_details_api.php?id=" + tournamentId;
+        String url = getResources().getString(R.string.app_url) + "/tournament_details_api.php?id=" + tournamentId;
         Log.d(TAG, "Fetching match details from: " + url);
         RequestQueue queue = Volley.newRequestQueue(this);
 
@@ -360,7 +360,7 @@ public class TournamentMatchDetail extends AppCompatActivity {
 
     private void checkIfAlreadyJoinedAndSetupUI() {
         String checkUrl = getString(R.string.app_url) +
-                "/amsit-adm/join_tournament_api.php?user=" + userId + "&match=" + tournamentId;
+                "/join_tournament_api.php?user=" + userId + "&match=" + tournamentId;
 
         StringRequest request = new StringRequest(Request.Method.GET, checkUrl,
                 response -> {

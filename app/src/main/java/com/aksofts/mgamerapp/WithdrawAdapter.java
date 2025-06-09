@@ -153,7 +153,7 @@ public class WithdrawAdapter extends RecyclerView.Adapter<WithdrawAdapter.Withdr
         progressDialog.setCancelable(false);
         progressDialog.show();
 
-        String url = context.getString(R.string.app_url) + "/amsit-adm/withdraw_request_api.php";
+        String url = context.getString(R.string.app_url) + "/withdraw_request_api.php";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 response -> {

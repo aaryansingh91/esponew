@@ -97,7 +97,7 @@ public class SplashActivity extends AppCompatActivity {
 
 
     public void get_data_thread(){
-        String qry = getResources().getString(R.string.app_url) + "/app-apis/appinfoapi.php";
+        String qry = getResources().getString(R.string.app_url) + "/appinfoapi.php";
         class dbprocess extends AsyncTask<String, Void, String> implements com.aksofts.mgamerapp.dbprocess {
             @Override
             protected void onPostExecute(String data) {
@@ -320,10 +320,25 @@ public class SplashActivity extends AppCompatActivity {
                         String preview_message = "Error in Loading App - Json Exception <br>" + e.getMessage();
                         Toast.makeText(SplashActivity.this, "Something Went Wrong", Toast.LENGTH_SHORT).show();
                         try {
-                            sendErrortoServer.sendErrorToServer("N/A" , "App Not Loaded with error " + e.getMessage() , "Splash Screen Issue", preview_message , "GameFever App");
-                        } catch (Exception e2){
-                            sendErrortoServer.sendErrorToServer("N/A" , "App Not Loaded with error " + e.getMessage() , "Splash Screen Issue", preview_message , "GameFever App");
+                            sendErrortoServer.sendErrorToServer(
+                                    SplashActivity.this,  // Context
+                                    "N/A",
+                                    "App Not Loaded with error " + e.getMessage(),
+                                    "Splash Screen Issue",
+                                    preview_message,
+                                    "GameFever App"
+                            );
+                        } catch (Exception e2) {
+                            sendErrortoServer.sendErrorToServer(
+                                    SplashActivity.this,  // Context
+                                    "N/A",
+                                    "App Not Loaded with error " + e2.getMessage(),
+                                    "Splash Screen Issue",
+                                    preview_message,
+                                    "GameFever App"
+                            );
                         }
+
                         e.printStackTrace();
                     } catch (NoSuchAlgorithmException e) {
                         e.printStackTrace();
@@ -356,7 +371,7 @@ public class SplashActivity extends AppCompatActivity {
 
     public void get_user_data_thread(String user_id) throws NoSuchAlgorithmException {
 
-        String get_user_data_qry = getResources().getString(R.string.app_url) + "/app-apis/user/get_view_homescrdata.php?";
+        String get_user_data_qry = getResources().getString(R.string.app_url) + "/user/get_view_homescrdata.php?";
         String datatohash="";
         try {
             datatohash ="i=" + URLEncoder.encode(user_id, "UTF-8");

@@ -59,7 +59,7 @@ public class MyRewardActivity extends AppCompatActivity {
     }
 
     private void fetchRewards() {
-        String url = getString(R.string.app_url) + "/amsit-adm/get_withdrawals_history.php";
+        String url = getString(R.string.app_url) + "/get_withdrawals_history.php";
 
         StringRequest request = new StringRequest(Request.Method.POST, url,
                 response -> {

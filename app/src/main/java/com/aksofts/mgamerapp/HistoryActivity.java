@@ -53,7 +53,7 @@ public class HistoryActivity extends AppCompatActivity {
         fetchUserData(Integer.parseInt(userId), coinTextView, ticketCount);
     }
     private void fetchUserData(int userId, TextView coinTextView,TextView ticketCount) {
-        String url = getString(R.string.app_url) + "/amsit-adm/get_user_info_api.php?id=" + userId;
+        String url = getString(R.string.app_url) + "/get_user_info_api.php?id=" + userId;
 
         RequestQueue queue = com.android.volley.toolbox.Volley.newRequestQueue(this);
 

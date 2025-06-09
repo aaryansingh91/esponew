@@ -54,7 +54,7 @@ public class UpcomingFragment extends Fragment {
     private void fetchMatches() {
         loadingAnim.setVisibility(View.VISIBLE);
         // ✅ Use class-level gameId here
-        String url = getString(R.string.app_url) + "/app-apis/tournaments/all-tournaments-matches.php?id=" + gameId;
+        String url = getString(R.string.app_url) + "/all-tournaments-matches.php?id=" + gameId;
 
         RequestQueue queue = Volley.newRequestQueue(requireContext());
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
