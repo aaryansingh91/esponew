@@ -23,16 +23,7 @@
             android:name=".MyRewardActivity"
             android:exported="false" />
         <activity
-            android:name=".fragments.ResultsFragment"
-            android:exported="false" />
-        <activity
-            android:name=".fragments.UpcomingFragment"
-            android:exported="false" />
-        <activity
             android:name=".TournamentListActivity"
-            android:exported="false" />
-        <activity
-            android:name=".fragments.OngoingFragment"
             android:exported="false" />
         <activity
             android:name=".TournamentList"
