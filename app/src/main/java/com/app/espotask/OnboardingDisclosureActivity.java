@@ -1,4 +1,4 @@
-package com.aksofts.espotask;
+package com.app.espotask;
 
 import android.app.Dialog;
 import android.content.Intent;
@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -21,6 +22,8 @@ import androidx.core.content.ContextCompat;
 
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,7 +51,7 @@ public class OnboardingDisclosureActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_onboardingdisclosure);
-
+        FirebaseApp.initializeApp(this);
 
         MaterialCardView btnCancel = findViewById(R.id.btnCancel);
         MaterialCardView btnAgree = findViewById(R.id.btnAgree);
@@ -164,7 +167,7 @@ public class OnboardingDisclosureActivity extends AppCompatActivity {
         }
 
         String qry = getResources().getString(R.string.app_url) + "/accounts/loginapi.php?u=" + loginid_encoded + "&p=" + loginpass_encoded;
-        class dbprocess extends AsyncTask<String, Void, String> implements com.aksofts.espotask.dbprocess {
+        class dbprocess extends AsyncTask<String, Void, String> implements com.app.espotask.dbprocess {
             @Override
             protected void onPostExecute(String data) {
                 if (data.equals("0")){
@@ -210,6 +213,28 @@ public class OnboardingDisclosureActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     if (status.equals("Active") || status.equals("1")) {
+                        final String finalId = id; // Create a final copy of `id`
+                        // 2. Get FCM Token and Send to Server
+                        FirebaseMessaging.getInstance().getToken()
+                                .addOnCompleteListener(task -> {
+                                    if (task.isSuccessful()) {
+                                        String deviceToken = task.getResult();
+                                        sendTokenToServer(finalId, deviceToken);  // Call function below
+                                        Log.e("FCM", "Fetching Success"+ deviceToken);
+                                    } else {
+                                        Log.e("FCM", "Fetching FCM registration token failed", task.getException());
+                                    }
+                                });
+
+                        // 1. Subscribe to Topic "all"
+                        FirebaseMessaging.getInstance().subscribeToTopic("all")
+                                .addOnCompleteListener(task -> {
+                                    if (task.isSuccessful()) {
+                                        Log.d("FCM", "Subscribed to topic: all");
+                                    } else {
+                                        Log.e("FCM", "Subscription failed", task.getException());
+                                    }
+                                });
                         SharedPreferences sharedPreferences = getSharedPreferences("pgamerapp", MODE_PRIVATE);
                         //Editor To Edit Shared Preferences Values
                         SharedPreferences.Editor myEdit = sharedPreferences.edit();
@@ -217,6 +242,8 @@ public class OnboardingDisclosureActivity extends AppCompatActivity {
                         myEdit.putString("userName", name);
                         myEdit.apply();
                         Toast.makeText(getApplicationContext(), "Login Success !", Toast.LENGTH_SHORT).show();
+
+
 
                         // Getting User Data
                         get_user_data_thread(id);
@@ -280,6 +307,29 @@ public class OnboardingDisclosureActivity extends AppCompatActivity {
         obj.execute(qry);
     }
 
+    private void sendTokenToServer(String userId, String token) {
+        String url = getResources().getString(R.string.app_url) + "/accounts/save_token.php?user_id=" + userId + "&token=" + token;
+
+        new Thread(() -> {
+            try {
+                URL obj = new URL(url);
+                HttpURLConnection conn = (HttpURLConnection) obj.openConnection();
+                conn.setRequestMethod("GET");
+                conn.setConnectTimeout(5000);
+                conn.setReadTimeout(5000);
+
+                int responseCode = conn.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    Log.d("FCM", "Token sent successfully");
+                } else {
+                    Log.e("FCM", "Failed to send token, code: " + responseCode);
+                }
+            } catch (Exception e) {
+                Log.e("FCM", "Error sending token: " + e.getMessage());
+            }
+        }).start();
+    }
+
     public void signup_with_phone_btn_inselection_layout (View view){
         login_selectionbox.setVisibility(View.GONE);
         login_section_number_pass.setVisibility(View.GONE);
@@ -305,7 +355,7 @@ public class OnboardingDisclosureActivity extends AppCompatActivity {
     }
 
     public void get_user_data_thread(String user_id){
-        String get_user_data_qry = getResources().getString(R.string.app_url) + "/app-apis/user/get_view_homescrdata.php?";
+        String get_user_data_qry = getResources().getString(R.string.app_url) + "/user/get_view_homescrdata.php?";
         String datatohash="";
         try {
             datatohash ="i=" + URLEncoder.encode(user_id, "UTF-8");
@@ -315,7 +365,7 @@ public class OnboardingDisclosureActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         String finalget_user_data_qry = get_user_data_qry;
-        class dbprocess extends AsyncTask<String, Void, String> implements com.aksofts.espotask.dbprocess {
+        class dbprocess extends AsyncTask<String, Void, String> implements com.app.espotask.dbprocess {
             @Override
             protected void onPostExecute(String data) {
                 if(data.isEmpty()){
@@ -435,7 +485,7 @@ public class OnboardingDisclosureActivity extends AppCompatActivity {
         }
         String finalSignup_qry = signup_qry;
         String finalDatatohash = datatohash;
-        class dbprocess extends AsyncTask<String, Void, String> implements com.aksofts.espotask.dbprocess {
+        class dbprocess extends AsyncTask<String, Void, String> implements com.app.espotask.dbprocess {
             @Override
             protected void onPostExecute(String data) {
                 String preview_message = null;

@@ -1,4 +1,4 @@
-package com.aksofts.espotask;
+package com.app.espotask;
 
 public class RewardModel {
     public String amount;

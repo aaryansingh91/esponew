@@ -1,4 +1,4 @@
-package com.aksofts.espotask;
+package com.app.espotask;
 
 public class TournamentMatchesItem {
     private int id; // Maps to m_id

@@ -1,4 +1,4 @@
-package com.aksofts.espotask;
+package com.app.espotask;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -25,7 +25,7 @@ public interface sendErrortoServer {
             }
 
 
-            class dbprocess extends AsyncTask<String, Void, String> implements com.aksofts.espotask.dbprocess {
+            class dbprocess extends AsyncTask<String, Void, String> implements com.app.espotask.dbprocess {
                 @Override
                 protected void onPostExecute(String data) {
                     System.out.println("Log Sent to Server about this Error");

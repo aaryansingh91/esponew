@@ -1,4 +1,4 @@
-package com.aksofts.espotask.fragments;
+package com.app.espotask.fragments;
 
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
@@ -11,9 +11,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.aksofts.espotask.R;
-import com.aksofts.espotask.TournamentMatchesAdaptor;
-import com.aksofts.espotask.TournamentMatchesItem;
+import com.app.espotask.R;
+import com.app.espotask.TournamentMatchesAdaptor;
+import com.app.espotask.TournamentMatchesItem;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonArrayRequest;

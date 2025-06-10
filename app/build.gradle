@@ -1,13 +1,15 @@
 plugins {
     alias(libs.plugins.android.application)
+    id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
-    namespace 'com.aksofts.mgamerapp'
+    namespace 'com.app.espotask'
     compileSdk 35
 
     defaultConfig {
-        applicationId "com.aksofts.mgamerapp"
+        applicationId "com.app.espotask"
         minSdk 25
         targetSdk 35
         versionCode 1
@@ -72,6 +74,7 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:32.7.1')
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-messaging:23.4.1' // latest as of now
 
     // Ads
     implementation 'com.unity3d.ads:unity-ads:4.12.2'

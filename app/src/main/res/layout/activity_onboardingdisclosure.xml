@@ -420,7 +420,7 @@
         android:layout_height="match_parent"
         android:fillViewport="true"
         android:orientation="vertical"
-        android:visibility="gone"
+        android:visibility="visible"
         android:padding="10dp">
 
     <com.google.android.material.card.MaterialCardView
@@ -440,6 +440,7 @@
 
             <!-- Back Button -->
             <ImageView
+                android:visibility="gone"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_gravity="start"
@@ -615,10 +616,10 @@
         android:layout_height="match_parent"
         android:fillViewport="true"
         android:orientation="vertical"
+        android:visibility="gone"
         android:padding="10dp">
 
     <com.google.android.material.card.MaterialCardView
-        android:visibility="visible"
         android:backgroundTint="@color/white"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

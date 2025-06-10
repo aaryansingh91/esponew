@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "462342959940",
+    "project_id": "espotask-10d2f",
+    "storage_bucket": "espotask-10d2f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:462342959940:android:0d56f0bcc77dfcdaca9d11",
+        "android_client_info": {
+          "package_name": "com.app.espotask"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDUEjoCip7tOCUXktS2wUwvQJc4spuyMaQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

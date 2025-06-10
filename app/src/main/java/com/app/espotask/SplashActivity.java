@@ -1,4 +1,4 @@
-package com.aksofts.espotask;
+package com.app.espotask;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -98,7 +98,7 @@ public class SplashActivity extends AppCompatActivity {
 
     public void get_data_thread(){
         String qry = getResources().getString(R.string.app_url) + "/appinfoapi.php";
-        class dbprocess extends AsyncTask<String, Void, String> implements com.aksofts.espotask.dbprocess {
+        class dbprocess extends AsyncTask<String, Void, String> implements com.app.espotask.dbprocess {
             @Override
             protected void onPostExecute(String data) {
                 if (data.equals("0")){
@@ -381,7 +381,7 @@ public class SplashActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         String finalget_user_data_qry = get_user_data_qry;
-        class dbprocess extends AsyncTask<String, Void, String> implements com.aksofts.espotask.dbprocess {
+        class dbprocess extends AsyncTask<String, Void, String> implements com.app.espotask.dbprocess {
             @Override
             protected void onPostExecute(String data) {
                 if (data.equals("0")){
