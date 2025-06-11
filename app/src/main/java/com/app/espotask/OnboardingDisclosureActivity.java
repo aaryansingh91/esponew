@@ -465,7 +465,7 @@ public class OnboardingDisclosureActivity extends AppCompatActivity {
         String deviceBrand = Build.BRAND;
         String deviceSerial = Build.SERIAL;
 
-        String signup_qry = getResources().getString(R.string.app_url) + "/app-apis/accounts/signupapi.php?";
+        String signup_qry = getResources().getString(R.string.app_url) + "/accounts/signupapi.php?";
         String datatohash="";
         try {
             datatohash =  "e=" + URLEncoder.encode(signup_email_input.getText().toString().trim(), "UTF-8") +
