@@ -69,6 +69,10 @@ import com.unity3d.ads.UnityAdsShowOptions;
 
 public class HomeActivity extends AppCompatActivity {
 
+    // Declare this at the top of your class
+    private String unityRewardedId = null;
+    private Context appContext;
+
     RecyclerView recyclerView, withdrawRecyclerView ;
     List<GameModel> gameList;
     GameAdapter adapter;
@@ -97,7 +101,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-
+        Button cardTaskOffers = findViewById(R.id.card_task_offers);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         recyclerView = findViewById(R.id.recyclerViewGames);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -197,6 +201,13 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        cardTaskOffers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TaskOffersBottomSheet bottomSheet = new TaskOffersBottomSheet();
+                bottomSheet.show(getSupportFragmentManager(), bottomSheet.getTag());
+            }
+        });
 
 
         int userId = Integer.parseInt(storedID); // pass the actual user ID here
@@ -379,7 +390,7 @@ public class HomeActivity extends AppCompatActivity {
         showBottomSheetDialog();
 
         fetchAndSetupAds(this);
-
+        setupWatchAdButton(this);
     }
 
 
@@ -885,9 +896,12 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
+    // Call this method from onCreate or wherever needed
     private void fetchAndSetupAds(Context context) {
-        Toast.makeText(this, "Ads fetched", Toast.LENGTH_SHORT).show();
-        String url = getString(R.string.app_url) +"/get_active_ads.php";
+        appContext = context;
+
+        Toast.makeText(context, "Ads fetched", Toast.LENGTH_SHORT).show();
+        String url = context.getString(R.string.app_url) + "/get_active_ads.php";
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 response -> {
@@ -897,29 +911,29 @@ public class HomeActivity extends AppCompatActivity {
                             JSONObject data = json.getJSONObject("data");
                             String provider = data.getString("provider_name");
 
-                            Log.e("UNITY_AD", provider );
+                            Log.e("UNITY_AD", provider);
+                            Toast.makeText(context, "Ad Provider: " + provider, Toast.LENGTH_SHORT).show();
 
                             if (provider.equalsIgnoreCase("Unity")) {
                                 String unityAppId = data.getString("app_id");
                                 String unityInterstitialId = data.getString("interstitial_ad_id");
-                                String unityRewardedId = data.getString("rewarded_ad_id");
+                                unityRewardedId = data.getString("rewarded_ad_id"); // Store globally
                                 String unityBannerId = data.getString("banner_ad_id");
 
-                                Log.e("UNITY_AD", unityBannerId + unityAppId + unityInterstitialId );
+                                Log.e("UNITY_AD", unityBannerId + unityAppId + unityInterstitialId);
 
                                 UnityAds.initialize((Activity) context, unityAppId, false);
 
                                 loadUnityInterstitialAd(context, unityInterstitialId);
-                                loadUnityRewardedAd(context, unityRewardedId);
+                                preloadUnityRewardedAd(context, unityRewardedId);
                             }
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 },
-                error -> {
-                    Log.e("AD_FETCH_ERROR", error.toString());
-                });
+                error -> Log.e("AD_FETCH_ERROR", error.toString())
+        );
 
         RequestQueue queue = Volley.newRequestQueue(context);
         queue.add(stringRequest);
@@ -929,9 +943,9 @@ public class HomeActivity extends AppCompatActivity {
         UnityAds.load(adUnitId, new IUnityAdsLoadListener() {
             @Override
             public void onUnityAdsAdLoaded(String placementId) {
+                Toast.makeText(context, "Unity Interstitial Ad Loaded: " + placementId, Toast.LENGTH_SHORT).show();
                 UnityAds.show((Activity) context, placementId);
-                Toast.makeText(context, "Ad Seen, reward granted!", Toast.LENGTH_SHORT).show();
-                Log.e("UNITY_AD", "Added to load interstitial: " );
+                Log.e("UNITY_AD", "Loaded interstitial: " + placementId);
             }
 
             @Override
@@ -941,34 +955,48 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
-
-    private void loadUnityRewardedAd(Context context, String adUnitId) {
+    // Only preload here
+    private void preloadUnityRewardedAd(Context context, String adUnitId) {
         UnityAds.load(adUnitId, new IUnityAdsLoadListener() {
             @Override
             public void onUnityAdsAdLoaded(String placementId) {
-                UnityAds.show((Activity) context, placementId, new UnityAdsShowOptions(), new IUnityAdsShowListener() {
+                Toast.makeText(context, "Unity Rewarded Ad Loaded: " + placementId, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onUnityAdsFailedToLoad(String placementId, UnityAds.UnityAdsLoadError error, String message) {
+                Log.e("UNITY_AD", "Failed to preload rewarded: " + message);
+            }
+        });
+    }
+
+    // Call this inside onCreate() after setContentView()
+    private void setupWatchAdButton(Activity activity) {
+        Button watchAdBtn = activity.findViewById(R.id.watch_ad);
+        watchAdBtn.setOnClickListener(v -> {
+            if (unityRewardedId != null && UnityAds.isInitialized()) {
+                UnityAds.show(activity, unityRewardedId, new UnityAdsShowOptions(), new IUnityAdsShowListener() {
                     @Override
                     public void onUnityAdsShowComplete(String placementId, UnityAds.UnityAdsShowCompletionState state) {
                         if (state == UnityAds.UnityAdsShowCompletionState.COMPLETED) {
-                            // ✅ Show reward message correctly
-                            Toast.makeText(context, "Ad Seen, reward granted!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(activity, "Ad Seen, reward granted!", Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override public void onUnityAdsShowStart(String placementId) {}
                     @Override public void onUnityAdsShowClick(String placementId) {}
                     @Override public void onUnityAdsShowFailure(String placementId, UnityAds.UnityAdsShowError error, String message) {
-                        Log.e("UNITY_AD", "Show failed: " + message);
+                        Toast.makeText(activity, "Failed to show ad: " + message, Toast.LENGTH_SHORT).show();
                     }
                 });
-            }
-
-            @Override
-            public void onUnityAdsFailedToLoad(String placementId, UnityAds.UnityAdsLoadError error, String message) {
-                Log.e("UNITY_AD", "Failed to load rewarded: " + message);
+            } else {
+                Toast.makeText(activity, "Ad not ready yet. Please try again later.", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
+
+
 
 
 
