@@ -116,4 +116,8 @@ dependencies {
 //    implementation fileTree(include: ['tapjoyconnectlibrary'], dir: 'libs')
 
     implementation 'com.tapjoy:tapjoy-android-sdk:14.3.1'
+
+//    Ads Dependencies
+
+    implementation 'com.unity3d.ads:unity-ads:4.15.0' // or latest
 }
