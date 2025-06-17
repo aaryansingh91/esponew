@@ -57,7 +57,7 @@ public class WithdrawListActivity extends AppCompatActivity {
         titleText.setText(selectedName);
 
         // Get user ID
-        SharedPreferences sharedPreferences = getSharedPreferences("pgamerapp", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
         String userIdStr = sharedPreferences.getString("userID", "0");
         int coins = sharedPreferences.getInt("coins", 0);
         int tickets = sharedPreferences.getInt("tickets", 0);
@@ -86,7 +86,7 @@ public class WithdrawListActivity extends AppCompatActivity {
                             coinCount.setText(String.valueOf(coins));
 
                             // Load withdraw data from shared preferences
-                            SharedPreferences sharedPreferences = getSharedPreferences("pgamerapp", MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
                             String withdrawDataJson = sharedPreferences.getString("withdraw_data_setting", "");
                             Gson gson = new Gson();
                             Type type = new TypeToken<List<WithdrawItem>>() {}.getType();

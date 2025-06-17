@@ -235,7 +235,7 @@ public class OnboardingDisclosureActivity extends AppCompatActivity {
                                         Log.e("FCM", "Subscription failed", task.getException());
                                     }
                                 });
-                        SharedPreferences sharedPreferences = getSharedPreferences("pgamerapp", MODE_PRIVATE);
+                        SharedPreferences sharedPreferences = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
                         //Editor To Edit Shared Preferences Values
                         SharedPreferences.Editor myEdit = sharedPreferences.edit();
                         myEdit.putString("userID", id);
@@ -386,7 +386,7 @@ public class OnboardingDisclosureActivity extends AppCompatActivity {
                         String name = jsonObject.getString("name");
 
                         // Storing Into Shared preferences
-                        SharedPreferences sharedPreferences = getSharedPreferences("pgamerapp", MODE_PRIVATE);
+                        SharedPreferences sharedPreferences = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
                         SharedPreferences.Editor myEdit = sharedPreferences.edit();
                         myEdit.putString("status", status);
                         myEdit.putString("email", email);

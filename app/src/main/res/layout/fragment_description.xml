@@ -24,21 +24,6 @@
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
                 android:src="@drawable/freefire" />
-
-            <TextView
-                android:id="@+id/match_type_overlay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_margin="8dp"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="4dp"
-                android:background="#80000000"
-                android:text="SOLO"
-                android:textColor="@color/yellow"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:visibility="gone" />
         </RelativeLayout>
 
         <!-- Match Title -->
@@ -62,7 +47,8 @@
             android:layout_margin="16dp"
             android:backgroundTint="@color/white"
             app:cardCornerRadius="10dp"
-            app:cardElevation="10dp">
+            app:cardElevation="10dp"
+            app:strokeWidth="0dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -247,7 +233,8 @@
             android:layout_marginRight="16dp"
             android:backgroundTint="@color/white"
             app:cardCornerRadius="10dp"
-            app:cardElevation="10dp">
+            app:cardElevation="10dp"
+            app:strokeWidth="0dp">
 
             <LinearLayout
                 android:layout_width="match_parent"

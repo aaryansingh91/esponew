@@ -41,7 +41,7 @@ public class WithdrawAdapter extends RecyclerView.Adapter<WithdrawAdapter.Withdr
         this.withdrawItems = withdrawItems;
         this.userCoins = userCoins;
 
-        SharedPreferences sharedPreferences = context.getSharedPreferences("pgamerapp", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = context.getSharedPreferences("EspoTaskApp", Context.MODE_PRIVATE);
         this.userId = sharedPreferences.getString("userID", "0");
     }
 
@@ -162,7 +162,7 @@ public class WithdrawAdapter extends RecyclerView.Adapter<WithdrawAdapter.Withdr
                         Toast.makeText(context, obj.getString("message"), Toast.LENGTH_SHORT).show();
 
                         // Update SharedPreferences with new values
-                        SharedPreferences sharedPreferences = context.getSharedPreferences("pgamerapp", Context.MODE_PRIVATE);
+                        SharedPreferences sharedPreferences = context.getSharedPreferences("EspoTaskApp", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
 
                         int currentCoins = sharedPreferences.getInt("coins", 0);

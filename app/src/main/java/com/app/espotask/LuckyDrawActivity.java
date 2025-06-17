@@ -41,7 +41,7 @@ public class LuckyDrawActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lucky_draw);
 
-        SharedPreferences prefs = getSharedPreferences("pgamerapp", MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
         String userIdStr = prefs.getString("userID", null);
 
         if (userIdStr != null) {

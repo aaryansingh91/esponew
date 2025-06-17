@@ -70,7 +70,7 @@ public class SplashActivity extends AppCompatActivity {
         maintenance_progress_message = findViewById(R.id.maintenance_progress_message_lbl);
 
 
-        SharedPreferences sharedPreferences = getSharedPreferences("pgamerapp", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
         storedID = sharedPreferences.getString("userID", "NULL");
 
 
@@ -195,7 +195,7 @@ public class SplashActivity extends AppCompatActivity {
 
 
                         // Storing Into Shared preferences
-                        SharedPreferences sharedPreferences = getSharedPreferences("pgamerapp", MODE_PRIVATE);
+                        SharedPreferences sharedPreferences = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
                         SharedPreferences.Editor myEdit = sharedPreferences.edit();
                         myEdit.putString("app_name", app_name);
                         myEdit.putString("app_version", app_version);
@@ -399,7 +399,7 @@ public class SplashActivity extends AppCompatActivity {
 
 
                         // Storing Into Shared preferences
-                        SharedPreferences sharedPreferences = getSharedPreferences("pgamerapp", MODE_PRIVATE);
+                        SharedPreferences sharedPreferences = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
                         SharedPreferences.Editor myEdit = sharedPreferences.edit();
                         myEdit.putString("status", status);
                         myEdit.putString("email", email);

@@ -41,7 +41,7 @@ public class MyRewardActivity extends AppCompatActivity {
         rewardRecyclerView = findViewById(R.id.rewardRecyclerView);
         rewardRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        SharedPreferences sp = getSharedPreferences("pgamerapp", MODE_PRIVATE);
+        SharedPreferences sp = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
         userId = sp.getString("userID", "0");
         int coins = sp.getInt("coins", 0);
         int tickets = sp.getInt("tickets", 0);

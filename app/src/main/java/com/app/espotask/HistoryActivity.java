@@ -48,7 +48,7 @@ public class HistoryActivity extends AppCompatActivity {
         // 🪙 Fetch coin count and show in TextView
         TextView coinTextView = findViewById(R.id.coinCount);
         TextView ticketCount = findViewById(R.id.ticketCount);
-        SharedPreferences sharedPreferences = getSharedPreferences("pgamerapp", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
         String userId = sharedPreferences.getString("userID", "0");
         fetchUserData(Integer.parseInt(userId), coinTextView, ticketCount);
     }

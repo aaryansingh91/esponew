@@ -58,7 +58,7 @@ public class HistoryFragment extends Fragment {
                              Bundle savedInstanceState) {
 
 
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("pgamerapp", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("EspoTaskApp", Context.MODE_PRIVATE);
 
         String userIdStr = sharedPreferences.getString("userID", "0");
         try {

@@ -158,7 +158,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
         // Storing Into Shared preferences
-        SharedPreferences sharedPreferences = getSharedPreferences("pgamerapp", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
 
         String storedID = sharedPreferences.getString("userID", "NULL");
         String userName = sharedPreferences.getString("userName", "NULL");
@@ -240,7 +240,7 @@ public class HomeActivity extends AppCompatActivity {
                                 TextView popupText = popupView.findViewById(R.id.popup_text);
                                 popupText.setText("+" + amount + " Coins Credited!");
 //                                bonusPopup.setVisibility(View.VISIBLE);
-                                SharedPreferences prefs = getSharedPreferences("pgamerapp", MODE_PRIVATE);
+                                SharedPreferences prefs = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
                                 SharedPreferences.Editor editor = prefs.edit();
 
                             // Save today's date as string (e.g., 2025-06-02)
@@ -279,7 +279,7 @@ public class HomeActivity extends AppCompatActivity {
 
                             } else if (status.equals("already_claimed")) {
                                 Toast.makeText(this, "Bonus already claimed today", Toast.LENGTH_SHORT).show();
-                                SharedPreferences prefs = getSharedPreferences("pgamerapp", MODE_PRIVATE);
+                                SharedPreferences prefs = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
                                 SharedPreferences.Editor editor = prefs.edit();
 
                                 // Save today's date as string (e.g., 2025-06-02)
@@ -410,7 +410,7 @@ public class HomeActivity extends AppCompatActivity {
                             int tickets = user.getInt("tickets");
 
                             // Save to SharedPreferences
-                            SharedPreferences sharedPreferences = getSharedPreferences("pgamerapp", MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putInt("coins", coins);
                             editor.putInt("tickets", tickets);
@@ -436,7 +436,7 @@ public class HomeActivity extends AppCompatActivity {
                     Toast.makeText(this, "Failed to fetch user data", Toast.LENGTH_SHORT).show();
 
                     // On error, load last saved values from SharedPreferences anyway
-                    SharedPreferences sharedPreferences = getSharedPreferences("pgamerapp", MODE_PRIVATE);
+                    SharedPreferences sharedPreferences = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
                     int savedCoins = sharedPreferences.getInt("coins", 0);
                     int savedTickets = sharedPreferences.getInt("tickets", 0);
 
@@ -455,7 +455,7 @@ public class HomeActivity extends AppCompatActivity {
     // Logout method for the MaterialCardView onClick
     public void logoutUser(View view) {
         // Clear SharedPreferences
-        SharedPreferences sharedPreferences = getSharedPreferences("pgamerapp", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
         editor.apply();
@@ -492,7 +492,7 @@ public class HomeActivity extends AppCompatActivity {
 
         // BottomSheetData object banaen
         BottomSheetData data = new BottomSheetData(
-                "Welcome to pGamer!",
+                "Welcome to EspoTask!",
                 "Earn Coins",
                 "Earn more coins 💰 by playing games and filling surveys",
                 "Redeem easily with our rewards",
@@ -588,8 +588,8 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void invite_others_fn(View view) {
-        SharedPreferences sharedPreferences = getSharedPreferences("pgamerapp", MODE_PRIVATE);
-        String owncode = sharedPreferences.getString("owncode", "pGamer");
+        SharedPreferences sharedPreferences = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
+        String owncode = sharedPreferences.getString("owncode", "EspoTask");
         String app_share_message_before_refercode = sharedPreferences.getString("app_share_message_before_refercode", "");
         String app_share_message_refercode_link = sharedPreferences.getString("app_share_message_refercode_link", "");
         String app_share_message_after_refercode = sharedPreferences.getString("app_share_message_after_refercode", "");
@@ -633,7 +633,7 @@ public class HomeActivity extends AppCompatActivity {
                         String name = jsonObject.getString("name");
 
                         // Storing Into Shared preferences
-                        SharedPreferences sharedPreferences = getSharedPreferences("pgamerapp", MODE_PRIVATE);
+                        SharedPreferences sharedPreferences = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
                         SharedPreferences.Editor myEdit = sharedPreferences.edit();
                         myEdit.putString("status", status);
                         myEdit.putString("email", email);
@@ -728,7 +728,7 @@ public class HomeActivity extends AppCompatActivity {
 
     public void settings_terms_conditions(View view) {
         try {
-            SharedPreferences sharedPreferences = getSharedPreferences("pgamerapp", MODE_PRIVATE);
+            SharedPreferences sharedPreferences = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
             String url = sharedPreferences.getString("app_internal_settings_page_terms_condition_page_link", "NULL");
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             startActivity(intent);
@@ -739,7 +739,7 @@ public class HomeActivity extends AppCompatActivity {
 
     public void settings_privcay_policy(View view) {
         try {
-            SharedPreferences sharedPreferences = getSharedPreferences("pgamerapp", MODE_PRIVATE);
+            SharedPreferences sharedPreferences = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
             String url = sharedPreferences.getString("app_internal_settings_page_privacy_page_link", "NULL");
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             startActivity(intent);
@@ -750,7 +750,7 @@ public class HomeActivity extends AppCompatActivity {
 
     public void settings_faq(View view) {
         try {
-            SharedPreferences sharedPreferences = getSharedPreferences("pgamerapp", MODE_PRIVATE);
+            SharedPreferences sharedPreferences = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
             String url = sharedPreferences.getString("app_internal_settings_page_helpandsupport_page_link", "NULL");
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             startActivity(intent);

@@ -17,7 +17,7 @@ import com.bumptech.glide.Glide;
 
 public class DescriptionFragment extends Fragment {
 
-    private TextView matchTypeOverlay, matchTitle, matchTypeText, matchMapText, entryFeeText, entryFeeTextTicket,
+    private TextView  matchTitle, matchTypeText, matchMapText, entryFeeText, entryFeeTextTicket,
             perKillText, matchScheduleText, prizeDetailsText, matchDescriptionText, entryFeeSeparator ;
     private ImageView topImage, entryFeeIcon, entryFeeIconTicket;
     private static final String TAG = "DescriptionFragment";
@@ -33,7 +33,6 @@ public class DescriptionFragment extends Fragment {
 
         // Initialize views
         topImage = view.findViewById(R.id.top_image);
-        matchTypeOverlay = view.findViewById(R.id.match_type_overlay);
         matchTitle = view.findViewById(R.id.match_title);
         matchTypeText = view.findViewById(R.id.match_type_text);
         matchMapText = view.findViewById(R.id.match_map_text);
@@ -65,8 +64,7 @@ public class DescriptionFragment extends Fragment {
             Log.e(TAG, "Received null bundle");
             return;
         }
-        matchTypeOverlay.setVisibility(View.VISIBLE);
-        matchTypeOverlay.setText(bundle.getString("match_type", "Unknown"));
+
         matchTitle.setText(bundle.getString("match_name", "Unknown"));
         matchTypeText.setText(bundle.getString("match_type", "Unknown"));
         matchMapText.setText(bundle.getString("map", "Unknown"));

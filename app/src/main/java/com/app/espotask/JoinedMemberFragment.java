@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,48 +14,87 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class JoinedMemberFragment extends Fragment {
 
     private static final String TAG = "JoinedMemberFragment";
+    private RecyclerView recyclerView;
+    private MemberAdapter adapter;
+    private List<String> memberList = new ArrayList<>();
+    int matchId = -1; // declare as class-level variable
+    private TextView noMembersText;
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Log.d(TAG, "JoinedMemberFragment onCreate");
-    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        Log.d(TAG, "Creating JoinedMemberFragment view");
         View view = inflater.inflate(R.layout.fragment_joined_member, container, false);
-        RecyclerView recyclerView = view.findViewById(R.id.joined_member_recycler_view);
+
+        if (getArguments() != null) {
+            matchId = getArguments().getInt("match_id", -1);
+        }
+
+        recyclerView = view.findViewById(R.id.joined_member_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new MemberAdapter(getPlaceholderMembers()));
-        Log.d(TAG, "JoinedMemberFragment view created with RecyclerView");
+        adapter = new MemberAdapter(memberList);
+        recyclerView.setAdapter(adapter);
+
+        noMembersText = view.findViewById(R.id.no_members_text); // ✅ Init
+
+        fetchJoinedMembers();
         return view;
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        Log.d(TAG, "JoinedMemberFragment onViewCreated");
-    }
+    private void fetchJoinedMembers() {
+        String url = getString(R.string.app_url) + "/get_joined_members.php?match_id=" + matchId;
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d(TAG, "JoinedMemberFragment onResume");
-    }
+        RequestQueue queue = Volley.newRequestQueue(requireContext());
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                response -> {
+                    try {
+                        if (response.getString("status").equals("success")) {
+                            JSONArray members = response.getJSONArray("joined_members");
+                            memberList.clear();
 
-    private List<String> getPlaceholderMembers() {
-        // Placeholder data; replace with actual member data from API
-        Log.d(TAG, "Loading placeholder members");
-        return Arrays.asList("Player 1", "Player 2", "Player 3");
+                            for (int i = 0; i < members.length(); i++) {
+                                memberList.add(members.getString(i));
+                            }
+
+                            adapter.notifyDataSetChanged();
+
+                            // ✅ Show message if 0 members
+                            if (memberList.isEmpty()) {
+                                noMembersText.setVisibility(View.VISIBLE);
+                                recyclerView.setVisibility(View.GONE);
+                            } else {
+                                noMembersText.setVisibility(View.GONE);
+                                recyclerView.setVisibility(View.VISIBLE);
+                            }
+
+                        } else {
+                            Toast.makeText(getContext(), "Failed to load members", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, "JSON parsing error: " + e.getMessage());
+                    }
+                },
+                error -> {
+                    Log.e(TAG, "Volley error: " + error.getMessage());
+                    Toast.makeText(getContext(), "Error loading members", Toast.LENGTH_SHORT).show();
+                });
+
+        queue.add(jsonRequest);
     }
 }
 
@@ -75,7 +115,7 @@ class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberViewHolder>
 
     @Override
     public void onBindViewHolder(@NonNull MemberViewHolder holder, int position) {
-        holder.memberName.setText(members.get(position));
+        holder.memberName.setText((position + 1) + ". " + members.get(position));
     }
 
     @Override

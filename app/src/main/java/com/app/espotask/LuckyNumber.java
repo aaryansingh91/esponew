@@ -46,7 +46,7 @@ public class LuckyNumber extends AppCompatActivity {
         setContentView(R.layout.activity_lucky_number);
 
         // SharedPreferences से user_id लें
-        SharedPreferences prefs = getSharedPreferences("pgamerapp", MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
         String userIdStr = prefs.getString("userID", null);
         if (userIdStr == null || userIdStr.trim().isEmpty()) {
             Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
