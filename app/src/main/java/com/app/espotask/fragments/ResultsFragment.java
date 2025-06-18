@@ -1,5 +1,6 @@
 package com.app.espotask.fragments;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -31,7 +32,7 @@ import java.util.List;
  * Use the {@link OngoingFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ResultsFragment extends Fragment {
+public class    ResultsFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private TournamentMatchesAdaptor adapter;
@@ -46,21 +47,29 @@ public class ResultsFragment extends Fragment {
         if (getArguments() != null) {
             gameId = getArguments().getString("game_id");
         }
-        View view = inflater.inflate(R.layout.fragment_upcoming, container, false);
+        View view = inflater.inflate(R.layout.fragment_results, container, false);
 
-        recyclerView = view.findViewById(R.id.recycler_upcoming);
+        recyclerView = view.findViewById(R.id.recycler_results);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         loadingAnim = view.findViewById(R.id.loadinganim);
 
-        fetchMatches();
+        // ✅ Get user ID from SharedPreferences
+        SharedPreferences prefs = requireContext().getSharedPreferences("EspoTaskApp", getContext().MODE_PRIVATE);
+        String userIdStr = prefs.getString("userID", null);
 
+        // Optional: Check if userId exists
+        if (userIdStr != null) {
+            fetchMatches(userIdStr);
+        } else {
+            Toast.makeText(requireContext(), "User not logged in!", Toast.LENGTH_SHORT).show();
+        }
         return view;
     }
 
-    private void fetchMatches() {
+    private void fetchMatches(String userId) {
         loadingAnim.setVisibility(View.VISIBLE);
         // ✅ Use class-level gameId here
-        String url = getString(R.string.app_url) + "/all-tournaments-matches.php?id=" + gameId;
+        String url = getString(R.string.app_url) + "/all-tournaments-matches.php?id=" + gameId + "&user_id=" + userId;
 
         RequestQueue queue = Volley.newRequestQueue(requireContext());
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
@@ -88,7 +97,10 @@ public class ResultsFragment extends Fragment {
                                         obj.getString("MAP"),
                                         obj.getString("no_of_player"),
                                         obj.optInt("filled_positions", 0),
-                                        obj.optInt("no_of_player", 0)
+                                        obj.optInt("no_of_player", 0),
+                                        matchStatus,
+                                        obj.optString("match_url"),
+                                        obj.optString("user_joined", "0") // 🔥 Add this
                                 );
                                 matches.add(item);
                             }

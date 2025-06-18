@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <!-- Header -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#FFFFFF"
+        android:padding="12dp">
+
+        <ImageView
+            android:id="@+id/back_button"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/back_button"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:contentDescription="Back"/>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_toEndOf="@id/back_button"
+            android:layout_marginStart="12dp"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="Match Result"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:text="Win Coins"
+                android:textSize="12sp"
+                android:textColor="#888888"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Header Image -->
+        <ImageView
+            android:id="@+id/bannerImage"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/freefire" />
+
+        <!-- Match Title and ID -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="FULL MAP NO COMMISSION - Match #15469"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="8dp" />
+
+        <!-- Match Date -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Organised on 17/06/2025 12:00 pm"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp" />
+
+        <!-- Prize Info -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp"
+            android:weightSum="3">
+
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Winning Prize : 🪙800"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Per Kill : 🪙5"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Entry Fee : 🪙5"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <!-- Winner Table Title -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/purple_bg"
+            android:text="Winner"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:padding="10dp"
+            android:layout_marginTop="16dp" />
+
+        <!-- Winner Table -->
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="*">
+
+            <TableRow>
+                <TextView android:text="#" android:textColor="@color/white" android:background="@color/black" android:padding="8dp" android:textStyle="bold"/>
+                <TextView android:text="Player Name" android:textColor="@color/white" android:background="@color/black" android:padding="8dp" android:textStyle="bold"/>
+                <TextView android:text="Kills" android:textColor="@color/white" android:background="@color/black" android:padding="8dp" android:textStyle="bold"/>
+                <TextView android:text="Winning" android:textColor="@color/white" android:background="@color/black" android:padding="8dp" android:textStyle="bold"/>
+            </TableRow>
+
+            <!-- Example rows -->
+            <TableRow>
+                <TextView android:text="1" android:textColor="@color/black" android:padding="8dp"/>
+                <TextView android:text="TRY BOT" android:textColor="@color/black" android:padding="8dp"/>
+                <TextView android:text="3" android:textColor="@color/black" android:padding="8dp"/>
+                <TextView android:text="15.00" android:textColor="@color/black" android:padding="8dp"/>
+            </TableRow>
+
+            <TableRow>
+                <TextView android:text="2" android:textColor="@color/black" android:padding="8dp"/>
+                <TextView android:text="VILOVEYOU" android:textColor="@color/black" android:padding="8dp"/>
+                <TextView android:text="2" android:textColor="@color/black" android:padding="8dp"/>
+                <TextView android:text="10.00" android:textColor="@color/black" android:padding="8dp"/>
+            </TableRow>
+        </TableLayout>
+
+        <!-- Match Result Title -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/purple_bg"
+            android:text="Match Result"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:padding="10dp"
+            android:layout_marginTop="16dp" />
+
+        <!-- Full Result Table -->
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="*">
+
+            <TableRow>
+                <TextView android:text="#" android:textColor="@color/white" android:background="@color/black" android:padding="8dp" android:textStyle="bold"/>
+                <TextView android:text="Player Name" android:textColor="@color/white" android:background="@color/black" android:padding="8dp" android:textStyle="bold"/>
+                <TextView android:text="Kills" android:textColor="@color/white" android:background="@color/black" android:padding="8dp" android:textStyle="bold"/>
+                <TextView android:text="Winning" android:textColor="@color/white" android:background="@color/black" android:padding="8dp" android:textStyle="bold"/>
+            </TableRow>
+
+            <!-- You can repeat below TableRow for each player dynamically -->
+            <!-- Sample entries -->
+            <TableRow>
+                <TextView android:text="1" android:textColor="@color/black" android:padding="8dp"/>
+                <TextView android:text="TRY BOT" android:textColor="@color/black" android:padding="8dp"/>
+                <TextView android:text="3" android:textColor="@color/black" android:padding="8dp"/>
+                <TextView android:text="15" android:textColor="@color/black" android:padding="8dp"/>
+            </TableRow>
+
+            <TableRow>
+                <TextView android:text="2" android:textColor="@color/black" android:padding="8dp"/>
+                <TextView android:text="VILOVEYOU" android:textColor="@color/black" android:padding="8dp"/>
+                <TextView android:text="2" android:textColor="@color/black" android:padding="8dp"/>
+                <TextView android:text="10" android:textColor="@color/black" android:padding="8dp"/>
+            </TableRow>
+
+            <TableRow>
+                <TextView android:text="3" android:textColor="@color/black" android:padding="8dp"/>
+                <TextView android:text="S¹⁰ JodX︵" android:textColor="@color/black" android:padding="8dp"/>
+                <TextView android:text="0" android:textColor="@color/black" android:padding="8dp"/>
+                <TextView android:text="0" android:textColor="@color/black" android:padding="8dp"/>
+            </TableRow>
+
+        </TableLayout>
+
+    </LinearLayout></LinearLayout>
+
+</ScrollView>

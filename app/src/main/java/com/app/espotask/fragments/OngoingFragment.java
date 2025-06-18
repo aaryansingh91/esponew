@@ -1,5 +1,6 @@
 package com.app.espotask.fragments;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -51,15 +52,24 @@ public class OngoingFragment extends Fragment {
         loadingAnim = view.findViewById(R.id.loadinganim);
         tvNoMatches = view.findViewById(R.id.tv_no_matches);
 
-        fetchMatches();
+        // ✅ Get user ID from SharedPreferences
+        SharedPreferences prefs = requireContext().getSharedPreferences("EspoTaskApp", getContext().MODE_PRIVATE);
+        String userIdStr = prefs.getString("userID", null);
+
+        // Optional: Check if userId exists
+        if (userIdStr != null) {
+            fetchMatches(userIdStr);
+        } else {
+            Toast.makeText(requireContext(), "User not logged in!", Toast.LENGTH_SHORT).show();
+        }
 
         return view;
     }
 
-    private void fetchMatches() {
+    private void fetchMatches(String userId) {
         loadingAnim.setVisibility(View.VISIBLE);
 
-        String url = getString(R.string.app_url) + "/all-tournaments-matches.php?id=" + gameId;
+        String url = getString(R.string.app_url) + "/all-tournaments-matches.php?id=" + gameId + "&user_id=" + userId;
         Toast.makeText(requireContext(), "Game ID: " + gameId, Toast.LENGTH_SHORT).show();
 
         RequestQueue queue = Volley.newRequestQueue(requireContext());
@@ -88,7 +98,10 @@ public class OngoingFragment extends Fragment {
                                         obj.getString("MAP"),
                                         obj.getString("no_of_player"),
                                         obj.optInt("filled_positions", 0),
-                                        obj.optInt("no_of_player", 0)
+                                        obj.optInt("no_of_player", 0),
+                                        matchStatus,
+                                        obj.optString("match_url"),
+                                        obj.optString("user_joined", "0") // 🔥 Add this
                                 );
                                 matches.add(item);
                             }

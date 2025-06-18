@@ -19,10 +19,15 @@ public class TournamentMatchesItem {
     private int entryFeeCoins;
     private int entryFeeTickets;
 
+    private int matchStatus; // 👈 NEW FIELD
+    private String matchUrl; // 👈 New
+    private String userJoined;
+
     public TournamentMatchesItem(int id, String imageUrl, String title, String time,
                                  int entryFeeCoins, int entryFeeTickets, String entryType,
                                  int prizePool, int perKill, String type, String version,
-                                 String map, String slots, int filledPositions, int noOfPlayer) {
+                                 String map, String slots, int filledPositions, int noOfPlayer,
+                                 int matchStatus, String matchUrl, String userJoined) { // 👈 ADD PARAMETER
         this.id = id;
         this.imageResource = R.drawable.ic_freefire_banner;
         this.banner = imageUrl;
@@ -39,8 +44,12 @@ public class TournamentMatchesItem {
         this.slots = slots;
         this.filledPositions = filledPositions;
         this.noOfPlayer = noOfPlayer;
+        this.matchStatus = matchStatus; // 👈 SET VALUE
+        this.matchUrl = matchUrl;
+        this.userJoined = userJoined;
     }
 
+    // Getters
     public int getId() { return id; }
     public int getImageResource() { return imageResource; }
     public String getTitle() { return title; }
@@ -53,9 +62,13 @@ public class TournamentMatchesItem {
     public String getMap() { return map; }
     public String getSlots() { return slots; }
     public String getImageUrl() { return banner; }
-    public int getFilledPositions() {return filledPositions;}
-    public int getNoOfPlayer() {return noOfPlayer;}
+    public int getFilledPositions() { return filledPositions; }
+    public int getNoOfPlayer() { return noOfPlayer; }
     public int getEntryFeeCoins() { return entryFeeCoins; }
     public int getEntryFeeTickets() { return entryFeeTickets; }
     public String getEntryType() { return entryType; }
+
+    public int getMatchStatus() { return matchStatus; } // 👈 NEW GETTER
+    public String getMatchUrl() {return matchUrl;}
+    public String getUserJoined() {return userJoined;}
 }
