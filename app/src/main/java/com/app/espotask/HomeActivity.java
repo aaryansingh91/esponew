@@ -21,6 +21,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.ScrollView;
@@ -66,12 +67,15 @@ import com.unity3d.ads.UnityAds;
 import com.unity3d.ads.IUnityAdsLoadListener;
 import com.unity3d.ads.IUnityAdsShowListener;
 import com.unity3d.ads.UnityAdsShowOptions;
+import com.unity3d.services.banners.BannerView;
+import com.unity3d.services.banners.UnityBannerSize;
 
 public class HomeActivity extends AppCompatActivity {
 
     // Declare this at the top of your class
     private String unityRewardedId = null;
     private Context appContext;
+    private int userId; // Declare globally here
 
     RecyclerView recyclerView, withdrawRecyclerView ;
     List<GameModel> gameList;
@@ -210,7 +214,7 @@ public class HomeActivity extends AppCompatActivity {
         });
 
 
-        int userId = Integer.parseInt(storedID); // pass the actual user ID here
+                      userId = Integer.parseInt(storedID); // pass the actual user ID here
         fetchUserData(userId);
         swipeRefreshLayout.setOnRefreshListener(() -> {
             // Simple activity refresh
@@ -896,107 +900,165 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-    // Call this method from onCreate or wherever needed
-    private void fetchAndSetupAds(Context context) {
-        appContext = context;
+        // Fetch ads and setup Unity if needed
+        public void fetchAndSetupAds(Context context) {
+            appContext = context;
+            Toast.makeText(context, "Fetching Ads...", Toast.LENGTH_SHORT).show();
 
-        Toast.makeText(context, "Ads fetched", Toast.LENGTH_SHORT).show();
-        String url = context.getString(R.string.app_url) + "/get_active_ads.php";
+            String url = context.getString(R.string.app_url) + "/get_active_ads.php";
 
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                response -> {
-                    try {
-                        JSONObject json = new JSONObject(response);
-                        if (json.getString("status").equals("success")) {
-                            JSONObject data = json.getJSONObject("data");
-                            String provider = data.getString("provider_name");
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                    response -> {
+                        try {
+                            JSONObject json = new JSONObject(response);
+                            if (json.getString("status").equals("success")) {
+                                JSONObject data = json.getJSONObject("data");
+                                String provider = data.getString("provider_name");
 
-                            Log.e("UNITY_AD", provider);
-                            Toast.makeText(context, "Ad Provider: " + provider, Toast.LENGTH_SHORT).show();
+                                Log.e("UNITY_AD", provider);
+                                Toast.makeText(context, "Ad Provider: " + provider, Toast.LENGTH_SHORT).show();
 
-                            if (provider.equalsIgnoreCase("Unity")) {
-                                String unityAppId = data.getString("app_id");
-                                String unityInterstitialId = data.getString("interstitial_ad_id");
-                                unityRewardedId = data.getString("rewarded_ad_id"); // Store globally
-                                String unityBannerId = data.getString("banner_ad_id");
+                                if (provider.equalsIgnoreCase("Unity")) {
+                                    String unityAppId = data.getString("app_id");
 
-                                Log.e("UNITY_AD", unityBannerId + unityAppId + unityInterstitialId);
+                                    if (!UnityAds.isInitialized()) {
+                                        UnityAds.initialize((Activity) context, unityAppId, false);
+                                    }
 
-                                UnityAds.initialize((Activity) context, unityAppId, false);
+                                    FrameLayout bannerContainer = ((Activity) context).findViewById(R.id.banner_container);
 
-                                loadUnityInterstitialAd(context, unityInterstitialId);
-                                preloadUnityRewardedAd(context, unityRewardedId);
+                                    if (data.optBoolean("is_banner_enabled", false)) {
+                                        String unityBannerId = data.optString("banner_ad_id", "");
+                                        bannerContainer.setVisibility(View.VISIBLE);
+                                        loadUnityBannerAd(context, unityBannerId);
+                                    } else {
+                                        bannerContainer.setVisibility(View.GONE);
+                                    }
+
+
+                                    if (data.optBoolean("is_interstitial_enabled", false)) {
+                                        String unityInterstitialId = data.optString("interstitial_ad_id", "");
+                                        loadUnityInterstitialAd(context, unityInterstitialId);
+                                    }
+
+                                    if (data.optBoolean("is_rewarded_enabled", false)) {
+                                        unityRewardedId = data.optString("rewarded_ad_id", "");
+                                        preloadUnityRewardedAd(context, unityRewardedId);
+                                    }
+                                }
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Toast.makeText(context, "Ad Fetch Error", Toast.LENGTH_SHORT).show();
+                        }
+                    },
+                    error -> Log.e("AD_FETCH_ERROR", error.toString())
+            );
+
+            RequestQueue queue = Volley.newRequestQueue(context);
+            queue.add(stringRequest);
+        }
+
+        private void loadUnityInterstitialAd(Context context, String adUnitId) {
+            UnityAds.load(adUnitId, new IUnityAdsLoadListener() {
+                @Override
+                public void onUnityAdsAdLoaded(String placementId) {
+                    Toast.makeText(context, "Unity Interstitial Loaded: " + placementId, Toast.LENGTH_SHORT).show();
+                    UnityAds.show((Activity) context, placementId);
+                }
+
+                @Override
+                public void onUnityAdsFailedToLoad(String placementId, UnityAds.UnityAdsLoadError error, String message) {
+                    Log.e("UNITY_AD", "Interstitial Load Failed: " + message);
+                }
+            });
+        }
+
+        private void preloadUnityRewardedAd(Context context, String adUnitId) {
+            UnityAds.load(adUnitId, new IUnityAdsLoadListener() {
+                @Override
+                public void onUnityAdsAdLoaded(String placementId) {
+                    Toast.makeText(context, "Unity Rewarded Ad Loaded: " + placementId, Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onUnityAdsFailedToLoad(String placementId, UnityAds.UnityAdsLoadError error, String message) {
+                    Log.e("UNITY_AD", "Rewarded Load Failed: " + message);
+                }
+            });
+        }
+
+        private void loadUnityBannerAd(Context context, String adUnitId) {
+            if (UnityAds.isInitialized()) {
+                Toast.makeText(context, "Unity Banner Ad Loaded: " + adUnitId, Toast.LENGTH_SHORT).show();
+                BannerView bannerView = new BannerView((Activity) context, adUnitId, new UnityBannerSize(320, 50));
+                FrameLayout bannerContainer = ((Activity) context).findViewById(R.id.banner_container);
+                bannerContainer.removeAllViews();
+                bannerContainer.addView(bannerView);
+                bannerView.load();
+            } else {
+                Toast.makeText(context, "Unity Banner Ad Loaded Not Loaded: " + adUnitId, Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        // Setup watch ad button (call this in your activity)
+        public void setupWatchAdButton(Activity activity) {
+            Button watchAdBtn = activity.findViewById(R.id.watch_ad);
+            watchAdBtn.setOnClickListener(v -> {
+                if (unityRewardedId != null && UnityAds.isInitialized()) {
+                    UnityAds.show(activity, unityRewardedId, new UnityAdsShowOptions(), new IUnityAdsShowListener() {
+                        @Override
+                        public void onUnityAdsShowComplete(String placementId, UnityAds.UnityAdsShowCompletionState state) {
+                            if (state == UnityAds.UnityAdsShowCompletionState.COMPLETED) {
+                                rewardForVideoTask(activity, userId);
+                                Toast.makeText(activity, "Ad Seen, reward granted!", Toast.LENGTH_SHORT).show();
                             }
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                },
-                error -> Log.e("AD_FETCH_ERROR", error.toString())
-        );
 
-        RequestQueue queue = Volley.newRequestQueue(context);
-        queue.add(stringRequest);
-    }
-
-    private void loadUnityInterstitialAd(Context context, String adUnitId) {
-        UnityAds.load(adUnitId, new IUnityAdsLoadListener() {
-            @Override
-            public void onUnityAdsAdLoaded(String placementId) {
-                Toast.makeText(context, "Unity Interstitial Ad Loaded: " + placementId, Toast.LENGTH_SHORT).show();
-                UnityAds.show((Activity) context, placementId);
-                Log.e("UNITY_AD", "Loaded interstitial: " + placementId);
-            }
-
-            @Override
-            public void onUnityAdsFailedToLoad(String placementId, UnityAds.UnityAdsLoadError error, String message) {
-                Log.e("UNITY_AD", "Failed to load interstitial: " + message);
-            }
-        });
-    }
-
-    // Only preload here
-    private void preloadUnityRewardedAd(Context context, String adUnitId) {
-        UnityAds.load(adUnitId, new IUnityAdsLoadListener() {
-            @Override
-            public void onUnityAdsAdLoaded(String placementId) {
-                Toast.makeText(context, "Unity Rewarded Ad Loaded: " + placementId, Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onUnityAdsFailedToLoad(String placementId, UnityAds.UnityAdsLoadError error, String message) {
-                Log.e("UNITY_AD", "Failed to preload rewarded: " + message);
-            }
-        });
-    }
-
-    // Call this inside onCreate() after setContentView()
-    private void setupWatchAdButton(Activity activity) {
-        Button watchAdBtn = activity.findViewById(R.id.watch_ad);
-        watchAdBtn.setOnClickListener(v -> {
-            if (unityRewardedId != null && UnityAds.isInitialized()) {
-                UnityAds.show(activity, unityRewardedId, new UnityAdsShowOptions(), new IUnityAdsShowListener() {
-                    @Override
-                    public void onUnityAdsShowComplete(String placementId, UnityAds.UnityAdsShowCompletionState state) {
-                        if (state == UnityAds.UnityAdsShowCompletionState.COMPLETED) {
-                            Toast.makeText(activity, "Ad Seen, reward granted!", Toast.LENGTH_SHORT).show();
+                        @Override public void onUnityAdsShowStart(String placementId) {}
+                        @Override public void onUnityAdsShowClick(String placementId) {}
+                        @Override public void onUnityAdsShowFailure(String placementId, UnityAds.UnityAdsShowError error, String message) {
+                            Toast.makeText(activity, "Failed to show ad: " + message, Toast.LENGTH_SHORT).show();
                         }
-                    }
+                    });
+                } else {
+                    Toast.makeText(activity, "Ad not ready yet. Try again later.", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
 
-                    @Override public void onUnityAdsShowStart(String placementId) {}
-                    @Override public void onUnityAdsShowClick(String placementId) {}
-                    @Override public void onUnityAdsShowFailure(String placementId, UnityAds.UnityAdsShowError error, String message) {
-                        Toast.makeText(activity, "Failed to show ad: " + message, Toast.LENGTH_SHORT).show();
-                    }
-                });
-            } else {
-                Toast.makeText(activity, "Ad not ready yet. Please try again later.", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
+        // Reward the user after ad view
+        public void rewardForVideoTask(Context context, int userId) {
+            String url = context.getString(R.string.app_url) + "/reward_video_task.php";
 
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                    response -> {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            if (jsonObject.getBoolean("success")) {
+                                int coins = jsonObject.getInt("coins_rewarded");
+                                Toast.makeText(context, "You earned " + coins + " coins!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(context, "Error parsing reward response", Toast.LENGTH_SHORT).show();
+                        }
+                    },
+                    error -> Toast.makeText(context, "Network error", Toast.LENGTH_SHORT).show()
+            ) {
+                @Override
+                protected Map<String, String> getParams() {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("user_id", String.valueOf(userId));
+                    return params;
+                }
+            };
 
-
+            RequestQueue queue = Volley.newRequestQueue(context);
+            queue.add(stringRequest);
+        }
 
 
 
