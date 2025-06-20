@@ -99,11 +99,24 @@ public class HomeActivity extends AppCompatActivity {
     WithdrawSelectionItem withdraw_selection_adapter;
     List<WithdrawSelectionItem> withdraw_selection_ItemList;
 
+    Button btnFacebook, btnInstagram, btnTelegram, btnYoutube;
+    String facebookUrl, instagramUrl, telegramUrl, youtubeUrl;
+
+
     @SuppressLint({"MissingInflatedId", "ClickableViewAccessibility"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        // Bind Buttons
+        btnFacebook = findViewById(R.id.btnFacebook);
+        btnInstagram = findViewById(R.id.btnInstagram);
+        btnTelegram = findViewById(R.id.btnTelegram);
+        btnYoutube = findViewById(R.id.btnYoutube);
+
+        // Fetch social links
+        fetchSocialLinks();
 
         Button cardTaskOffers = findViewById(R.id.card_task_offers);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
@@ -1060,6 +1073,51 @@ public class HomeActivity extends AppCompatActivity {
             queue.add(stringRequest);
         }
 
+    private void fetchSocialLinks() {
+        String url = getString(R.string.app_url) + "/get_social_links.php";
 
+        RequestQueue queue = Volley.newRequestQueue(this);
+        StringRequest request = new StringRequest(Request.Method.GET, url,
+                response -> {
+                    try {
+                        JSONObject json = new JSONObject(response);
+                        if (json.getBoolean("status")) {
+                            JSONObject links = json.getJSONObject("social_links");
+                            facebookUrl = links.getString("facebook");
+                            instagramUrl = links.getString("instagram");
+                            telegramUrl = links.getString("telegram");
+                            youtubeUrl = links.getString("youtube");
 
+                            setButtonListeners();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "Error parsing data", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> {
+                    error.printStackTrace();
+                    Toast.makeText(this, "Network Error", Toast.LENGTH_SHORT).show();
+                });
+
+        queue.add(request);
+    }
+
+    private void setButtonListeners() {
+        btnFacebook.setOnClickListener(v -> openUrl(facebookUrl));
+        btnInstagram.setOnClickListener(v -> openUrl(instagramUrl));
+        btnTelegram.setOnClickListener(v -> openUrl(telegramUrl));
+        btnYoutube.setOnClickListener(v -> openUrl(youtubeUrl));
+    }
+
+    private void openUrl(String url) {
+        if (url != null && !url.isEmpty()) {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, "Link not available", Toast.LENGTH_SHORT).show();
+        }
+    }
 }
+
+

@@ -3,6 +3,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <LinearLayout
+        android:id="@+id/shimmerContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <!-- Include shimmer layout 10 times -->
+        <include layout="@layout/shimmer_transaction_item" />
+        <include layout="@layout/shimmer_transaction_item" />
+        <include layout="@layout/shimmer_transaction_item" />
+        <include layout="@layout/shimmer_transaction_item" />
+        <include layout="@layout/shimmer_transaction_item" />
+        <include layout="@layout/shimmer_transaction_item" />
+        <include layout="@layout/shimmer_transaction_item" />
+        <include layout="@layout/shimmer_transaction_item" />
+        <include layout="@layout/shimmer_transaction_item" />
+        <include layout="@layout/shimmer_transaction_item" />
+
+    </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewHistory"
         android:layout_width="match_parent"

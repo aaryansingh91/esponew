@@ -137,6 +137,7 @@ public class SplashActivity extends AppCompatActivity {
                         String app_login_forgot_password_link = jsonObject.getString("app_login_forgot_password_link");
                         String app_login_signup_issue_contact_link = jsonObject.getString("app_login_signup_issue_contact_link");
                         String app_internal_settings_page_privacy_page_link = jsonObject.getString("app_internal_settings_page_privacy_page_link");
+                        String app_internal_settings_page_terms_condition_page_link = jsonObject.getString("app_internal_settings_page_terms_condition_page_link");
                         String app_internal_settings_page_rateus_page_link = jsonObject.getString("app_internal_settings_page_rateus_page_link");
                         String app_home_top_sec_1_game = jsonObject.getString("app_home_top_sec_1_game");
                         String app_home_top_sec_1_game_url = jsonObject.getString("app_home_top_sec_1_game_url");
@@ -224,6 +225,7 @@ public class SplashActivity extends AppCompatActivity {
                         myEdit.putString("app_login_forgot_password_link", app_login_forgot_password_link);
                         myEdit.putString("app_login_signup_issue_contact_link", app_login_signup_issue_contact_link);
                         myEdit.putString("app_internal_settings_page_privacy_page_link", app_internal_settings_page_privacy_page_link);
+                        myEdit.putString("app_internal_settings_page_terms_condition_page_link", app_internal_settings_page_terms_condition_page_link);
                         myEdit.putString("app_internal_settings_page_rateus_page_link", app_internal_settings_page_rateus_page_link);
                         myEdit.putString("app_home_top_sec_1_game", app_home_top_sec_1_game);
                         myEdit.putString("app_home_top_sec_1_game_url", app_home_top_sec_1_game_url);

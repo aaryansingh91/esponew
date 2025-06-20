@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -30,12 +31,11 @@ public class HistoryFragment extends Fragment {
     private RecyclerView recyclerView;
     private HistoryAdapter adapter;
     private List<HistoryItem> historyItems;
-    int storedID ;
 
-    public HistoryFragment() {
-        // Required empty public constructor
+    private LinearLayout shimmerContainer;
+    private int storedID;
 
-    }
+    public HistoryFragment() {}
 
     public static HistoryFragment newInstance(int type) {
         HistoryFragment fragment = new HistoryFragment();
@@ -51,41 +51,42 @@ public class HistoryFragment extends Fragment {
         if (getArguments() != null) {
             type = getArguments().getInt(ARG_TYPE);
         }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
 
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("EspoTaskApp", Context.MODE_PRIVATE);
-
         String userIdStr = sharedPreferences.getString("userID", "0");
         try {
             storedID = Integer.parseInt(userIdStr);
         } catch (NumberFormatException e) {
             storedID = 0;
         }
+    }
 
-
-        // Inflate the layout for this fragment
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_history, container, false);
+
+        shimmerContainer = view.findViewById(R.id.shimmerContainer);
         recyclerView = view.findViewById(R.id.recyclerViewHistory);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
         historyItems = new ArrayList<>();
         adapter = new HistoryAdapter(getContext(), historyItems);
         recyclerView.setAdapter(adapter);
 
-        // Populate the RecyclerView with data based on the type (Coins or Tickets)
+        recyclerView.setVisibility(View.GONE);
+        shimmerContainer.setVisibility(View.VISIBLE);
+
         populateHistoryList();
+
         return view;
     }
 
     private void populateHistoryList() {
         historyItems.clear();
 
-        int userId = storedID; // You can dynamically fetch this from SharedPreferences or login session
-        String url = getString(R.string.app_url) +"/get_user_account_statement.php?user_id=" + userId;
+        int userId = storedID;
+        String url = getString(R.string.app_url) + "/get_user_account_statement.php?user_id=" + userId;
 
         RequestQueue queue = Volley.newRequestQueue(requireContext());
 
@@ -98,13 +99,13 @@ public class HistoryFragment extends Fragment {
 
                             String note = obj.getString("note");
                             String createdDate = obj.getString("created_date");
-                            String typeStr = obj.getString("currency_type"); // coins or tickets
-                            String creditDebit = obj.getString("type"); // <-- Add this
+                            String typeStr = obj.getString("currency_type");
+                            String creditDebit = obj.getString("type");
                             double amount = obj.getDouble("amount");
 
                             int itemType = typeStr.equalsIgnoreCase("coins") ? HistoryItem.TYPE_COIN : HistoryItem.TYPE_TICKET;
 
-                            if (itemType == type) { // Only add items that match tab type
+                            if (itemType == type) {
                                 historyItems.add(new HistoryItem(
                                         createdDate,
                                         note,
@@ -114,9 +115,16 @@ public class HistoryFragment extends Fragment {
                                 ));
                             }
                         }
+
                         adapter.notifyDataSetChanged();
+
+                        // hide shimmer, show recycler
+                        shimmerContainer.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        Toast.makeText(getContext(), "Failed to parse data", Toast.LENGTH_SHORT).show();
                     }
                 },
                 error -> {
@@ -125,5 +133,4 @@ public class HistoryFragment extends Fragment {
 
         queue.add(jsonObjectRequest);
     }
-
 }

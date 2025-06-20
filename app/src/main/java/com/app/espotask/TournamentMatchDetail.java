@@ -1,10 +1,12 @@
 package com.app.espotask;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -165,7 +167,7 @@ public class TournamentMatchDetail extends AppCompatActivity {
                         JSONObject jsonResponse = new JSONObject(response);
                         boolean status = jsonResponse.getBoolean("status");
                         if (!status) {
-                            Toast.makeText(this, "Match not found! Please try again.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(TournamentMatchDetail.this, "Match not found! Please try again.", Toast.LENGTH_LONG).show();
                             joinButton.setEnabled(false);
                             finish();
                             return;
@@ -173,6 +175,8 @@ public class TournamentMatchDetail extends AppCompatActivity {
 
                         JSONObject match = jsonResponse.getJSONObject("data");
                         matchType = match.optString("type", "Unknown").trim();
+                        String matchStatus = match.optString("match_status", "1").trim(); // 3 = ongoing
+                        String videoUrl = match.optString("match_url", "").trim(); // ✅ define it
 
                         // Pass match data to DescriptionFragment
                         Bundle bundle = new Bundle();
@@ -199,19 +203,28 @@ public class TournamentMatchDetail extends AppCompatActivity {
                             ((DescriptionFragment) fragment).updateMatchDetails(bundle);
                         }
 
-                        // Enable join button only if match type is valid
-                        if (!matchType.equalsIgnoreCase("Unknown") && !matchType.isEmpty()) {
-                            joinButton.setEnabled(true);
-                            Log.d(TAG, "Join button enabled with matchType: " + matchType);
+                        // Decide action based on match_status
+                        if (matchStatus.equals("3") && videoUrl != null && !videoUrl.isEmpty()) {
+                            joinButton.setText("Watch Video");
+                            joinButton.setOnClickListener(v -> {
+                                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(videoUrl));
+                                startActivity(intent);
+                            });
                         } else {
-                            Toast.makeText(this, "Invalid match type: " + matchType, Toast.LENGTH_LONG).show();
-                            joinButton.setEnabled(false);
+                            // Enable join button only if match type is valid
+                            if (!matchType.equalsIgnoreCase("Unknown") && !matchType.isEmpty()) {
+                                joinButton.setEnabled(true);
+                                Log.d(TAG, "Join button enabled with matchType: " + matchType);
+                            } else {
+                                Toast.makeText(TournamentMatchDetail.this, "Invalid match type: " + matchType, Toast.LENGTH_LONG).show();
+                                joinButton.setEnabled(false);
+                            }
                         }
 
                     } catch (JSONException e) {
                         e.printStackTrace();
                         Log.e(TAG, "Match details JSON error: " + e.getMessage() + ", Raw response: " + response);
-                        Toast.makeText(this, "Error parsing match data: " + response, Toast.LENGTH_LONG).show();
+                        Toast.makeText(TournamentMatchDetail.this, "Error parsing match data: " + response, Toast.LENGTH_LONG).show();
                         joinButton.setEnabled(false);
                         finish();
                     }
@@ -234,15 +247,15 @@ public class TournamentMatchDetail extends AppCompatActivity {
                     }
                     error.printStackTrace();
                     Log.e(TAG, "Match details Volley error: " + errorMsg + " (HTTP " + statusCode + ", Response: " + responseData + ")");
-                    Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show();
+                    Toast.makeText(TournamentMatchDetail.this, errorMsg, Toast.LENGTH_LONG).show();
                     joinButton.setEnabled(false);
                     finish();
                 });
 
         queue.add(request);
         Log.d(TAG, "Match details API request queued");
-
     }
+
 
     private void sendJoinRequest(String joinType, String inGameUsername) {
         if (matchType.isEmpty() || matchType.equalsIgnoreCase("Unknown")) {

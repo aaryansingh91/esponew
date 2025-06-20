@@ -1623,6 +1623,7 @@
                                         android:orientation="horizontal"
                                         android:gravity="center_vertical"
                                         android:background="@drawable/row_selector"
+                                        android:paddingVertical="10dp"
                                         android:clickable="true"
                                         android:focusable="true">
                                         <ImageView
@@ -1638,6 +1639,7 @@
                                             android:textSize="16sp"
                                             android:textColor="@color/black" />
                                         <Button
+                                            android:id="@+id/btnFacebook"
                                             android:layout_width="100dp"
                                             android:layout_height="wrap_content"
                                             android:text="Like Us"
@@ -1668,6 +1670,7 @@
                                             android:textSize="16sp"
                                             android:textColor="@color/black" />
                                         <Button
+                                            android:id="@+id/btnInstagram"
                                             android:layout_width="100dp"
                                             android:layout_height="wrap_content"
                                             android:text="Follow Us"
@@ -1698,6 +1701,7 @@
                                             android:textSize="16sp"
                                             android:textColor="@color/black" />
                                         <Button
+                                            android:id="@+id/btnTelegram"
                                             android:layout_width="100dp"
                                             android:layout_height="wrap_content"
                                             android:text="Join Us"
@@ -1728,6 +1732,7 @@
                                             android:textSize="16sp"
                                             android:textColor="@color/black" />
                                         <Button
+                                            android:id="@+id/btnYoutube"
                                             android:layout_width="100dp"
                                             android:layout_height="wrap_content"
                                             android:text="Subscribe"
