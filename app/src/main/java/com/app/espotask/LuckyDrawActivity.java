@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,6 +34,11 @@ public class LuckyDrawActivity extends AppCompatActivity {
 
     private int USER_ID; // Make it accessible to inner classes
 
+    ShimmerFrameLayout shimmerLayout;
+    LinearLayout shimmerContainer;
+    Button btnGetFreeEntry;
+
+
     // Static user ID as requested
 
 
@@ -40,6 +47,17 @@ public class LuckyDrawActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lucky_draw);
+
+        shimmerLayout = findViewById(R.id.shimmer_layout);
+        shimmerContainer = findViewById(R.id.shimmer_container);
+
+// Inflate 5 shimmer placeholders
+        LayoutInflater inflater = LayoutInflater.from(this);
+        for (int i = 0; i < 5; i++) {
+            View shimmerCard = inflater.inflate(R.layout.lucky_draw_shimmer, shimmerContainer, false);
+            shimmerContainer.addView(shimmerCard);
+        }
+
 
         SharedPreferences prefs = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
         String userIdStr = prefs.getString("userID", null);
@@ -117,7 +135,7 @@ public class LuckyDrawActivity extends AppCompatActivity {
                         ((ProgressBar) cardView.findViewById(R.id.progressBar)).setProgress(filledPercent);
 
                         // Find or create Get Free Entry button inside your item_lucky_draw.xml
-                        Button btnGetFreeEntry = cardView.findViewById(R.id.btn_get_free_entry);
+                        btnGetFreeEntry = cardView.findViewById(R.id.btn_get_free_entry);
                         if (btnGetFreeEntry != null) {
                             btnGetFreeEntry.setOnClickListener(v -> {
                                 // Call AsyncTask to join the lucky draw
@@ -128,6 +146,7 @@ public class LuckyDrawActivity extends AppCompatActivity {
                             if (joined) {
                                 btnGetFreeEntry.setText("Participated");
                                 btnGetFreeEntry.setEnabled(false);
+                                btnGetFreeEntry.setAlpha(0.5f);
                             } else {
                                 btnGetFreeEntry.setText("Get Free Entry");
                                 btnGetFreeEntry.setEnabled(true);
@@ -139,6 +158,11 @@ public class LuckyDrawActivity extends AppCompatActivity {
                             }
                         }
                         luckyDrawContainer.addView(cardView);
+                        // Hide shimmer, show actual content
+                        shimmerLayout.stopShimmer();
+                        shimmerLayout.setVisibility(View.GONE);
+                        luckyDrawContainer.setVisibility(View.VISIBLE);
+
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -202,9 +226,9 @@ public class LuckyDrawActivity extends AppCompatActivity {
 
                     Toast.makeText(LuckyDrawActivity.this, message, Toast.LENGTH_SHORT).show();
                     if (status.equals("success")) {
-                        recreate();
-//                        button.setEnabled(false);
-//                        button.setText("Already Joined");
+//                        recreate();
+                        btnGetFreeEntry.setEnabled(false);
+                        btnGetFreeEntry.setAlpha(0.5f);
 
                    }
                 } catch (JSONException e) {

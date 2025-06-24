@@ -83,8 +83,9 @@
 
                     <ImageView
                         android:src="@drawable/baseline_keyboard_arrow_right_24"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"/>
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical" />
 
 
                 </LinearLayout>
@@ -93,12 +94,31 @@
         </LinearLayout>
 
         <!-- Container for dynamically added cards -->
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmer_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:padding="16dp"
+            app:shimmer_auto_start="true"
+            app:shimmer_duration="1000"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/shimmer_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
         <LinearLayout
             android:id="@+id/lucky_draw_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="0dp" />
+            android:padding="0dp"
+            android:visibility="gone" />
+
 
     </LinearLayout>
 </ScrollView>
