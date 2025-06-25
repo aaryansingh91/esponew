@@ -1,8 +1,11 @@
 package com.app.espotask;
 
+import android.Manifest;
 import android.app.Dialog;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -10,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -18,6 +22,7 @@ import android.widget.ScrollView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.card.MaterialCardView;
@@ -38,6 +43,7 @@ import java.security.NoSuchAlgorithmException;
 
 public class OnboardingDisclosureActivity extends AppCompatActivity {
 
+    private static final int REQUEST_CODE_POST_NOTIFICATIONS = 101;
     TextInputEditText phone_number_input,login_password_input;
     TextInputEditText signup_name_input,signup_email_input, signup_number_input, signup_password_input, signup_refer_input;
     Dialog loading_dialog;
@@ -52,7 +58,7 @@ public class OnboardingDisclosureActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_onboardingdisclosure);
         FirebaseApp.initializeApp(this);
-
+        checkNotificationPermission();
         MaterialCardView btnCancel = findViewById(R.id.btnCancel);
         MaterialCardView btnAgree = findViewById(R.id.btnAgree);
 
@@ -104,6 +110,38 @@ public class OnboardingDisclosureActivity extends AppCompatActivity {
 
 
         loading_dialog.hide();
+    }
+
+    // ✅ Move this outside onCreate
+    private void checkNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                        REQUEST_CODE_POST_NOTIFICATIONS);
+            }
+        } else {
+            NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            if (!nm.areNotificationsEnabled()) {
+                // Optional: Show prompt to user to enable notifications
+            }
+        }
+    }
+
+    // ✅ Move this outside onCreate
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CODE_POST_NOTIFICATIONS) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted
+            } else {
+                // Permission denied
+            }
+        }
     }
 
     public void openPrivacyPolicy(View view) {
