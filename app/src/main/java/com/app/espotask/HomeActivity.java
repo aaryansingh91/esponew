@@ -34,6 +34,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -57,6 +58,7 @@ import java.net.URLEncoder;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -114,6 +116,8 @@ public class HomeActivity extends AppCompatActivity {
         btnInstagram = findViewById(R.id.btnInstagram);
         btnTelegram = findViewById(R.id.btnTelegram);
         btnYoutube = findViewById(R.id.btnYoutube);
+
+        ViewPager2 viewPager2 = findViewById(R.id.imageSlider);
 
         // Fetch social links
         fetchSocialLinks();
@@ -205,6 +209,30 @@ public class HomeActivity extends AppCompatActivity {
                 return false;  // allow normal scrolling
             }
         });
+
+        // Sample images (from drawable)
+        List<Integer> images = Arrays.asList(
+                R.drawable.freefire,
+                R.drawable.freefire,
+                R.drawable.freefire
+        );
+
+        ImageSliderAdapter Slideradapter = new ImageSliderAdapter(images);
+        viewPager2.setAdapter(Slideradapter);
+
+// Optional: Auto-slide
+        new Handler().postDelayed(new Runnable() {
+            int currentPage = 0;
+
+            @Override
+            public void run() {
+                if (currentPage == images.size()) {
+                    currentPage = 0;
+                }
+                viewPager2.setCurrentItem(currentPage++, true);
+                new Handler().postDelayed(this, 3000); // 3 sec delay
+            }
+        }, 3000);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

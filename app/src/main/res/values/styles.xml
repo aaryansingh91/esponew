@@ -13,6 +13,11 @@
         <item name="android:textColor">@color/dark_black</item>
     </style>
 
+    <style name="RoundedSliderImage" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item> <!-- Change radius as needed -->
+    </style>
+
 
 
 

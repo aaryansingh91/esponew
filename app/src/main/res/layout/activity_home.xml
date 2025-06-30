@@ -10,7 +10,6 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        xmlns:android="http://schemas.android.com/apk/res/android"
         layout_above="@id/bottom_nav_bar"
         android:layout_weight="1">
         <ScrollView
@@ -84,18 +83,22 @@
                     </LinearLayout>
                 </LinearLayout>
                 <!--    home screen-->
+
+
                 <ScrollView
                     android:visibility="visible"
                     android:id="@+id/home_scroll_section"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:padding="10dp">
                         <LinearLayout
+                            android:visibility="gone"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
@@ -125,14 +128,16 @@
                                             android:orientation="vertical"
                                             android:onClick="openGameOfferwall"
                                             android:padding="15dp">
+
                                             <TextView
-                                                android:fontFamily="@font/poppins"
                                                 android:layout_width="wrap_content"
                                                 android:layout_height="wrap_content"
+                                                android:fontFamily="@font/poppins"
                                                 android:text="Playtime Games"
-                                                android:textSize="16sp"
                                                 android:textColor="@color/black"
+                                                android:textSize="16sp"
                                                 android:textStyle="bold" />
+
                                             <TextView
                                                 android:fontFamily="@font/poppins"
                                                 android:layout_width="wrap_content"
@@ -256,6 +261,379 @@
                                 </LinearLayout>
                             </HorizontalScrollView>
                         </LinearLayout>
+
+                        <androidx.viewpager2.widget.ViewPager2
+                            android:visibility="gone"
+                            android:id="@+id/imageSlider"
+                            android:layout_width="match_parent"
+                            android:layout_height="180dp"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginTop="20dp" />
+
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Suggestions for you"
+                            android:paddingStart="10dp"
+                            android:paddingTop="20dp"
+                            android:paddingBottom="10dp"
+                            android:textStyle="bold"
+                            android:textSize="16sp"
+                            android:fontFamily="@font/poppins"
+                            android:textColor="@color/black" />
+
+                        <HorizontalScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:scrollbars="none"
+                            android:paddingBottom="10dp">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <!-- Card 1 -->
+                                <com.google.android.material.card.MaterialCardView
+                                    android:layout_width="250dp"
+                                    android:layout_height="135dp"
+                                    android:layout_marginStart="10dp"
+                                    android:layout_marginEnd="5dp"
+                                    app:cardCornerRadius="15dp"
+                                    android:elevation="0dp"
+                                    app:strokeColor="@android:color/transparent"
+                                    app:cardBackgroundColor="@android:color/white">
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:orientation="vertical"
+                                        android:gravity="left"
+                                        android:padding="15dp">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Playtime Games"
+                                            android:textStyle="bold"
+                                            android:textSize="16sp"
+                                            android:fontFamily="@font/poppins"
+                                            android:textColor="@color/black" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Earn Per Minute 🪙"
+                                            android:textSize="12sp"
+                                            android:layout_marginTop="5dp"
+                                            android:fontFamily="@font/poppins"
+                                            android:textColor="@color/black" />
+
+                                        <Button
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="🌟 BEST OFFER 🌟"
+                                            android:textSize="12sp"
+                                            android:textStyle="bold"
+                                            android:textColor="@android:color/white"
+                                            android:backgroundTint="#7A00CC"
+                                            android:paddingLeft="15dp"
+                                            android:paddingRight="15dp"
+                                            android:paddingTop="10dp"
+                                            android:layout_marginTop="5dp"
+                                            android:paddingBottom="10dp" />
+                                    </LinearLayout>
+                                </com.google.android.material.card.MaterialCardView>
+
+                                <!-- Card 2 -->
+                                <com.google.android.material.card.MaterialCardView
+                                    android:layout_width="250dp"
+                                    android:layout_height="135dp"
+                                    android:layout_marginStart="5dp"
+                                    android:layout_marginEnd="5dp"
+                                    app:cardCornerRadius="15dp"
+                                    android:elevation="0dp"
+                                    app:strokeColor="@android:color/transparent"
+
+                                    app:cardBackgroundColor="@android:color/white">
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:gravity="left"
+                                        android:orientation="vertical"
+                                        android:padding="15dp">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:fontFamily="@font/poppins"
+                                            android:text="App Tasks"
+                                            android:textColor="@color/black"
+                                            android:textSize="16sp"
+                                            android:textStyle="bold" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="5dp"
+                                            android:fontFamily="@font/poppins"
+                                            android:text="Try new apps &amp; earn 🪙"
+                                            android:textColor="@color/black"
+                                            android:textSize="12sp" />
+
+                                        <Button
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="5dp"
+                                            android:backgroundTint="#7A00CC"
+                                            android:paddingLeft="15dp"
+                                            android:paddingTop="10dp"
+                                            android:paddingRight="15dp"
+                                            android:paddingBottom="10dp"
+                                            android:text="Try Now"
+                                            android:textColor="@android:color/white"
+                                            android:textSize="12sp"
+                                            android:textStyle="bold" />
+                                    </LinearLayout>
+                                </com.google.android.material.card.MaterialCardView>
+
+                                <!-- Card 3 -->
+                                <com.google.android.material.card.MaterialCardView
+                                    android:layout_width="250dp"
+                                    android:layout_height="135dp"
+                                    android:layout_marginStart="5dp"
+                                    android:layout_marginEnd="10dp"
+                                    app:cardCornerRadius="15dp"
+                                    android:elevation="0dp"
+                                    app:strokeColor="@android:color/transparent"
+                                    app:cardBackgroundColor="@android:color/white">
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:orientation="vertical"
+                                        android:gravity="left"
+                                        android:padding="15dp">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Take a survey"
+                                            android:textStyle="bold"
+                                            android:textSize="16sp"
+                                            android:fontFamily="@font/poppins"
+                                            android:textColor="@color/black" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Take 1000 Coins 🪙"
+                                            android:textSize="12sp"
+                                            android:layout_marginTop="5dp"
+                                            android:fontFamily="@font/poppins"
+                                            android:textColor="@color/black" />
+
+                                        <Button
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Start"
+                                            android:textSize="12sp"
+                                            android:textStyle="bold"
+                                            android:textColor="@android:color/white"
+                                            android:backgroundTint="#7A00CC"
+                                            android:paddingLeft="15dp"
+                                            android:paddingRight="15dp"
+                                            android:paddingTop="10dp"
+                                            android:layout_marginTop="5dp"
+                                            android:paddingBottom="10dp" />
+                                    </LinearLayout>
+                                </com.google.android.material.card.MaterialCardView>
+
+                            </LinearLayout>
+                        </HorizontalScrollView>
+
+                        <LinearLayout
+                            android:layout_marginVertical="20dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:weightSum="2"
+                            android:gravity="center">
+
+                            <!-- Left Column -->
+                            <LinearLayout
+                                android:paddingBottom="20dp"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:weightSum="10"
+                                android:layout_marginEnd="6dp">
+
+                                <!-- Offers Card - 70% height -->
+                                <com.google.android.material.card.MaterialCardView
+                                    app:cardBackgroundColor="@color/white"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0dp"
+                                    android:layout_weight="6"
+                                    app:cardCornerRadius="16dp"
+                                    app:cardElevation="4dp"
+                                    android:layout_marginBottom="8dp">
+
+                                    <!-- Customize your content here -->
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:orientation="vertical"
+                                        android:padding="12dp">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Offers"
+                                            android:textSize="16sp"
+                                            android:textStyle="bold"
+                                            android:textColor="#000" />
+
+                                        <ImageView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="60dp"
+                                            android:layout_marginTop="8dp"
+                                            android:src="@drawable/offers_icon"
+                                            android:contentDescription="Offers" />
+                                    </LinearLayout>
+                                </com.google.android.material.card.MaterialCardView>
+
+                                <!-- Other Apps Card - 30% height -->
+                                <com.google.android.material.card.MaterialCardView
+                                    app:cardBackgroundColor="@color/white"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0dp"
+                                    android:layout_weight="4"
+                                    app:cardCornerRadius="16dp"
+                                    app:cardElevation="4dp">
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:orientation="vertical"
+                                        android:padding="12dp">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Other Apps"
+                                            android:textColor="#999999"
+                                            android:textSize="13sp" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Maximise your cash with these apps"
+                                            android:textSize="16sp"
+                                            android:textStyle="bold"
+                                            android:textColor="#000"
+                                            android:layout_marginTop="4dp" />
+
+                                        <ImageView
+                                            android:layout_width="match_parent"
+                                            android:layout_height="40dp"
+                                            android:layout_marginTop="4dp"
+                                            android:src="@drawable/offers_icon"
+                                            android:scaleType="fitCenter" />
+                                    </LinearLayout>
+                                </com.google.android.material.card.MaterialCardView>
+                            </LinearLayout>
+
+                            <!-- Right Column -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:weightSum="10"
+                                android:layout_marginStart="6dp">
+
+                                <!-- Play Games Card - 30% height -->
+                                <com.google.android.material.card.MaterialCardView
+                                    app:cardBackgroundColor="@color/white"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0dp"
+                                    android:layout_weight="4"
+                                    app:cardCornerRadius="16dp"
+                                    app:cardElevation="4dp"
+                                    android:layout_marginBottom="8dp">
+
+                                    <RelativeLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:padding="12dp">
+
+                                        <TextView
+                                            android:id="@+id/play_games_title"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Play Games"
+                                            android:textColor="#999999"
+                                            android:textSize="13sp" />
+
+                                        <TextView
+                                            android:layout_below="@id/play_games_title"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="4dp"
+                                            android:text="Here earnings grow!"
+                                            android:textStyle="bold"
+                                            android:textSize="16sp"
+                                            android:textColor="#000" />
+
+                                        <ImageView
+                                            android:layout_width="80dp"
+                                            android:layout_height="80dp"
+                                            android:layout_alignParentBottom="true"
+                                            android:layout_alignParentEnd="true"
+                                            android:src="@drawable/offers_icon"
+                                            android:scaleType="centerCrop"
+                                            android:translationX="24dp" />
+                                    </RelativeLayout>
+                                </com.google.android.material.card.MaterialCardView>
+
+                                <!-- Surveys Card - 70% height -->
+                                <com.google.android.material.card.MaterialCardView
+                                    app:cardBackgroundColor="@color/white"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0dp"
+                                    android:layout_weight="6"
+                                    app:cardCornerRadius="16dp"
+                                    app:cardElevation="4dp">
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:orientation="vertical"
+                                        android:padding="12dp">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Surveys"
+                                            android:textSize="16sp"
+                                            android:textStyle="bold"
+                                            android:textColor="#000" />
+
+                                        <ImageView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="40dp"
+                                            android:layout_marginTop="8dp"
+                                            android:src="@drawable/offers_icon"
+                                            android:contentDescription="Surveys" />
+                                    </LinearLayout>
+                                </com.google.android.material.card.MaterialCardView>
+                            </LinearLayout>
+                        </LinearLayout>
+
                         <TextView
                             android:fontFamily="@font/poppins_black"
                             android:layout_width="wrap_content"
