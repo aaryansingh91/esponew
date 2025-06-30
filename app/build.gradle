@@ -120,4 +120,7 @@ dependencies {
 //    Ads Dependencies
 
     implementation 'com.unity3d.ads:unity-ads:4.15.0' // or latest
+
+    implementation 'com.airbnb.android:lottie:6.1.0'
+
 }
