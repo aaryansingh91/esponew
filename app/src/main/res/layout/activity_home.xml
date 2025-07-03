@@ -22,66 +22,119 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
                 <!-- Header -->
+                <!-- Full Wrapper -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
                     android:padding="10dp"
                     android:background="#FFFFFF">
-                    <TextView
-                        android:textColor="@color/purple_bg"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Espo"
-                        android:fontFamily="@font/poppins_black"
-                        android:layout_gravity="center_vertical" />
-                    <TextView
-                        android:textColor="@color/dark_yellow"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Task"
-                        android:fontFamily="@font/poppins_black"
-                        android:layout_gravity="center_vertical" />
-                    <Space
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_weight="1" />
+
+                    <!-- Title Row: Espo Task and Coins -->
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:gravity="center_vertical">
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:src="@drawable/coin_icon" />
-                        <TextView
-                            android:id="@+id/coins_header"
+                        android:gravity="center_vertical"
+                        android:padding="8dp">
+
+                        <!-- LEFT SIDE: Avatar + Name + App Title -->
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0"
-                            android:textSize="16sp"
-                            android:layout_marginStart="5dp" />
-                    </LinearLayout>
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:src="@drawable/ic_ticket_24"
-                            android:layout_marginStart="15dp" />
-                        <TextView
-                            android:id="@+id/tickets_header"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <ImageView
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:layout_marginEnd="8dp"
+                                android:src="@drawable/demo_user"
+                                android:background="@drawable/circle_white_bg"
+                                 android:scaleType="centerCrop"
+                                android:padding="2dp"
+                                android:clipToOutline="true" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/welcome_user"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="ritikraj"
+                                    android:textColor="@color/black"
+                                    android:textSize="16sp"
+                                    android:fontFamily="@font/poppins" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="ESPOTASK"
+                                    android:textColor="@color/purple_bg"
+                                    android:textSize="14sp" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <!-- SPACE to PUSH RIGHT SIDE -->
+                        <Space
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" />
+
+                        <!-- RIGHT SIDE: Coin + Ticket Section -->
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0"
-                            android:textSize="16sp"
-                            android:layout_marginStart="5dp" />
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <!-- Coin -->
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
+                                <ImageView
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:src="@drawable/coin_icon" />
+                                <TextView
+                                    android:id="@+id/coins_header"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="0"
+                                    android:textSize="16sp"
+                                    android:layout_marginStart="5dp" />
+                            </LinearLayout>
+
+                            <!-- Ticket -->
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
+                                <ImageView
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:src="@drawable/ic_ticket_24"
+                                    android:layout_marginStart="15dp" />
+                                <TextView
+                                    android:id="@+id/tickets_header"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="0"
+                                    android:textSize="16sp"
+                                    android:layout_marginStart="5dp" />
+                            </LinearLayout>
+                        </LinearLayout>
                     </LinearLayout>
+
                 </LinearLayout>
+
+
                 <!--    home screen-->
 
 
@@ -275,15 +328,15 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Suggestions for you"
-                            android:paddingStart="10dp"
                             android:paddingTop="20dp"
                             android:paddingBottom="10dp"
                             android:textStyle="bold"
                             android:textSize="16sp"
-                            android:fontFamily="@font/poppins"
+                            android:fontFamily="@font/poppins_black"
                             android:textColor="@color/black" />
 
                         <HorizontalScrollView
+                            android:id="@+id/horizontalScrollView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:scrollbars="none"
@@ -298,7 +351,6 @@
                                 <com.google.android.material.card.MaterialCardView
                                     android:layout_width="250dp"
                                     android:layout_height="135dp"
-                                    android:layout_marginStart="10dp"
                                     android:layout_marginEnd="5dp"
                                     app:cardCornerRadius="15dp"
                                     android:elevation="0dp"
@@ -457,13 +509,10 @@
                         </HorizontalScrollView>
 
                         <LinearLayout
-                            xmlns:android="http://schemas.android.com/apk/res/android"
-                            xmlns:app="http://schemas.android.com/apk/res-auto"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
-                            android:background="#F1F9FF"
-                            android:padding="16dp">
+                            android:background="#F1F9FF">
 
                             <!-- Jackpot Title Row -->
                             <LinearLayout
@@ -475,9 +524,10 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Jackpot"
+                                    android:text="Rewards"
                                     android:textSize="18sp"
                                     android:textStyle="bold"
+                                    android:fontFamily="@font/poppins_black"
                                     android:textColor="#000000"/>
 
 <!--                                <ImageView-->
@@ -488,66 +538,76 @@
                             </LinearLayout>
 
                             <!-- Card Section -->
-                            <LinearLayout
+                            <androidx.cardview.widget.CardView
+                                xmlns:android="http://schemas.android.com/apk/res/android"
+                                xmlns:app="http://schemas.android.com/apk/res-auto"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:background="@drawable/rounded_white_bg"
-                                android:orientation="horizontal"
-                                android:padding="8dp"
                                 android:layout_marginTop="12dp"
                                 android:layout_marginBottom="10dp"
-                                android:elevation="4dp"
-                                android:gravity="center_vertical">
+                                app:cardCornerRadius="10dp"
+                                app:cardElevation="6dp"
+                                app:cardBackgroundColor="@android:color/white">
 
-                                <!-- Lottie Animation from raw folder -->
-                                <com.airbnb.lottie.LottieAnimationView
-                                    android:layout_width="70dp"
-                                    android:layout_height="80dp"
-                                    app:lottie_rawRes="@raw/coins_luttie"
-                                    app:lottie_autoPlay="true"
-                                    app:lottie_loop="true"
-                                    android:scaleType="centerCrop"
-                                    android:layout_marginEnd="12dp"/>
-
-                                <!-- Texts -->
                                 <LinearLayout
-                                    android:layout_width="0dp"
-                                    android:layout_weight="1"
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:orientation="vertical">
+                                    android:orientation="horizontal"
+                                    android:padding="8dp"
+                                    android:gravity="center_vertical">
 
-                                    <TextView
+                                    <!-- Lottie Animation -->
+                                    <com.airbnb.lottie.LottieAnimationView
+                                        android:layout_width="70dp"
+                                        android:layout_height="80dp"
+                                        android:layout_marginTop="-10dp"
+                                        android:layout_marginEnd="12dp"
+                                        android:paddingBottom="10dp"
+                                        android:scaleType="centerCrop"
+                                        app:lottie_autoPlay="true"
+                                        app:lottie_loop="true"
+                                        app:lottie_rawRes="@raw/coins_luttie" />
+
+                                    <LinearLayout
+                                        android:layout_width="0dp"
+                                        android:layout_weight="1"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="vertical">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Read and Earn Coins"
+                                            android:textSize="16sp"
+                                            android:textStyle="bold"
+                                            android:textColor="#000000"/>
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Earn coins upto 🪙 100k"
+                                            android:textSize="14sp"
+                                            android:textColor="#666666"/>
+                                    </LinearLayout>
+
+                                    <!-- Earn Now Button -->
+                                    <Button
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="Read and Earn Coins"
-                                        android:textSize="16sp"
+                                        android:onClick="openLuckyWinner"
+                                        android:text="EARN NOW"
+                                        android:textSize="12sp"
                                         android:textStyle="bold"
-                                        android:textColor="#000000"/>
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="Earn coins upto 🪙 100k"
-                                        android:textSize="14sp"
-                                        android:textColor="#666666"/>
+                                        android:textColor="@android:color/white"
+                                        android:backgroundTint="#7A00CC"
+                                        android:paddingLeft="15dp"
+                                        android:paddingRight="15dp"
+                                        android:paddingTop="10dp"
+                                        android:layout_marginTop="5dp"
+                                        android:paddingBottom="10dp" />
                                 </LinearLayout>
+                            </androidx.cardview.widget.CardView>
 
-                                <!-- Earn Now Button -->
-                                <Button
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:onClick="openLuckyWinner"
-                                    android:text="EARN NOW"
-                                    android:textSize="12sp"
-                                    android:textStyle="bold"
-                                    android:textColor="@android:color/white"
-                                    android:backgroundTint="#7A00CC"
-                                    android:paddingLeft="15dp"
-                                    android:paddingRight="15dp"
-                                    android:paddingTop="10dp"
-                                    android:layout_marginTop="5dp"
-                                    android:paddingBottom="10dp" />
-                            </LinearLayout>
                         </LinearLayout>
 
 
@@ -778,6 +838,7 @@
                                     android:layout_height="0dp"
                                     android:layout_weight="4"
                                     app:cardCornerRadius="16dp"
+                                    app:strokeWidth="0dp"
                                     app:cardElevation="4dp"
                                     android:layout_marginBottom="8dp">
 
@@ -821,6 +882,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="0dp"
                                     android:layout_weight="6"
+                                    app:strokeWidth="0dp"
                                     android:layout_marginBottom="4dp"
                                     app:cardBackgroundColor="@color/white"
                                     app:cardCornerRadius="16dp"
@@ -885,6 +947,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="0dp"
                                     android:layout_weight="6"
+                                    app:strokeWidth="0dp"
                                     android:layout_marginBottom="8dp"
                                     app:cardBackgroundColor="@color/white"
                                     app:cardCornerRadius="16dp"
@@ -941,6 +1004,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_marginBottom="4dp"
                                     android:layout_height="0dp"
+                                    app:strokeWidth="0dp"
                                     android:layout_weight="4"
                                     app:cardCornerRadius="16dp"
                                     app:cardElevation="4dp">
@@ -2282,149 +2346,163 @@
                 android:layout_marginBottom="4dp"
                 android:gravity="center" />
                 <!--Bottom Nav-->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:cardCornerRadius="25dp"
+        app:cardElevation="8dp"
+        app:cardBackgroundColor="@android:color/white"
+        app:strokeColor="@android:color/transparent"
+        app:strokeWidth="0dp">
+
+        <LinearLayout
+            android:id="@+id/bottom_nav_bar"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            android:gravity="center">
+
+            <!-- 1. Home -->
+            <com.google.android.material.card.MaterialCardView
+                android:onClick="bottom_nav_homebtn"
+                android:id="@+id/nav_home"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:cardCornerRadius="50dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/white"
+                app:strokeWidth="0dp"
+                app:cardBackgroundColor="@color/bottomnavbar_activecard_bg_color"
+                android:padding="8dp">
                 <LinearLayout
-                    android:id="@+id/bottom_nav_bar"
                     android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    android:orientation="horizontal"
-                    android:background="#FFFFFF"
-                    android:padding="8dp"
-                    android:layout_alignParentBottom="true"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
                     android:gravity="center">
-                    <!-- 1. Home -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:onClick="bottom_nav_homebtn"
-                        android:id="@+id/nav_home"
-                        android:layout_width="0dp"
+                    <ImageView
+                        android:id="@+id/icon_home"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_home_selected" />
+                    <TextView
+                        android:id="@+id/text_home"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        app:cardCornerRadius="50dp"
-                        app:cardElevation="0dp"
-                        app:strokeColor="@color/white"
-                        app:strokeWidth="0dp"
-                        app:cardBackgroundColor="@color/bottomnavbar_activecard_bg_color"
-                        android:padding="8dp">
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:gravity="center">
-                            <ImageView
-                                android:id="@+id/icon_home"
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:src="@drawable/ic_home_selected" />
-                            <TextView
-                                android:id="@+id/text_home"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Home"
-                                android:textColor="@color/bottomnavbar_selected_color"
-                                android:textStyle="bold"
-                                android:textSize="12sp"
-                                android:layout_marginTop="4dp" />
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
-                    <!-- 2. Game -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:onClick="bottom_nav_gamebtn"
-                        android:id="@+id/nav_game"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        app:cardCornerRadius="50dp"
-                        app:cardElevation="0dp"
-                        app:strokeColor="@color/white"
-                        app:strokeWidth="0dp"
-                        app:cardBackgroundColor="@android:color/transparent"
-                        android:padding="8dp">
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:gravity="center">
-                            <ImageView
-                                android:id="@+id/icon_game"
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:src="@drawable/ic_game" />
-                            <TextView
-                                android:id="@+id/text_game"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Game"
-                                android:textColor="@color/bottomnavbar_unselected_color"
-                                android:textSize="12sp"
-                                android:layout_marginTop="4dp" />
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
-                    <!-- 3. Reward -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:onClick="bottom_nav_rewardbtn"
-                        android:id="@+id/nav_reward"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        app:cardCornerRadius="50dp"
-                        app:cardElevation="0dp"
-                        app:strokeColor="@color/white"
-                        app:strokeWidth="0dp"
-                        app:cardBackgroundColor="@android:color/transparent"
-                        android:padding="8dp">
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:gravity="center">
-                            <ImageView
-                                android:id="@+id/icon_reward"
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:src="@drawable/ic_reward" />
-                            <TextView
-                                android:id="@+id/text_reward"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Reward"
-                                android:textColor="@color/bottomnavbar_unselected_color"
-                                android:textSize="12sp"
-                                android:layout_marginTop="4dp" />
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
-                    <!-- 4. Profile -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:onClick="bottom_nav_profilebtn"
-                        android:id="@+id/nav_profile"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        app:cardCornerRadius="50dp"
-                        app:cardElevation="0dp"
-                        app:strokeColor="@color/white"
-                        app:strokeWidth="0dp"
-                        app:cardBackgroundColor="@android:color/transparent"
-                        android:padding="8dp">
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:gravity="center">
-                            <ImageView
-                                android:id="@+id/icon_profile"
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:src="@drawable/ic_profile" />
-                            <TextView
-                                android:id="@+id/text_profile"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Profile"
-                                android:textColor="@color/bottomnavbar_unselected_color"
-                                android:textSize="12sp"
-                                android:layout_marginTop="4dp" />
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
+                        android:text="Home"
+                        android:textColor="@color/bottomnavbar_selected_color"
+                        android:textStyle="bold"
+                        android:textSize="12sp"
+                        android:layout_marginTop="4dp" />
                 </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 2. Game -->
+            <com.google.android.material.card.MaterialCardView
+                android:onClick="bottom_nav_gamebtn"
+                android:id="@+id/nav_game"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:cardCornerRadius="50dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/white"
+                app:strokeWidth="0dp"
+                app:cardBackgroundColor="@android:color/transparent"
+                android:padding="8dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center">
+                    <ImageView
+                        android:id="@+id/icon_game"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_game" />
+                    <TextView
+                        android:id="@+id/text_game"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Game"
+                        android:textColor="@color/bottomnavbar_unselected_color"
+                        android:textSize="12sp"
+                        android:layout_marginTop="4dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 3. Reward -->
+            <com.google.android.material.card.MaterialCardView
+                android:onClick="bottom_nav_rewardbtn"
+                android:id="@+id/nav_reward"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:cardCornerRadius="50dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/white"
+                app:strokeWidth="0dp"
+                app:cardBackgroundColor="@android:color/transparent"
+                android:padding="8dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center">
+                    <ImageView
+                        android:id="@+id/icon_reward"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_reward" />
+                    <TextView
+                        android:id="@+id/text_reward"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Reward"
+                        android:textColor="@color/bottomnavbar_unselected_color"
+                        android:textSize="12sp"
+                        android:layout_marginTop="4dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 4. Profile -->
+            <com.google.android.material.card.MaterialCardView
+                android:onClick="bottom_nav_profilebtn"
+                android:id="@+id/nav_profile"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:cardCornerRadius="50dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/white"
+                app:strokeWidth="0dp"
+                app:cardBackgroundColor="@android:color/transparent"
+                android:padding="8dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center">
+                    <ImageView
+                        android:id="@+id/icon_profile"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_profile" />
+                    <TextView
+                        android:id="@+id/text_profile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Profile"
+                        android:textColor="@color/bottomnavbar_unselected_color"
+                        android:textSize="12sp"
+                        android:layout_marginTop="4dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
 
 

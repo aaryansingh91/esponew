@@ -86,7 +86,7 @@ public class HomeActivity extends AppCompatActivity {
 
     ScrollView home_scroll_section, game_scroll_section, reward_scroll_section, profile_scroll_section;
     ImageView icon_home, icon_game, icon_reward, icon_profile;
-    TextView text_home, text_game, text_reward, text_profile, username_profile, coinsHeader, ticketsHeader, account_page_coins_text_value, account_page_tickets_text_value, coins_rewards_screen;
+    TextView welcome_user, text_home, text_game, text_reward, text_profile, username_profile, coinsHeader, ticketsHeader, account_page_coins_text_value, account_page_tickets_text_value, coins_rewards_screen;
     MaterialCardView nav_home, nav_game, nav_reward, nav_profile;
     private MaterialCardView btnLogout; // Changed from Button to MaterialCardView
     MaterialCardView home_sec1_layout_game_tab, home_sec1_layout_apptask_tab, home_sec1_layout_survey_tab;
@@ -144,6 +144,8 @@ public class HomeActivity extends AppCompatActivity {
 
         username_profile = findViewById(R.id.username_profile);
 
+        welcome_user = findViewById(R.id.welcome_user);
+
         icon_game = findViewById(R.id.icon_game);
         icon_profile = findViewById(R.id.icon_profile);
         icon_reward = findViewById(R.id.icon_reward);
@@ -156,6 +158,8 @@ public class HomeActivity extends AppCompatActivity {
         nav_game = findViewById(R.id.nav_game);
         nav_profile = findViewById(R.id.nav_profile);
         nav_reward = findViewById(R.id.nav_reward);
+
+        HorizontalScrollView horizontalScrollView = findViewById(R.id.horizontalScrollView);
 
         home_scroll_section = findViewById(R.id.home_scroll_section);
         game_scroll_section = findViewById(R.id.game_scroll_section);
@@ -184,6 +188,7 @@ public class HomeActivity extends AppCompatActivity {
         String storedID = sharedPreferences.getString("userID", "NULL");
         String userName = sharedPreferences.getString("userName", "NULL");
         username_profile.setText(userName);
+        welcome_user.setText(userName);
         get_user_data_thread(storedID);
 
 
@@ -208,6 +213,20 @@ public class HomeActivity extends AppCompatActivity {
                 }
                 return false;  // allow normal scrolling
             }
+        });
+
+        horizontalScrollView.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                case MotionEvent.ACTION_MOVE:
+                    swipeRefreshLayout.setEnabled(false);
+                    break;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    swipeRefreshLayout.setEnabled(true);
+                    break;
+            }
+            return false; // allow horizontal scroll to work
         });
 
         // Sample images (from drawable)
