@@ -1,6 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@android:color/white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- ViewPager2 Slider -->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/imageSlider"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_margin="8dp" />
+
+    <!-- Lucky Number Box -->
+    <LinearLayout
+        android:id="@+id/luckyNumberBox"
+        android:layout_margin="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/rounded_white_bg"
+        android:elevation="6dp"
+        android:padding="20dp">
+
+        <TextView
+            android:text="🎯 Today's Lucky Number"
+            android:textColor="#20275A"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/luckyNumberText"
+            android:text="29"
+            android:textColor="#FF3D71"
+            android:textSize="40sp"
+            android:textStyle="bold"
+            android:layout_marginTop="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:text="Check if your number matches and claim your reward!"
+            android:textColor="#555555"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <!-- Lottery Box -->
+    <LinearLayout
+        android:id="@+id/lotteryBox"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="-20dp"
+        android:orientation="vertical"
+        android:background="@drawable/rounded_white_bg"
+        android:padding="16dp"
+        android:elevation="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:text="Lucky Number Draw"
+            android:textStyle="bold"
+            android:textColor="#20275A"
+            android:textSize="20sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:text="WIN ₹1,00,000"
+            android:textStyle="bold"
+            android:textColor="#FFB800"
+            android:textSize="26sp"
+            android:layout_marginTop="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:text="Join the draw and win real money instantly"
+            android:textColor="#666666"
+            android:layout_marginTop="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:backgroundTint="#7A00CC"
+            android:paddingLeft="15dp"
+            android:paddingTop="10dp"
+            android:paddingRight="15dp"
+            android:paddingBottom="10dp"
+            android:layout_gravity="center"
+            android:onClick="btn_fn_sec1_apptask"
+            android:text="Play Now"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Winner RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/winnerRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="8dp"
+        android:layout_weight="1"/>
+</LinearLayout>

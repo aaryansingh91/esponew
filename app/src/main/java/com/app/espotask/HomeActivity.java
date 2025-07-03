@@ -608,6 +608,13 @@ public class HomeActivity extends AppCompatActivity {
         game_scroll_section.setVisibility(View.VISIBLE);
     }
 
+
+    public void openLuckyWinner(View view) {
+        Intent intent = new Intent(this, LuckyWinnerActivity.class);
+        startActivity(intent);
+    }
+
+
     public void bottom_nav_rewardbtn(View view) {
         resetAllNavCards();
         nav_reward.setCardBackgroundColor(getResources().getColor(R.color.bottomnavbar_activecard_bg_color));
