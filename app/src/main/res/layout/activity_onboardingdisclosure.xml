@@ -414,27 +414,31 @@
 
     <!-- Login With Number Box -->
 
-    <ScrollView
-        android:id="@+id/login_with_number_1st_box"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:orientation="vertical"
-        android:visibility="visible"
-        android:padding="10dp">
+
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/login_with_number_1st_box"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:visibility="visible"
+        android:layout_height="match_parent"
         android:backgroundTint="@color/white"
         app:cardElevation="6dp"
         app:strokeColor="@android:color/transparent"
-        android:layout_margin="0dp"
+        android:layout_margin="16dp"
+        android:layout_marginBottom="30px"
+        android:padding="18dp"
         app:cardCornerRadius="16dp">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:orientation="vertical"
+            android:padding="8dp"
+            android:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="783dp"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="10dp">
 
@@ -592,7 +596,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/poppins_black"
-                            android:text="Sign In"
+                            android:text="Login"
                             android:textAlignment="center"
                             android:textColor="@color/white"
                             android:textSize="16sp"
@@ -602,36 +606,37 @@
             </LinearLayout>
 
         </LinearLayout>
-
+        </ScrollView>
     </com.google.android.material.card.MaterialCardView>
 
-    </ScrollView>
+
 
     <!-- Signup With Number Box -->
 
 
-    <ScrollView
-        android:id="@+id/signup_with_number_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:orientation="vertical"
-        android:visibility="gone"
-        android:padding="10dp">
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/signup_with_number_layout"
         android:backgroundTint="@color/white"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:cardCornerRadius="16dp"
         app:cardElevation="6dp"
-        android:layout_margin="0dp">
+        android:visibility="gone"
+        android:padding="18dp"
+        android:layout_margin="16dp">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:orientation="vertical"
+            android:padding="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="10dp">
 
             <!-- Back Button -->
             <ImageView
@@ -787,6 +792,7 @@
             android:layout_marginTop="20dp"
             android:backgroundTint="@color/purple_bg"
             android:clickable="true"
+            app:strokeWidth="0dp"
             android:onClick="sign_up_btn_fn"
             app:cardCornerRadius="28dp"
             app:cardElevation="4dp">
@@ -802,7 +808,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_black"
                 android:padding="4dp"
-                android:text="Signup"
+                android:text="Register"
                 android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textSize="16sp"
@@ -810,7 +816,8 @@
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
+        </ScrollView>
     </com.google.android.material.card.MaterialCardView>
 
-    </ScrollView>
+
 </LinearLayout>
