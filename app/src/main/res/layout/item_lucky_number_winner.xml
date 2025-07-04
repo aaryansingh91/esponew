@@ -17,7 +17,7 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_profile" />
+            android:src="@drawable/demo_user" />
 
         <LinearLayout
             android:orientation="vertical"
@@ -35,12 +35,28 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:scaleType="centerCrop"
+            android:layout_marginRight="5dp"
+            android:src="@drawable/ic_coin_24" />
+
+
+
             <TextView
                 android:id="@+id/winnerAmount"
-                android:text="₹1000"
+                android:text="1000"
                 android:textColor="#4CAF50"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
+
+        </LinearLayout>
 
             <TextView
                 android:id="@+id/winnerDate"
@@ -52,3 +68,4 @@
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>
+

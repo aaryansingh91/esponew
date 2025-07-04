@@ -34,8 +34,6 @@ public class LuckyWinnerActivity extends AppCompatActivity {
         winnerList.add(new WinnerModel("Aman Verma", "₹1000", "01 July 2025", "https://i.imgur.com/xyz.png"));
         winnerList.add(new WinnerModel("Neha Singh", "₹750", "30 June 2025", "https://i.imgur.com/abc.png"));
 
-        WinnerAdapter winnerAdapter = new WinnerAdapter(this, winnerList);
-        winnerRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        winnerRecyclerView.setAdapter(winnerAdapter);
+
     }
 }
