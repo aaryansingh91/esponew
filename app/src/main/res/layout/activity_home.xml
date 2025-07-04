@@ -27,7 +27,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="10dp"
+                    android:padding="5dp"
                     android:background="#FFFFFF">
 
                     <!-- Title Row: Espo Task and Coins -->
@@ -36,8 +36,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:paddingVertical="6dp"
-                        android:paddingHorizontal="2dp">
+                        android:padding="0dp">
 
                         <!-- LEFT SIDE: Avatar + Name + App Title -->
                         <LinearLayout
@@ -47,12 +46,12 @@
                             android:gravity="center_vertical">
 
                             <ImageView
-                                android:layout_width="40dp"
-                                android:layout_height="40dp"
-                                android:layout_marginEnd="8dp"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:layout_marginEnd="0dp"
                                 android:src="@drawable/demo_user"
                                 android:background="@drawable/circle_white_bg"
-                                 android:scaleType="centerCrop"
+                                android:scaleType="centerCrop"
                                 android:padding="2dp"
                                 android:clipToOutline="true" />
 
@@ -74,6 +73,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="ESPOTASK"
+                                    android:textStyle="bold"
                                     android:textColor="@color/purple_bg"
                                     android:textSize="14sp" />
                             </LinearLayout>
@@ -317,7 +317,6 @@
                         </LinearLayout>
 
                         <androidx.viewpager2.widget.ViewPager2
-
                             android:id="@+id/imageSlider"
                             android:layout_width="match_parent"
                             android:layout_height="180dp"
@@ -344,6 +343,7 @@
                             android:paddingBottom="10dp">
 
                             <LinearLayout
+
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal">
@@ -390,7 +390,7 @@
                                             android:textSize="12sp"
                                             android:textStyle="bold"
                                             android:textColor="@android:color/white"
-                                            android:backgroundTint="#7A00CC"
+                                            android:backgroundTint="@color/purple_bg"
                                             android:paddingLeft="15dp"
                                             android:paddingRight="15dp"
                                             android:paddingTop="10dp"
@@ -441,7 +441,7 @@
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_marginTop="5dp"
-                                            android:backgroundTint="#7A00CC"
+                                            android:backgroundTint="@color/purple_bg"
                                             android:paddingLeft="15dp"
                                             android:paddingTop="10dp"
                                             android:paddingRight="15dp"
@@ -497,7 +497,7 @@
                                             android:textSize="12sp"
                                             android:textStyle="bold"
                                             android:textColor="@android:color/white"
-                                            android:backgroundTint="#7A00CC"
+                                            android:backgroundTint="@color/purple_bg"
                                             android:paddingLeft="15dp"
                                             android:paddingRight="15dp"
                                             android:paddingTop="10dp"
@@ -512,8 +512,7 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:background="#F1F9FF">
+                            android:orientation="vertical">
 
                             <!-- Jackpot Title Row -->
                             <LinearLayout
@@ -531,11 +530,11 @@
                                     android:fontFamily="@font/poppins_black"
                                     android:textColor="#000000"/>
 
-<!--                                <ImageView-->
-<!--                                    android:layout_width="20dp"-->
-<!--                                    android:layout_height="20dp"-->
-<!--                                    android:src="@drawable/ic_info_gray"-->
-<!--                                    android:layout_marginStart="6dp"/>-->
+                                <!--                                <ImageView-->
+                                <!--                                    android:layout_width="20dp"-->
+                                <!--                                    android:layout_height="20dp"-->
+                                <!--                                    android:src="@drawable/ic_info_gray"-->
+                                <!--                                    android:layout_marginStart="6dp"/>-->
                             </LinearLayout>
 
                             <!-- Card Section -->
@@ -555,6 +554,7 @@
                                     android:layout_height="wrap_content"
                                     android:orientation="horizontal"
                                     android:padding="8dp"
+                                    android:layout_margin="4dp"
                                     android:gravity="center_vertical">
 
                                     <!-- Lottie Animation -->
@@ -600,7 +600,7 @@
                                         android:textSize="12sp"
                                         android:textStyle="bold"
                                         android:textColor="@android:color/white"
-                                        android:backgroundTint="#7A00CC"
+                                        android:backgroundTint="@color/purple_bg"
                                         android:paddingLeft="15dp"
                                         android:paddingRight="15dp"
                                         android:paddingTop="10dp"
@@ -838,7 +838,8 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="0dp"
                                     android:layout_weight="4"
-                                    app:cardCornerRadius="16dp"
+                                    app:cardCornerRadius="10dp"
+                                    android:layout_margin="6dp"
                                     app:strokeWidth="0dp"
                                     app:cardElevation="4dp"
                                     android:layout_marginBottom="8dp">
@@ -848,7 +849,7 @@
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
                                         android:orientation="vertical"
-                                        android:padding="12dp">
+                                        android:padding="8dp">
 
                                         <TextView
                                             android:fontFamily="@font/poppins"
@@ -884,15 +885,16 @@
                                     android:layout_height="0dp"
                                     android:layout_weight="6"
                                     app:strokeWidth="0dp"
+                                    android:layout_margin="6dp"
                                     android:layout_marginBottom="4dp"
                                     app:cardBackgroundColor="@color/white"
-                                    app:cardCornerRadius="16dp"
+                                    app:cardCornerRadius="10dp"
                                     app:cardElevation="4dp">
 
                                     <RelativeLayout
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
-                                        android:padding="12dp">
+                                        android:padding="8dp">
 
                                         <TextView
                                             android:id="@+id/offertitle"
@@ -948,16 +950,16 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="0dp"
                                     android:layout_weight="6"
+                                    android:layout_margin="6dp"
                                     app:strokeWidth="0dp"
-                                    android:layout_marginBottom="8dp"
                                     app:cardBackgroundColor="@color/white"
-                                    app:cardCornerRadius="16dp"
+                                    app:cardCornerRadius="10dp"
                                     app:cardElevation="4dp">
 
                                     <RelativeLayout
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
-                                        android:padding="12dp">
+                                        android:padding="8dp">
 
                                         <TextView
                                             android:id="@+id/play_games_title"
@@ -1003,18 +1005,18 @@
                                     android:onClick="btn_fn_sec2_luckynumber"
                                     app:cardBackgroundColor="@color/white"
                                     android:layout_width="match_parent"
-                                    android:layout_marginBottom="4dp"
                                     android:layout_height="0dp"
                                     app:strokeWidth="0dp"
+                                    android:layout_margin="6dp"
                                     android:layout_weight="4"
-                                    app:cardCornerRadius="16dp"
+                                    app:cardCornerRadius="10dp"
                                     app:cardElevation="4dp">
 
                                     <LinearLayout
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
                                         android:orientation="vertical"
-                                        android:padding="12dp">
+                                        android:padding="8dp">
 
                                         <TextView
                                             android:layout_width="wrap_content"
@@ -1089,6 +1091,7 @@
                                 app:cardCornerRadius="10dp"
                                 app:strokeWidth="1dp"
                                 android:elevation="0dp"
+                                android:layout_margin="6dp"
                                 app:strokeColor="@color/dark_yellow"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -2338,15 +2341,15 @@
         </ScrollView>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-            <!-- Banner Container -->
-            <FrameLayout
-                android:id="@+id/banner_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="4dp"
-                android:gravity="center" />
-                <!--Bottom Nav-->
+    <!-- Banner Container -->
+    <FrameLayout
+        android:id="@+id/banner_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="4dp"
+        android:gravity="center" />
+    <!--Bottom Nav-->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

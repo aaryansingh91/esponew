@@ -629,7 +629,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
     public void openLuckyWinner(View view) {
-        Intent intent = new Intent(this, LuckyWinnerActivity.class);
+        Intent intent = new Intent(this, LuckyNumberWinnerActivity.class);
         startActivity(intent);
     }
 

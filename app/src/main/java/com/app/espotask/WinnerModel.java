@@ -1,28 +1,31 @@
 package com.app.espotask;
 
 public class WinnerModel {
-    String name, amount, date, imageUrl;
+    private String username;
+    private int coins;
+    private String date;
 
-    public WinnerModel(String name, String amount, String date, String imageUrl) {
-        this.name = name;
-        this.amount = amount;
-        this.date = date;
-        this.imageUrl = imageUrl;
+    public String getUsername() {
+        return username;
     }
 
-    public String getName() {
-        return name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getAmount() {
-        return amount;
+    public int getCoins() {
+        return coins;
+    }
+
+    public void setCoins(int coins) {
+        this.coins = coins;
     }
 
     public String getDate() {
         return date;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public void setDate(String date) {
+        this.date = date;
     }
 }
