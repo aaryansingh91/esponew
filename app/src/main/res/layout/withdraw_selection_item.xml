@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="0dp"
-        android:backgroundTint="@android:color/white" >
+        android:background="@drawable/reward_gradient_bg" >
 
         <LinearLayout
             android:gravity="center"
@@ -24,7 +24,6 @@
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:padding="10dp">
-
 
                 <ImageView
                     android:id="@+id/itemImage"
@@ -64,14 +63,12 @@
                     android:scaleType="fitXY"/>
             </LinearLayout>
 
-
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="#FFE8E8E8" />
 
         </LinearLayout>
-
 
     </com.google.android.material.card.MaterialCardView>
 

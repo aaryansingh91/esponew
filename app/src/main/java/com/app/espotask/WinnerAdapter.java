@@ -21,7 +21,6 @@ public class WinnerAdapter extends RecyclerView.Adapter<WinnerAdapter.WinnerView
         this.context = context;
         this.list = list;
     }
-
     @NonNull
     @Override
     public WinnerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -37,7 +36,6 @@ public class WinnerAdapter extends RecyclerView.Adapter<WinnerAdapter.WinnerView
         holder.winnerDate.setText(model.getDate());
         // Optional: holder.winnerImage.setImageResource(...) if dynamic
     }
-
     @Override
     public int getItemCount() {
         return list.size();
