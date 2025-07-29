@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace 'com.app.espotask'
+    namespace 'com.espo.task'
     compileSdk 35
 
     defaultConfig {
-        applicationId "com.app.espotask"
+        applicationId "com.espo.task"
         minSdk 25
         targetSdk 35
         versionCode 1
