@@ -1,40 +1,21 @@
 {
   "project_info": {
-    "project_number": "462342959940",
-    "project_id": "espotask-10d2f",
-    "storage_bucket": "espotask-10d2f.firebasestorage.app"
+    "project_number": "313674456974",
+    "project_id": "espotask-64086",
+    "storage_bucket": "espotask-64086.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:462342959940:android:0d56f0bcc77dfcdaca9d11",
+        "mobilesdk_app_id": "1:313674456974:android:5e02d62afee5dcf7470edf",
         "android_client_info": {
-          "package_name": "com.app.espotask"
+          "package_name": "com.rewards.espotask"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDUEjoCip7tOCUXktS2wUwvQJc4spuyMaQ"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:462342959940:android:03bff928fa8809d7ca9d11",
-        "android_client_info": {
-          "package_name": "com.espo.task"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDUEjoCip7tOCUXktS2wUwvQJc4spuyMaQ"
+          "current_key": "AIzaSyCycagKy9ECoyA_oYXmFJaCKGSC1kaeVzU"
         }
       ],
       "services": {
