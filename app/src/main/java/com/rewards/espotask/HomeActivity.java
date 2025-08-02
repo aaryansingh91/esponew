@@ -232,8 +232,8 @@ public class HomeActivity extends AppCompatActivity {
         // Sample images (from drawable)
         List<Integer> images = Arrays.asList(
                 R.drawable.freefire,
-                R.drawable.freefire,
-                R.drawable.freefire
+                R.drawable.freefire3,
+                R.drawable.freefire2
         );
 
         ImageSliderAdapter Slideradapter = new ImageSliderAdapter(images);
