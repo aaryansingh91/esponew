@@ -797,6 +797,12 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
+    public void openDeleteAccountPage(View view) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse("https://espotask.in/delete-request.php"));
+        startActivity(intent);
+    }
+
     public void settings_terms_conditions(View view) {
         try {
             SharedPreferences sharedPreferences = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
