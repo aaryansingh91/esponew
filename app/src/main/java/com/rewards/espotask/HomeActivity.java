@@ -65,6 +65,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
+import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
 import com.unity3d.ads.UnityAds;
 import com.unity3d.ads.IUnityAdsLoadListener;
 import com.unity3d.ads.IUnityAdsShowListener;
@@ -230,14 +233,21 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         // Sample images (from drawable)
+        WormDotsIndicator dotsIndicator = findViewById(R.id.dots_indicator);
+
+// Sample images (from drawable)
         List<Integer> images = Arrays.asList(
                 R.drawable.freefire,
                 R.drawable.freefire3,
                 R.drawable.freefire2
         );
 
-        ImageSliderAdapter Slideradapter = new ImageSliderAdapter(images);
-        viewPager2.setAdapter(Slideradapter);
+        ImageSliderAdapter sliderAdapter = new ImageSliderAdapter(images);
+        viewPager2.setAdapter(sliderAdapter);
+
+// Connect indicator with ViewPager2
+        dotsIndicator.setViewPager2(viewPager2);
+
 
 // Optional: Auto-slide
         new Handler().postDelayed(new Runnable() {

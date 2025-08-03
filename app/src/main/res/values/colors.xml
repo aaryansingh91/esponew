@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="purple_bg">#6924f9</color>
+    <color name="white">#ffffff</color>
+    <color name="purple_bg">#260975</color>
     <color name="yellow">#FFEB3B</color>
     <color name="dark_yellow">#D8AC09</color>
     <color name="dark_blue">#4860EA</color>
-    <color name="dark_purple">#6924f9</color>
+    <color name="dark_purple">#410bb3</color>
     <color name="dark_skyblue">#049CB0</color>
     <color name="light_gray">#EEEEEE</color>
     <color name="dark_black">#000000</color>
