@@ -214,7 +214,7 @@
 
 
                 <ScrollView
-                    android:visibility="gone"
+                    android:visibility="visible"
                     android:id="@+id/home_scroll_section"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
@@ -1835,7 +1835,7 @@
                 </ScrollView>
                 <!--profile Screen-->
                 <ScrollView
-                    android:visibility="visible"
+                    android:visibility="gone"
                     android:background="@color/white"
                     android:id="@+id/account_scroll_section"
                     android:layout_width="match_parent"
