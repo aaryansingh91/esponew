@@ -214,7 +214,7 @@
 
 
                 <ScrollView
-                    android:visibility="visible"
+                    android:visibility="gone"
                     android:id="@+id/home_scroll_section"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
@@ -1835,7 +1835,7 @@
                 </ScrollView>
                 <!--profile Screen-->
                 <ScrollView
-                    android:visibility="gone"
+                    android:visibility="visible"
                     android:background="@color/white"
                     android:id="@+id/account_scroll_section"
                     android:layout_width="match_parent"
@@ -1993,6 +1993,58 @@
                                 android:padding="0dp">
 
                                 <!-- Reusable Card Template -->
+                                <!-- Profile Settings -->
+                                <com.google.android.material.card.MaterialCardView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:onClick="openProfileSettings"
+                                    android:clickable="true"
+                                    android:focusable="true"
+                                    android:foreground="?attr/selectableItemBackground"
+                                    android:layout_marginBottom="10dp"
+                                    android:layout_marginHorizontal="4dp"
+                                    android:layout_marginVertical="6dp"
+                                    app:cardCornerRadius="8dp"
+                                    app:cardElevation="4dp"
+                                    app:strokeWidth="0dp">
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="horizontal"
+                                        android:gravity="center_vertical"
+                                        android:padding="12dp"
+                                        android:background="@color/white">
+
+                                        <ImageView
+                                            android:layout_width="25dp"
+                                            android:layout_height="25dp"
+                                            android:src="@drawable/ic_profile" />
+
+                                        <LinearLayout
+                                            android:layout_width="0dp"
+                                            android:layout_weight="1"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginStart="15dp"
+                                            android:orientation="vertical">
+
+                                            <TextView
+                                                android:text="Profile Settings"
+                                                android:textSize="17sp"
+                                                android:textStyle="bold"
+                                                android:fontFamily="@font/poppins"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content" />
+                                        </LinearLayout>
+
+                                        <ImageView
+                                            android:layout_width="15dp"
+                                            android:layout_height="15dp"
+                                            android:src="@drawable/baseline_keyboard_arrow_right_24"
+                                            android:scaleType="fitXY" />
+                                    </LinearLayout>
+                                </com.google.android.material.card.MaterialCardView>
+
                                 <!-- 1. Account History -->
                                 <com.google.android.material.card.MaterialCardView
                                     android:layout_width="match_parent"

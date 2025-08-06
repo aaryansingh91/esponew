@@ -668,6 +668,12 @@ public class HomeActivity extends AppCompatActivity {
         startActivity(new Intent(HomeActivity.this, HistoryActivity.class));
     }
 
+    public void openProfileSettings(View view) {
+        Intent intent = new Intent(this, ProfileActivity.class);
+        startActivity(intent);
+    }
+
+
     public void invite_others_fn(View view) {
         SharedPreferences sharedPreferences = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
         String owncode = sharedPreferences.getString("owncode", "EspoTask");
@@ -1187,6 +1193,9 @@ public class HomeActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "Link not available", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private class EditProfileActivity {
     }
 }
 
