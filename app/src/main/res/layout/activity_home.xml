@@ -214,7 +214,7 @@
 
 
                 <ScrollView
-                    android:visibility="visible"
+                    android:visibility="gone"
                     android:id="@+id/home_scroll_section"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
@@ -1442,39 +1442,84 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:padding="10dp">
-                            <LinearLayout
+                            <!-- Beautiful How to Win Coins Card -->
+                            <com.google.android.material.card.MaterialCardView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal">
-                                <com.google.android.material.card.MaterialCardView
+                                android:layout_marginTop="8dp"
+                                android:layout_marginBottom="8dp"
+                                android:layout_marginStart="5dp"
+                                android:layout_marginEnd="5dp"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?attr/selectableItemBackground"
+                                app:cardCornerRadius="18dp"
+                                app:cardElevation="6dp"
+                                app:strokeWidth="0dp"
+                                app:cardBackgroundColor="#FFFACD">
+
+                                <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    app:cardCornerRadius="15dp"
-                                    app:strokeWidth="1dp"
-                                    android:elevation="0dp"
-                                    app:strokeColor="@color/dark_yellow"
-                                    android:layout_marginEnd="5dp">
-                                    <LinearLayout
-                                        android:background="@drawable/yellow_bg_gradient"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:orientation="horizontal"
-                                        android:padding="15dp">
+                                    android:orientation="horizontal"
+                                    android:padding="10dp"
+                                    android:gravity="center_vertical"
+                                    android:minHeight="65dp">
+
+                                    <!-- Question Icon -->
+                                    <FrameLayout
+                                        android:layout_width="45dp"
+                                        android:layout_height="45dp"
+                                        android:layout_marginEnd="16dp">
+
                                         <TextView
-                                            android:fontFamily="@font/poppins_bold"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="How to win coins 🪙 ?"
-                                            android:textSize="16sp"
+                                            android:layout_gravity="center"
+                                            android:text="💡"
+                                            android:textSize="22sp" />
+                                    </FrameLayout>
+
+                                    <!-- Text Content -->
+                                    <LinearLayout
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:orientation="vertical">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="How to win coins? 🪙"
+                                            android:textSize="17sp"
                                             android:textStyle="bold"
-                                            android:layout_weight="1"/>
-                                        <ImageView
-                                            android:src="@drawable/baseline_keyboard_arrow_right_24"
-                                            android:layout_width="25dp"
-                                            android:layout_height="25dp"/>
+                                            android:textColor="#2C2C2C"
+                                            android:fontFamily="sans-serif-medium" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="2dp"
+                                            android:text="Learn earning strategies"
+                                            android:textSize="13sp"
+                                            android:textColor="#666666" />
                                     </LinearLayout>
-                                </com.google.android.material.card.MaterialCardView>
-                            </LinearLayout>
+
+                                    <!-- Arrow Icon -->
+                                    <FrameLayout
+                                        android:layout_width="35dp"
+                                        android:layout_height="35dp">
+
+                                        <ImageView
+                                            android:layout_width="18dp"
+                                            android:layout_height="18dp"
+                                            android:layout_gravity="center"
+                                            android:src="@drawable/baseline_keyboard_arrow_right_24"
+                                            android:tint="#FF8F00"
+                                            android:scaleType="centerInside" />
+                                    </FrameLayout>
+                                </LinearLayout>
+                            </com.google.android.material.card.MaterialCardView>
                             <TextView
                                 android:fontFamily="@font/poppins_bold"
                                 android:layout_width="wrap_content"
@@ -1712,7 +1757,7 @@
                 <!--Rewards Screen-->
                 <ScrollView
                     android:fillViewport="true"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     android:background="@color/white"
                     android:id="@+id/rewards_scroll_section"
                     android:layout_width="match_parent"
@@ -1735,89 +1780,158 @@
                                 android:textSize="20sp"
                                 android:textStyle="bold"
                                 android:layout_marginTop="20dp" />
+                            <!-- Simple Beautiful Coins Card -->
                             <com.google.android.material.card.MaterialCardView
-                                android:layout_marginTop="20dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
                                 android:layout_marginBottom="20dp"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                app:cardCornerRadius="15dp"
-                                app:strokeWidth="1dp"
-                                android:elevation="0dp"
-                                app:strokeColor="@color/dark_yellow"
-                                android:layout_marginEnd="5dp">
+                                android:layout_marginStart="5dp"
+                                android:layout_marginEnd="5dp"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?attr/selectableItemBackground"
+                                app:cardCornerRadius="20dp"
+                                app:cardElevation="8dp"
+                                app:strokeWidth="0dp"
+                                app:cardBackgroundColor="#FFF8E1">
+
                                 <LinearLayout
-                                    android:padding="15dp"
-                                    android:background="@drawable/yellow_bg_gradient"
-                                    android:orientation="horizontal"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content" >
-                                    <LinearLayout
-                                        android:layout_weight="1"
-                                        android:gravity="center_vertical"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="match_parent"
-                                        android:orientation="vertical"
-                                        android:padding="15dp">
-                                        <TextView
-                                            android:id="@+id/coins_rewards_screen"
-                                            android:textColor="@color/dark_yellow"
-                                            android:fontFamily="@font/poppins_black"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:text="0"
-                                            android:textSize="25sp"
-                                            android:textStyle="bold" />
-                                        <TextView
-                                            android:textColor="@color/black"
-                                            android:fontFamily="@font/poppins"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:text="Coins"
-                                            android:textSize="18sp"
-                                            android:textStyle="bold" />
-                                    </LinearLayout>
-                                    <ImageView
-                                        android:layout_marginRight="10dp"
-                                        android:layout_width="100dp"
-                                        android:layout_height="100dp"
-                                        android:src="@drawable/ic_coin_24"
-                                        android:scaleType="fitCenter"
-                                        android:layout_marginTop="10dp" />
-                                </LinearLayout>
-                            </com.google.android.material.card.MaterialCardView>
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal">
-                                <com.google.android.material.card.MaterialCardView
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    app:cardCornerRadius="15dp"
-                                    app:strokeWidth="1dp"
-                                    android:elevation="0dp"
-                                    app:strokeColor="@color/dark_blue"
-                                    android:layout_marginEnd="5dp">
+                                    android:orientation="horizontal"
+                                    android:padding="20dp"
+                                    android:gravity="center_vertical">
+
+                                    <!-- Text Content Section -->
                                     <LinearLayout
-                                        android:background="@drawable/blue_bg_gradient"
-                                        android:layout_width="match_parent"
+                                        android:layout_width="0dp"
                                         android:layout_height="wrap_content"
-                                        android:orientation="horizontal"
-                                        android:padding="15dp">
+                                        android:layout_weight="1"
+                                        android:orientation="vertical">
+
                                         <TextView
-                                            android:fontFamily="@font/poppins_bold"
+                                            android:id="@+id/coins_rewards_screen"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="1,250"
+                                            android:textSize="28sp"
+                                            android:textStyle="bold"
+                                            android:textColor="#FF8F00"
+                                            android:fontFamily="sans-serif-black" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="4dp"
+                                            android:text="Total Coins"
+                                            android:textSize="16sp"
+                                            android:textStyle="bold"
+                                            android:textColor="#2C2C2C" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="2dp"
+                                            android:text="Tap to view details"
+                                            android:textSize="12sp"
+                                            android:textColor="#666666" />
+                                    </LinearLayout>
+
+                                    <!-- Simple Coin Icon -->
+                                    <FrameLayout
+                                        android:layout_width="100dp"
+                                        android:layout_height="100dp"
+                                        android:layout_marginStart="16dp">
+
+                                        <ImageView
+                                            android:layout_width="70dp"
+                                            android:layout_height="70dp"
+                                            android:layout_gravity="center"
+                                            android:src="@drawable/ic_coin_24"
+                                            android:scaleType="centerInside" />
+                                    </FrameLayout>
+                                </LinearLayout>
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <!-- Simple Beautiful Rewards History Card -->
+                            <com.google.android.material.card.MaterialCardView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginBottom="8dp"
+                                android:layout_marginStart="5dp"
+                                android:layout_marginEnd="5dp"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?attr/selectableItemBackground"
+                                app:cardCornerRadius="10dp"
+                                app:cardElevation="6dp"
+                                app:strokeWidth="0dp"
+                                app:cardBackgroundColor="#F3E5F5">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:padding="10dp"
+                                    android:gravity="center_vertical"
+                                    android:minHeight="70dp">
+
+                                    <!-- Simple Icon -->
+                                    <FrameLayout
+                                        android:layout_width="45dp"
+                                        android:layout_height="45dp"
+                                        android:layout_marginEnd="16dp">
+
+                                        <ImageView
+                                            android:layout_width="24dp"
+                                            android:layout_height="24dp"
+                                            android:layout_gravity="center"
+                                            android:src="@android:drawable/ic_menu_recent_history"
+                                            android:tint="#260975"
+                                            android:scaleType="centerInside" />
+                                    </FrameLayout>
+
+                                    <!-- Text Content -->
+                                    <LinearLayout
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:orientation="vertical">
+
+                                        <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:text="Rewards History"
-                                            android:textSize="16sp"
+                                            android:textSize="17sp"
                                             android:textStyle="bold"
-                                            android:layout_weight="1"/>
-                                        <ImageView
-                                            android:src="@drawable/baseline_keyboard_arrow_right_24"
-                                            android:layout_width="15dp"
-                                            android:layout_height="15dp"/>
+                                            android:textColor="#2C2C2C" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="2dp"
+                                            android:text="View all earned rewards"
+                                            android:textSize="13sp"
+                                            android:textColor="#666666" />
                                     </LinearLayout>
-                                </com.google.android.material.card.MaterialCardView>
-                            </LinearLayout>
+
+                                    <!-- Simple Arrow -->
+                                    <FrameLayout
+                                        android:layout_width="35dp"
+                                        android:layout_height="35dp">
+
+                                        <ImageView
+                                            android:layout_width="18dp"
+                                            android:layout_height="18dp"
+                                            android:layout_gravity="center"
+                                            android:src="@drawable/baseline_keyboard_arrow_right_24"
+                                            android:tint="#260975"
+                                            android:scaleType="centerInside" />
+                                    </FrameLayout>
+                                </LinearLayout>
+                            </com.google.android.material.card.MaterialCardView>
                             <TextView
                                 android:fontFamily="@font/poppins_bold"
                                 android:layout_width="wrap_content"

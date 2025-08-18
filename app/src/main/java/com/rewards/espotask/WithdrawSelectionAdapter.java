@@ -1,6 +1,5 @@
 package com.rewards.espotask;
 
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,13 +53,24 @@ public class WithdrawSelectionAdapter extends RecyclerView.Adapter<WithdrawSelec
             super(itemView);
             title = itemView.findViewById(R.id.itemTitle);
             description = itemView.findViewById(R.id.itemDescription);
-            icon = itemView.findViewById(R.id.itemImage);
+            icon = itemView.findViewById(R.id.itemIcon);
         }
 
         public void bind(final WithdrawSelectionItem item, final OnItemClickListener listener) {
             title.setText(item.getTitle());
             description.setText(item.getDescription());
-            Glide.with(itemView.getContext()).load(item.getImgIcon()).into(icon);
+
+            // Load image with error handling using built-in drawables
+            if (item.getImgIcon() != null && !item.getImgIcon().isEmpty()) {
+                Glide.with(itemView.getContext())
+                        .load(item.getImgIcon())
+                        .placeholder(android.R.drawable.ic_menu_gallery)
+                        .error(android.R.drawable.ic_dialog_alert)
+                        .into(icon);
+            } else {
+                // Set default icon if no image URL
+                icon.setImageResource(android.R.drawable.ic_dialog_info);
+            }
 
             itemView.setOnClickListener(v -> listener.onItemClick(item));
         }

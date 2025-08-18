@@ -3,74 +3,159 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp">
+    app:cardBackgroundColor="@android:color/white"
+    android:padding="0dp">
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
-        android:layout_marginBottom="0dp"
-        app:cardCornerRadius="16dp"
-        app:strokeWidth="0dp">
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="0dp"
+        android:layout_margin="4dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="4dp"
+        app:strokeWidth="0dp"
+        app:cardBackgroundColor="@android:color/white">
 
-        <!-- Gradient Background inside FrameLayout -->
-        <FrameLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/reward_gradient_bg"
+            android:orientation="vertical"
             android:padding="10dp">
 
+            <!-- Main Content Row -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <!-- Icon Container -->
+                <FrameLayout
+                    android:layout_width="56dp"
+                    android:layout_height="56dp">
+
+                    <ImageView
+                        android:id="@+id/itemIcon"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="center"
+                        android:scaleType="centerInside"
+                        android:src="@android:drawable/ic_dialog_info" />
+                </FrameLayout>
+
+                <!-- Text Content -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="12dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/itemTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Premium Feature"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#1A1A1A"
+                        android:maxLines="2"
+                        android:ellipsize="end" />
+
+                    <TextView
+                        android:id="@+id/itemDescription"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Unlock advanced capabilities"
+                        android:textSize="14sp"
+                        android:textColor="#666666"
+                        android:maxLines="2"
+                        android:ellipsize="end" />
+
+                    <!-- Status Container -->
+                    <LinearLayout
+                        android:id="@+id/statusContainer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:background="#F5F3FF"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/statusText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="NEW"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:textColor="#260975" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Arrow Icon -->
+                <ImageView
+                    android:id="@+id/arrowIcon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@android:drawable/ic_menu_send"
+                    android:scaleType="centerInside" />
+            </LinearLayout>
+
+            <!-- Progress Container -->
+            <LinearLayout
+                android:id="@+id/progressContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:orientation="vertical"
-                android:gravity="center">
+                android:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:layout_marginBottom="4dp">
 
-                    <ImageView
-                        android:id="@+id/itemImage"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:scaleType="fitCenter" />
-
-                    <LinearLayout
+                    <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:layout_marginStart="15dp"
-                        android:orientation="vertical">
+                        android:text="Progress"
+                        android:textSize="12sp"
+                        android:textColor="#666666" />
 
-                        <TextView
-                            android:id="@+id/itemTitle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Title"
-                            android:textSize="17sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/itemDescription"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Description"
-                            android:textSize="13sp"
-                            android:fontFamily="@font/poppins" />
-                    </LinearLayout>
-
-                    <ImageView
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:src="@drawable/baseline_keyboard_arrow_right_24"
-                        android:scaleType="fitXY" />
+                    <TextView
+                        android:id="@+id/progressValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="75%"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:textColor="#260975" />
                 </LinearLayout>
 
-               
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="6dp"
+                    android:progress="75"
+                    android:max="100"
+                    android:progressTint="#260975"
+                    android:progressBackgroundTint="#E8E8E8" />
             </LinearLayout>
-        </FrameLayout>
+        </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 </LinearLayout>
