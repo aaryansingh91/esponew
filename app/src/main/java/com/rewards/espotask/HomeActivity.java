@@ -28,6 +28,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +38,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.android.volley.Request;
@@ -75,6 +77,7 @@ import com.unity3d.ads.UnityAds;
 import com.unity3d.ads.IUnityAdsLoadListener;
 import com.unity3d.ads.IUnityAdsShowListener;
 import com.unity3d.ads.UnityAdsShowOptions;
+import com.unity3d.services.ads.offerwall.OfferwallAdapterBridge;
 import com.unity3d.services.banners.BannerView;
 import com.unity3d.services.banners.UnityBannerSize;
 
@@ -110,6 +113,9 @@ public class HomeActivity extends AppCompatActivity {
     Button btnFacebook, btnInstagram, btnTelegram, btnYoutube;
     String facebookUrl, instagramUrl, telegramUrl, youtubeUrl;
 
+    private Switch switchPushNotification;
+    private SharedPreferences notificationPrefs;
+
 
     @SuppressLint({"MissingInflatedId", "ClickableViewAccessibility"})
     @Override
@@ -127,6 +133,7 @@ public class HomeActivity extends AppCompatActivity {
 
         // Fetch social links
         fetchSocialLinks();
+
 
         Button cardTaskOffers = findViewById(R.id.card_task_offers);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
@@ -184,8 +191,8 @@ public class HomeActivity extends AppCompatActivity {
 
         top_horizontal = findViewById(R.id.top_horizontal);
         Button bonusBtn = findViewById(R.id.bonus_get);
-//        LinearLayout bonusPopup = findViewById(R.id.bonus_popup);
-//        TextView popupText = findViewById(R.id.popup_text);
+        // LinearLayout bonusPopup = findViewById(R.id.bonus_popup);
+        //TextView popupText = findViewById(R.id.popup_text);
 
 
         // Storing Into Shared preferences
@@ -220,6 +227,7 @@ public class HomeActivity extends AppCompatActivity {
                 return false;  // allow normal scrolling
             }
         });
+        setupNotificationSwitch();
 
         horizontalScrollView.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
@@ -238,7 +246,7 @@ public class HomeActivity extends AppCompatActivity {
         // Sample images (from drawable)
         WormDotsIndicator dotsIndicator = findViewById(R.id.dots_indicator);
 
-// Sample images (from drawable)
+        // Sample images (from drawable)
         List<Integer> images = Arrays.asList(
                 R.drawable.freefire,
                 R.drawable.freefire3,
@@ -248,11 +256,20 @@ public class HomeActivity extends AppCompatActivity {
         ImageSliderAdapter sliderAdapter = new ImageSliderAdapter(images);
         viewPager2.setAdapter(sliderAdapter);
 
-// Connect indicator with ViewPager2
+        viewPager2.setClipToPadding(false);
+        viewPager2.setClipChildren(false);
+        viewPager2.setOffscreenPageLimit(3);
+        viewPager2.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
+
+        // Margin transformer for space between pages
+        int pageMargin =20; // adjust as needed
+        viewPager2.setPageTransformer(new MarginPageTransformer(pageMargin));
+
+        // Connect indicator with ViewPager2
         dotsIndicator.setViewPager2(viewPager2);
 
 
-// Optional: Auto-slide
+        // Optional: Auto-slide
         new Handler().postDelayed(new Runnable() {
             int currentPage = 0;
 
@@ -389,6 +406,8 @@ public class HomeActivity extends AppCompatActivity {
 
 
 
+
+
         app_home_top_sec_1_game = sharedPreferences.getString("app_home_top_sec_1_game", "NULL");
         app_home_top_sec_1_game_url = sharedPreferences.getString("app_home_top_sec_1_game_url", "NULL");
 
@@ -468,6 +487,38 @@ public class HomeActivity extends AppCompatActivity {
 
         fetchAndSetupAds(this);
         setupWatchAdButton(this);
+    }
+
+
+    // Add this in your onCreate() method after your existing findViewById calls
+    private void setupNotificationSwitch() {
+        switchPushNotification = findViewById(R.id.switchPushNotification);
+        notificationPrefs = getSharedPreferences("notification_settings", MODE_PRIVATE);
+
+        // Load saved preference
+        boolean isEnabled = notificationPrefs.getBoolean("push_notifications_enabled", true);
+        switchPushNotification.setChecked(isEnabled);
+
+        // Set switch listener
+        switchPushNotification.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            handleNotificationToggle(isChecked);
+        });
+    }
+
+    // Add this method to handle notification toggle
+    private void handleNotificationToggle(boolean isEnabled) {
+        // Save preference
+        SharedPreferences.Editor editor = notificationPrefs.edit();
+        editor.putBoolean("push_notifications_enabled", isEnabled);
+        editor.apply();
+
+        if (isEnabled) {
+            Toast.makeText(this, "Push notifications enabled", Toast.LENGTH_SHORT).show();
+            // Enable notifications logic here if needed
+        } else {
+            Toast.makeText(this, "Push notifications disabled", Toast.LENGTH_SHORT).show();
+            // Disable notifications logic here if needed
+        }
     }
 
 
@@ -642,7 +693,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
     public void openLuckyWinner(View view) {
-        Intent intent = new Intent(this, LuckyNumberWinnerActivity.class);
+        Intent intent = new Intent(this, GameOfferwall.class);
         startActivity(intent);
     }
 
@@ -780,7 +831,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void btn_fn_sec2_luckydraw(View view) {
-        Intent intent = new Intent(this, LuckyDrawActivity.class);
+        Intent intent = new Intent(this, GameOfferwall.class);
         startActivity(intent);
     }
 

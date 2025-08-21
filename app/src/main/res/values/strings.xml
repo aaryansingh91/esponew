@@ -5,33 +5,25 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <!-- Profile Activity Strings -->
     <string name="edit_profile">Edit Profile</string>
-    <string name="update_profile">UPDATE PROFILE</string>
-    <string name="reset_password">Reset Password</string>
-    <string name="reset">RESET</string>
-    <string name="profile_image_description">Profile image</string>
-
-    <!-- Profile Field Labels -->
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
-    <string name="username">Username *</string>
-    <string name="email_address">Email Address</string>
-    <string name="mobile_number">Mobile Number</string>
+    <string name="email">Email Address</string>
+    <string name="mobile">Mobile Number</string>
     <string name="date_of_birth">Date of Birth</string>
     <string name="gender">Gender</string>
-
-    <!-- Gender Options -->
     <string name="male">Male</string>
     <string name="female">Female</string>
+    <string name="update_profile">Update Profile</string>
 
-    <!-- Password Reset Fields -->
+    <!-- Password Section -->
+    <string name="reset_password">Reset Password</string>
     <string name="old_password">Old Password</string>
     <string name="new_password">New Password</string>
+    <string name="reset">Reset Password</string>
 
-    <!-- Default Values (Optional, for testing) -->
-    <string name="default_first_name">Aaryan</string>
-    <string name="default_last_name">Singh</string>
-    <string name="default_username">aaryansingh</string>
-    <string name="default_email">aaryansingh1356@gmail.com</string>
-    <string name="default_mobile">+91 9598321356</string>
+    <!-- Content Descriptions -->
+    <string name="profile_image_description">Profile Image</string>
+
 </resources>

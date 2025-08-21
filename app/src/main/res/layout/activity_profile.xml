@@ -30,9 +30,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_profile"
+                android:src="@drawable/user_profile"
                 android:contentDescription="@string/profile_image_description"
-                tools:src="@tools:sample/avatars" />
+                tools:src="@drawable/user_profile" />
         </androidx.cardview.widget.CardView>
 
         <!-- Edit Profile Text -->
@@ -67,6 +67,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginEnd="8dp"
+                android:hint="@string/first_name"
                 app:boxStrokeColor="#9575CD"
                 app:hintTextColor="#9575CD"
                 app:layout_constraintTop_toBottomOf="@id/edit_profile_text">
@@ -75,8 +76,8 @@
                     android:id="@+id/edit_first_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Aaryan"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:textColor="@color/black" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Last Name -->
@@ -86,6 +87,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:hint="@string/last_name"
                 app:boxStrokeColor="#9575CD"
                 app:hintTextColor="#9575CD">
 
@@ -93,31 +95,10 @@
                     android:id="@+id/edit_last_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Singh"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:textColor="@color/black" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
-
-        <!-- Username -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/input_username"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:boxStrokeColor="#9575CD"
-            app:hintTextColor="#9575CD"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/name_container">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edit_username"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="aaryansingh"
-                android:textSize="14sp" />
-        </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Email Address -->
         <com.google.android.material.textfield.TextInputLayout
@@ -126,19 +107,20 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:hint="Enter your Email"
             app:boxStrokeColor="#9575CD"
             app:hintTextColor="#9575CD"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/input_username">
+            app:layout_constraintTop_toBottomOf="@id/name_container">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edit_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="aaryansingh1356@gmail.com"
                 android:inputType="textEmailAddress"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColor="@color/black" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Mobile Number -->
@@ -148,6 +130,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:hint="Enter Your Phone"
             app:boxStrokeColor="#9575CD"
             app:hintTextColor="#9575CD"
             app:layout_constraintEnd_toEndOf="parent"
@@ -158,20 +141,22 @@
                 android:id="@+id/edit_mobile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="+91 9598321356"
                 android:inputType="phone"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColor="@color/black" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Date of Birth -->
+        <!-- Date of Birth with Date Selector -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_dob"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:hint="@string/date_of_birth"
             app:boxStrokeColor="#9575CD"
             app:hintTextColor="#9575CD"
+            app:endIconMode="custom"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/input_mobile">
@@ -181,8 +166,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:inputType="date"
-                android:textSize="14sp" />
+                android:focusable="false"
+                android:clickable="true"
+                android:inputType="none"
+                android:textSize="14sp"
+                android:textColor="@color/black" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Gender with RadioGroup for single selection -->
@@ -213,7 +201,7 @@
                 android:text="@string/male"
                 android:textColor="#9575CD"
                 android:buttonTint="#9575CD"
-                android:checked="true"
+                android:checked="false"
                 android:textSize="14sp" />
 
             <com.google.android.material.radiobutton.MaterialRadioButton
@@ -274,7 +262,8 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/old_password"
                 android:inputType="textPassword"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColor="@color/black" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -296,7 +285,8 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/new_password"
                 android:inputType="textPassword"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColor="@color/black" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Reset Button -->

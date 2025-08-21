@@ -1,238 +1,298 @@
 package com.rewards.espotask;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Patterns;
 import android.view.View;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.Request;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.google.android.material.radiobutton.MaterialRadioButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-public class ProfileActivity extends AppCompatActivity {
+import org.json.JSONObject;
 
-    // View references
-    private TextInputLayout inputFirstName, inputLastName, inputUsername, inputEmail, inputMobile, inputDob;
-    private TextInputEditText editFirstName, editLastName, editUsername, editEmail, editMobile, editDob;
-    private MaterialRadioButton radioMale, radioFemale;
-    private TextInputLayout inputOldPassword, inputNewPassword;
-    private TextInputEditText editOldPassword, editNewPassword;
-    private SharedPreferences sharedPreferences;
-    private static final String PREF_NAME = "UserProfile";
-    private static final String KEY_FIRST_NAME = "first_name";
-    private static final String KEY_LAST_NAME = "last_name";
-    private static final String KEY_USERNAME = "username";
-    private static final String KEY_EMAIL = "email";
-    private static final String KEY_MOBILE = "mobile";
-    private static final String KEY_DOB = "dob";
-    private static final String KEY_GENDER = "gender";
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+
+public class ProfileActivity extends AppCompatActivity {
+    TextInputEditText editFirstName, editLastName, editEmail, editMobile, editDob, editOldPass, editNewPass;
+    RadioGroup genderGroup;
+    Button btnUpdateProfile, btnChangePassword;
+    ImageView profileImage;
+
+    String userId = "0"; // 👈 define globally
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        // Initialize SharedPreferences
-        sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-
         // Initialize views
         initViews();
-        loadUserData();
-        setupClickListeners();
+
+        // Setup date picker
+        setupDatePicker();
+        SharedPreferences sharedPreferences = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
+        userId = sharedPreferences.getString("userID", "0"); // 👈 assign value to global variable
+
+        // Fetch user details
+        fetchUserDetails();
+
+        // Set click listeners
+        btnUpdateProfile.setOnClickListener(v -> updateProfile());
+        btnChangePassword.setOnClickListener(v -> changePassword());
     }
 
     private void initViews() {
-        inputFirstName = findViewById(R.id.input_first_name);
         editFirstName = findViewById(R.id.edit_first_name);
-
-        inputLastName = findViewById(R.id.input_last_name);
         editLastName = findViewById(R.id.edit_last_name);
-
-        inputUsername = findViewById(R.id.input_username);
-        editUsername = findViewById(R.id.edit_username);
-
-        inputEmail = findViewById(R.id.input_email);
         editEmail = findViewById(R.id.edit_email);
-
-        inputMobile = findViewById(R.id.input_mobile);
         editMobile = findViewById(R.id.edit_mobile);
-
-        inputDob = findViewById(R.id.input_dob);
         editDob = findViewById(R.id.edit_dob);
-
-        radioMale = findViewById(R.id.radio_male);
-        radioFemale = findViewById(R.id.radio_female);
-
-        inputOldPassword = findViewById(R.id.input_old_password);
-        editOldPassword = findViewById(R.id.edit_old_password);
-
-        inputNewPassword = findViewById(R.id.input_new_password);
-        editNewPassword = findViewById(R.id.edit_new_password);
-
-        findViewById(R.id.update_profile_button).setOnClickListener(v -> updateProfile());
-        findViewById(R.id.reset_button).setOnClickListener(v -> resetPassword());
+        editOldPass = findViewById(R.id.edit_old_password);
+        editNewPass = findViewById(R.id.edit_new_password);
+        genderGroup = findViewById(R.id.gender_group);
+        btnUpdateProfile = findViewById(R.id.update_profile_button);
+        btnChangePassword = findViewById(R.id.reset_button);
+        profileImage = findViewById(R.id.profile_image);
     }
 
-    private void loadUserData() {
-        editFirstName.setText(sharedPreferences.getString(KEY_FIRST_NAME, "Aaryan"));
-        editLastName.setText(sharedPreferences.getString(KEY_LAST_NAME, "Singh"));
-        editUsername.setText(sharedPreferences.getString(KEY_USERNAME, "aaryansingh"));
-        editEmail.setText(sharedPreferences.getString(KEY_EMAIL, "aaryansingh1356@gmail.com"));
-        editMobile.setText(sharedPreferences.getString(KEY_MOBILE, "+91 9598321356"));
-        editDob.setText(sharedPreferences.getString(KEY_DOB, ""));
-        String gender = sharedPreferences.getString(KEY_GENDER, "male");
-        if ("male".equals(gender)) {
-            radioMale.setChecked(true);
-        } else {
-            radioFemale.setChecked(true);
-        }
+    private void setupDatePicker() {
+        editDob.setOnClickListener(v -> {
+            Calendar calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+                    (view, selectedYear, selectedMonth, selectedDay) -> {
+                        String selectedDate = String.format("%04d-%02d-%02d",
+                                selectedYear, selectedMonth + 1, selectedDay);
+                        editDob.setText(selectedDate);
+                    }, year, month, day);
+
+            datePickerDialog.show();
+        });
     }
 
-    private void setupClickListeners() {
-        // Click listeners are set in initViews for buttons
+    private void fetchUserDetails() {
+        String url = getString(R.string.app_url) + "/fetch_user_profile.php?user_id=" + userId;
+
+        StringRequest request = new StringRequest(Request.Method.GET, url,
+                response -> {
+                    try {
+                        JSONObject obj = new JSONObject(response);
+                        if (obj.getBoolean("success")) {
+                            JSONObject user = obj.getJSONObject("user");
+
+                            String name = user.getString("name");
+                            String[] parts = name.split(" ", 2);
+                            editFirstName.setText(parts[0]);
+                            if (parts.length > 1) editLastName.setText(parts[1]);
+
+                            editEmail.setText(user.getString("email"));
+                            editMobile.setText(user.getString("mobile"));
+                            editDob.setText(user.optString("dob", ""));
+
+                            String gender = user.optString("gender", "");
+                            if (gender.equalsIgnoreCase("Male")) {
+                                genderGroup.check(R.id.radio_male);
+                            } else if (gender.equalsIgnoreCase("Female")) {
+                                genderGroup.check(R.id.radio_female);
+                            }
+
+                            String avatar = user.optString("avatar", "");
+                            if (!TextUtils.isEmpty(avatar)) {
+                                Glide.with(this).load(avatar).into(profileImage);
+                            }
+                        } else {
+                            Toast.makeText(this, obj.getString("message"), Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "Error parsing data", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> {
+                    error.printStackTrace();
+                    Toast.makeText(this, "Error fetching data", Toast.LENGTH_SHORT).show();
+                });
+
+        Volley.newRequestQueue(this).add(request);
     }
 
     private void updateProfile() {
+        // Validate inputs
         if (!validateInputs()) {
             return;
         }
 
-        String firstName = editFirstName.getText().toString().trim();
-        String lastName = editLastName.getText().toString().trim();
-        String username = editUsername.getText().toString().trim();
-        String email = editEmail.getText().toString().trim();
-        String mobile = editMobile.getText().toString().trim();
-        String dob = editDob.getText().toString().trim();
-        String gender = radioMale.isChecked() ? "male" : "female";
+        String url = getString(R.string.app_url) + "/update_profile.php";
 
-        saveUserData(firstName, lastName, username, email, mobile, dob, gender);
-        Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
+        int selectedId = genderGroup.getCheckedRadioButtonId();
+        String selectedGender = "";
+
+        if (selectedId != -1) {
+            RadioButton selectedRadioButton = findViewById(selectedId);
+            selectedGender = selectedRadioButton.getText().toString();
+        }
+
+        String finalSelectedGender = selectedGender;
+
+        StringRequest request = new StringRequest(Request.Method.POST, url,
+                response -> {
+                    try {
+                        JSONObject obj = new JSONObject(response);
+                        Toast.makeText(this, obj.getString("message"), Toast.LENGTH_SHORT).show();
+
+                        if (obj.getBoolean("success")) {
+                            // Profile updated successfully
+                            Toast.makeText(this, "Profile updated successfully!", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "Error updating profile", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> {
+                    error.printStackTrace();
+                    Toast.makeText(this, "Update failed", Toast.LENGTH_SHORT).show();
+                }) {
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("user_id", userId);
+                params.put("name", editFirstName.getText().toString().trim() + " " +
+                        editLastName.getText().toString().trim());
+                params.put("email", editEmail.getText().toString().trim());
+                params.put("mobile", editMobile.getText().toString().trim());
+                params.put("dob", editDob.getText().toString().trim());
+                params.put("gender", finalSelectedGender);
+                return params;
+            }
+        };
+
+        Volley.newRequestQueue(this).add(request);
     }
 
-    private void resetPassword() {
-        if (!validatePasswordInputs()) {
+    private void changePassword() {
+        String oldPass = editOldPass.getText().toString().trim();
+        String newPass = editNewPass.getText().toString().trim();
+
+        if (TextUtils.isEmpty(oldPass)) {
+            editOldPass.setError("Enter old password");
+            editOldPass.requestFocus();
             return;
         }
 
-        String oldPassword = editOldPassword.getText().toString().trim();
-        String newPassword = editNewPassword.getText().toString().trim();
+        if (TextUtils.isEmpty(newPass)) {
+            editNewPass.setError("Enter new password");
+            editNewPass.requestFocus();
+            return;
+        }
 
-        // Simulate password reset (replace with actual API call)
-        saveUserData(
-                editFirstName.getText().toString().trim(),
-                editLastName.getText().toString().trim(),
-                editUsername.getText().toString().trim(),
-                editEmail.getText().toString().trim(),
-                editMobile.getText().toString().trim(),
-                editDob.getText().toString().trim(),
-                radioMale.isChecked() ? "male" : "female"
-        );
-        Toast.makeText(this, "Password reset successfully", Toast.LENGTH_SHORT).show();
-        clearPasswordFields();
+        if (newPass.length() < 6) {
+            editNewPass.setError("Password must be at least 6 characters");
+            editNewPass.requestFocus();
+            return;
+        }
+
+        String url = getString(R.string.app_url) + "/change_password.php";
+
+        StringRequest request = new StringRequest(Request.Method.POST, url,
+                response -> {
+                    try {
+                        JSONObject obj = new JSONObject(response);
+                        Toast.makeText(this, obj.getString("message"), Toast.LENGTH_SHORT).show();
+
+                        if (obj.getBoolean("success")) {
+                            // Password changed successfully, clear fields
+                            editOldPass.setText("");
+                            editNewPass.setText("");
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "Error changing password", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> {
+                    error.printStackTrace();
+                    Toast.makeText(this, "Password change failed", Toast.LENGTH_SHORT).show();
+                }) {
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("user_id", userId);
+                params.put("old_password", oldPass);
+                params.put("new_password", newPass);
+                return params;
+            }
+        };
+
+        Volley.newRequestQueue(this).add(request);
     }
 
     private boolean validateInputs() {
-        boolean isValid = true;
-
-        clearErrors();
-
         String firstName = editFirstName.getText().toString().trim();
-        if (TextUtils.isEmpty(firstName)) {
-            inputFirstName.setError("First name is required");
-            isValid = false;
-        }
-
         String lastName = editLastName.getText().toString().trim();
-        if (TextUtils.isEmpty(lastName)) {
-            inputLastName.setError("Last name is required");
-            isValid = false;
-        }
-
-        String username = editUsername.getText().toString().trim();
-        if (TextUtils.isEmpty(username)) {
-            inputUsername.setError("Username is required");
-            isValid = false;
-        }
-
         String email = editEmail.getText().toString().trim();
-        if (TextUtils.isEmpty(email)) {
-            inputEmail.setError("Email is required");
-            isValid = false;
-        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            inputEmail.setError("Please enter a valid email");
-            isValid = false;
-        }
-
         String mobile = editMobile.getText().toString().trim();
+
+        if (TextUtils.isEmpty(firstName)) {
+            editFirstName.setError("First name is required");
+            editFirstName.requestFocus();
+            return false;
+        }
+
+        if (TextUtils.isEmpty(lastName)) {
+            editLastName.setError("Last name is required");
+            editLastName.requestFocus();
+            return false;
+        }
+
+        if (TextUtils.isEmpty(email)) {
+            editEmail.setError("Email is required");
+            editEmail.requestFocus();
+            return false;
+        }
+
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            editEmail.setError("Enter valid email");
+            editEmail.requestFocus();
+            return false;
+        }
+
         if (TextUtils.isEmpty(mobile)) {
-            inputMobile.setError("Mobile number is required");
-            isValid = false;
-        } else if (mobile.length() < 10) {
-            inputMobile.setError("Please enter a valid mobile number");
-            isValid = false;
+            editMobile.setError("Mobile number is required");
+            editMobile.requestFocus();
+            return false;
         }
 
-        return isValid;
-    }
-
-    private boolean validatePasswordInputs() {
-        boolean isValid = true;
-
-        clearErrors();
-
-        String oldPassword = editOldPassword.getText().toString().trim();
-        if (TextUtils.isEmpty(oldPassword)) {
-            inputOldPassword.setError("Old password is required");
-            isValid = false;
+        if (mobile.length() < 10) {
+            editMobile.setError("Enter valid mobile number");
+            editMobile.requestFocus();
+            return false;
         }
 
-        String newPassword = editNewPassword.getText().toString().trim();
-        if (TextUtils.isEmpty(newPassword)) {
-            inputNewPassword.setError("New password is required");
-            isValid = false;
-        } else if (newPassword.length() < 6) {
-            inputNewPassword.setError("Password must be at least 6 characters");
-            isValid = false;
-        }
-
-        return isValid;
-    }
-
-    private void clearErrors() {
-        inputFirstName.setError(null);
-        inputLastName.setError(null);
-        inputUsername.setError(null);
-        inputEmail.setError(null);
-        inputMobile.setError(null);
-        inputDob.setError(null);
-        inputOldPassword.setError(null);
-        inputNewPassword.setError(null);
-    }
-
-    private void saveUserData(String firstName, String lastName, String username, String email, String mobile, String dob, String gender) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(KEY_FIRST_NAME, firstName);
-        editor.putString(KEY_LAST_NAME, lastName);
-        editor.putString(KEY_USERNAME, username);
-        editor.putString(KEY_EMAIL, email);
-        editor.putString(KEY_MOBILE, mobile);
-        editor.putString(KEY_DOB, dob);
-        editor.putString(KEY_GENDER, gender);
-        editor.apply();
-    }
-
-    private void clearPasswordFields() {
-        editOldPassword.setText("");
-        editNewPassword.setText("");
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+        return true;
     }
 }
