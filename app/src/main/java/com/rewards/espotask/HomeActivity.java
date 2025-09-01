@@ -505,6 +505,12 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
+    public void openRewardHistory(View view) {
+        Intent intent = new Intent(this, HistoryActivity.class);
+        startActivity(intent);
+    }
+
+
     // Add this method to handle notification toggle
     private void handleNotificationToggle(boolean isEnabled) {
         // Save preference
@@ -610,6 +616,13 @@ public class HomeActivity extends AppCompatActivity {
         intent.putExtra("name", name);
         startActivity(intent);
     }
+    public void HowtoWinCoin(View view) {
+        showBottomSheetDialog();
+    }
+
+    public void SurveyClick(View view) {
+        Toast.makeText(this, "No Surveys Available Right Now", Toast.LENGTH_SHORT).show();
+    }
 
     private void showBottomSheetDialog() {
         // BottomSheetDialog banaen
@@ -620,12 +633,13 @@ public class HomeActivity extends AppCompatActivity {
 
         // BottomSheetData object banaen
         BottomSheetData data = new BottomSheetData(
-                "Welcome to EspoTask - Reward",
-                "Earn Coins",
-                "Earn more coins 💰 by playing games and filling surveys",
-                "Redeem easily with our rewards",
-                "Earn Coins"
+                "Welcome to EspoTask - eSports Rewards",
+                "Play & Earn",
+                "Earn more coins 💰 by playing PUBG, Free Fire, and other tournaments",
+                "Redeem coins for exciting gaming rewards & vouchers",
+                "Start Playing"
         );
+
 
         // Bottom sheet ke andar ke views ko find karen aur data set karen
         TextView titleTextView = bottomSheetView.findViewById(R.id.bottom_sheet_title);
@@ -857,6 +871,12 @@ public class HomeActivity extends AppCompatActivity {
             System.out.println(e.getMessage());
         }
     }
+
+    public void openProfile(View view) {
+        Intent intent = new Intent(this, ProfileActivity.class);
+        startActivity(intent);
+    }
+
 
     public void btn_fn_sec3_quiz(View view) {
         try {
