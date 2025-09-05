@@ -160,7 +160,6 @@
                                 android:visibility="gone"
                                 android:layout_marginEnd="4dp" />
 
-
                             <ImageView
                                 android:id="@+id/entry_fee_icon_ticket"
                                 android:layout_width="20dp"
@@ -179,7 +178,6 @@
                                 android:fontFamily="@font/poppins"
                                 android:visibility="gone" />
                         </LinearLayout>
-
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -231,6 +229,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
             android:backgroundTint="@color/white"
             app:cardCornerRadius="10dp"
             app:cardElevation="10dp"
@@ -256,6 +255,44 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Winning Prize: 1000\n1st prize: 500\n2nd prize: 300\n3rd prize: 200"
+                    android:fontFamily="@font/poppins"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Room Description Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_room_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/white"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="10dp"
+            app:strokeWidth="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Room Description"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp"
+                    android:fontFamily="@font/poppins_bold" />
+
+                <TextView
+                    android:id="@+id/room_description_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Coming Soon"
                     android:fontFamily="@font/poppins"
                     android:textSize="14sp" />
             </LinearLayout>

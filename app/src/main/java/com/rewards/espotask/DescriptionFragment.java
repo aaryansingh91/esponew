@@ -17,12 +17,11 @@ import com.bumptech.glide.Glide;
 
 public class DescriptionFragment extends Fragment {
 
-    private TextView  matchTitle, matchTypeText, matchMapText, entryFeeText, entryFeeTextTicket,
-            perKillText, matchScheduleText, prizeDetailsText, matchDescriptionText, entryFeeSeparator ;
+    private TextView matchTitle, matchTypeText, matchMapText, entryFeeText, entryFeeTextTicket,
+            perKillText, matchScheduleText, prizeDetailsText, matchDescriptionText, entryFeeSeparator,
+            roomDescriptionText;
     private ImageView topImage, entryFeeIcon, entryFeeIconTicket;
     private static final String TAG = "DescriptionFragment";
-
-
 
     @Nullable
     @Override
@@ -41,12 +40,12 @@ public class DescriptionFragment extends Fragment {
         matchScheduleText = view.findViewById(R.id.match_schedule_text);
         prizeDetailsText = view.findViewById(R.id.prize_details_text);
         matchDescriptionText = view.findViewById(R.id.match_description_text);
+        roomDescriptionText = view.findViewById(R.id.room_description_text);
 
-         entryFeeIcon = view.findViewById(R.id.entry_fee_icon);
-         entryFeeIconTicket = view.findViewById(R.id.entry_fee_icon_ticket);
-         entryFeeTextTicket = view.findViewById(R.id.entry_fee_text_ticket);
-         entryFeeSeparator = view.findViewById(R.id.entry_fee_separator);
-
+        entryFeeIcon = view.findViewById(R.id.entry_fee_icon);
+        entryFeeIconTicket = view.findViewById(R.id.entry_fee_icon_ticket);
+        entryFeeTextTicket = view.findViewById(R.id.entry_fee_text_ticket);
+        entryFeeSeparator = view.findViewById(R.id.entry_fee_separator);
 
         // Apply arguments if available
         if (getArguments() != null) {
@@ -73,6 +72,14 @@ public class DescriptionFragment extends Fragment {
         matchScheduleText.setText(bundle.getString("match_time", "Unknown"));
         prizeDetailsText.setText(bundle.getString("prize_details", ""));
         matchDescriptionText.setText(Html.fromHtml(bundle.getString("match_desc", "")));
+
+        // Handle room description
+        String roomDescription = bundle.getString("room_description", "");
+        if (roomDescription != null && !roomDescription.trim().isEmpty()) {
+            roomDescriptionText.setText(roomDescription.trim());
+        } else {
+            roomDescriptionText.setText("Coming Soon");
+        }
 
         String entryType = bundle.getString("entry_type", "any");
         int coinFee = bundle.getInt("entry_fee_coins", 0);
@@ -115,8 +122,6 @@ public class DescriptionFragment extends Fragment {
                 entryFeeTextTicket.setText(String.valueOf(ticketFee));
                 break;
         }
-
-
 
         // Load image
         String bannerUrl = bundle.getString("match_banner", "");

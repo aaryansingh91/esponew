@@ -149,6 +149,8 @@ public class TournamentMatchDetail extends AppCompatActivity {
     }
 
 
+    // Add this in the updateMatchDetails method where you're preparing the bundle
+
     private void updateMatchDetails(int tournamentId) {
         String url = getResources().getString(R.string.app_url) + "/tournament_details_api.php?id=" + tournamentId;
         Log.d(TAG, "Fetching match details from: " + url);
@@ -187,6 +189,9 @@ public class TournamentMatchDetail extends AppCompatActivity {
                         bundle.putString("match_desc", match.optString("match_desc", ""));
                         bundle.putString("match_banner", match.optString("match_banner", ""));
 
+                        // ADD THIS LINE - Room Description
+                        bundle.putString("room_description", match.optString("room_description", ""));
+
                         entryFeeCoins = match.optInt("entry_fee_coins", 0);
                         entryFeeTickets = match.optInt("entry_fee_tickets", 0);
                         entryType = match.optString("entry_type", "any");
@@ -224,6 +229,7 @@ public class TournamentMatchDetail extends AppCompatActivity {
                     }
                 },
                 error -> {
+                    // Error handling code remains the same
                     String errorMsg = "Unknown error";
                     int statusCode = error.networkResponse != null ? error.networkResponse.statusCode : -1;
                     String responseData = error.networkResponse != null && error.networkResponse.data != null ?
