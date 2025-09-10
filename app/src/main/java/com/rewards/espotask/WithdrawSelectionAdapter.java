@@ -53,7 +53,7 @@ public class WithdrawSelectionAdapter extends RecyclerView.Adapter<WithdrawSelec
             super(itemView);
             title = itemView.findViewById(R.id.itemTitle);
             description = itemView.findViewById(R.id.itemDescription);
-            icon = itemView.findViewById(R.id.itemIcon);
+            icon = itemView.findViewById(R.id.itemImage);
         }
 
         public void bind(final WithdrawSelectionItem item, final OnItemClickListener listener) {

@@ -915,116 +915,116 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
     // Java Example - How to use the layout dynamically
-    public class CardItemHelper {
-
-        // Method to populate card with data
-        public void bindCardData(View cardView, CardItem item) {
-            ImageView itemIcon = cardView.findViewById(R.id.itemIcon);
-            TextView itemTitle = cardView.findViewById(R.id.itemTitle);
-            TextView itemSubtitle = cardView.findViewById(R.id.itemDescription);  // Changed to itemDescription
-            LinearLayout statusContainer = cardView.findViewById(R.id.statusContainer);
-            TextView statusText = cardView.findViewById(R.id.statusText);
-            LinearLayout progressContainer = cardView.findViewById(R.id.progressContainer);
-            TextView progressValue = cardView.findViewById(R.id.progressValue);
-            ProgressBar progressBar = cardView.findViewById(R.id.progressBar);
-            MaterialCardView cardContainer = cardView.findViewById(R.id.cardContainer);
-
-            // Set basic data
-            itemTitle.setText(item.getTitle());
-            if (itemSubtitle != null) {  // Add null check
-                itemSubtitle.setText(item.getSubtitle());
-            }
-
-            // Load image with better error handling
-            if (item.getIconResource() != 0) {
-                itemIcon.setImageResource(item.getIconResource());
-            } else if (item.getIconUrl() != null && !item.getIconUrl().isEmpty()) {
-                // Uncomment if you're using Glide
-                // Glide.with(cardView.getContext()).load(item.getIconUrl()).into(itemIcon);
-            } else {
-                // Set default icon
-                itemIcon.setImageResource(android.R.drawable.ic_dialog_info);
-            }
-
-            // Show/hide status badge (only if these views exist in layout)
-            if (statusContainer != null) {
-                if (item.getStatusText() != null) {
-                    statusContainer.setVisibility(View.VISIBLE);
-                    if (statusText != null) {
-                        statusText.setText(item.getStatusText());
-                    }
-                } else {
-                    statusContainer.setVisibility(View.GONE);
-                }
-            }
-
-            // Show/hide progress (only if these views exist in layout)
-            if (progressContainer != null) {
-                if (item.hasProgress()) {
-                    progressContainer.setVisibility(View.VISIBLE);
-                    if (progressValue != null) {
-                        progressValue.setText(item.getProgressText());
-                    }
-                    if (progressBar != null) {
-                        progressBar.setProgress(item.getProgressValue());
-                    }
-                } else {
-                    progressContainer.setVisibility(View.GONE);
-                }
-            }
-
-            // Set click listener
-            if (cardContainer != null) {
-                cardContainer.setOnClickListener(v -> {
-                    // Add click animation
-                    animateCardClick(cardContainer);
-
-                    // Handle click action
-                    if (item.getClickListener() != null) {
-                        item.getClickListener().onClick(v);
-                    }
-                });
-
-                // Add subtle entrance animation
-                animateCardEntrance(cardContainer);
-            } else {
-                // If cardContainer is null, set click listener on the whole view
-                cardView.setOnClickListener(v -> {
-                    if (item.getClickListener() != null) {
-                        item.getClickListener().onClick(v);
-                    }
-                });
-            }
-        }
-
-        // Smooth click animation
-        private void animateCardClick(MaterialCardView card) {
-            card.animate()
-                    .scaleX(0.95f)
-                    .scaleY(0.95f)
-                    .setDuration(100)
-                    .withEndAction(() -> {
-                        card.animate()
-                                .scaleX(1.0f)
-                                .scaleY(1.0f)
-                                .setDuration(100)
-                                .start();
-                    })
-                    .start();
-        }
-
-        // Entrance animation for cards
-        private void animateCardEntrance(MaterialCardView card) {
-            card.setAlpha(0f);
-            card.setTranslationY(50f);
-            card.animate()
-                    .alpha(1f)
-                    .translationY(0f)
-                    .setDuration(300)
-                    .setInterpolator(new DecelerateInterpolator())
-                    .start();
-        }
-    }
+//    public class CardItemHelper {
+//
+//        // Method to populate card with data
+//        public void bindCardData(View cardView, CardItem item) {
+//            ImageView itemIcon = cardView.findViewById(R.id.itemIcon);
+//            TextView itemTitle = cardView.findViewById(R.id.itemTitle);
+//            TextView itemSubtitle = cardView.findViewById(R.id.itemDescription);  // Changed to itemDescription
+//            LinearLayout statusContainer = cardView.findViewById(R.id.statusContainer);
+//            TextView statusText = cardView.findViewById(R.id.statusText);
+//            LinearLayout progressContainer = cardView.findViewById(R.id.progressContainer);
+//            TextView progressValue = cardView.findViewById(R.id.progressValue);
+//            ProgressBar progressBar = cardView.findViewById(R.id.progressBar);
+//            MaterialCardView cardContainer = cardView.findViewById(R.id.cardContainer);
+//
+//            // Set basic data
+//            itemTitle.setText(item.getTitle());
+//            if (itemSubtitle != null) {  // Add null check
+//                itemSubtitle.setText(item.getSubtitle());
+//            }
+//
+//            // Load image with better error handling
+//            if (item.getIconResource() != 0) {
+//                itemIcon.setImageResource(item.getIconResource());
+//            } else if (item.getIconUrl() != null && !item.getIconUrl().isEmpty()) {
+//                // Uncomment if you're using Glide
+//                // Glide.with(cardView.getContext()).load(item.getIconUrl()).into(itemIcon);
+//            } else {
+//                // Set default icon
+//                itemIcon.setImageResource(android.R.drawable.ic_dialog_info);
+//            }
+//
+//            // Show/hide status badge (only if these views exist in layout)
+//            if (statusContainer != null) {
+//                if (item.getStatusText() != null) {
+//                    statusContainer.setVisibility(View.VISIBLE);
+//                    if (statusText != null) {
+//                        statusText.setText(item.getStatusText());
+//                    }
+//                } else {
+//                    statusContainer.setVisibility(View.GONE);
+//                }
+//            }
+//
+//            // Show/hide progress (only if these views exist in layout)
+//            if (progressContainer != null) {
+//                if (item.hasProgress()) {
+//                    progressContainer.setVisibility(View.VISIBLE);
+//                    if (progressValue != null) {
+//                        progressValue.setText(item.getProgressText());
+//                    }
+//                    if (progressBar != null) {
+//                        progressBar.setProgress(item.getProgressValue());
+//                    }
+//                } else {
+//                    progressContainer.setVisibility(View.GONE);
+//                }
+//            }
+//
+//            // Set click listener
+//            if (cardContainer != null) {
+//                cardContainer.setOnClickListener(v -> {
+//                    // Add click animation
+//                    animateCardClick(cardContainer);
+//
+//                    // Handle click action
+//                    if (item.getClickListener() != null) {
+//                        item.getClickListener().onClick(v);
+//                    }
+//                });
+//
+//                // Add subtle entrance animation
+//                animateCardEntrance(cardContainer);
+//            } else {
+//                // If cardContainer is null, set click listener on the whole view
+//                cardView.setOnClickListener(v -> {
+//                    if (item.getClickListener() != null) {
+//                        item.getClickListener().onClick(v);
+//                    }
+//                });
+//            }
+//        }
+//
+//        // Smooth click animation
+//        private void animateCardClick(MaterialCardView card) {
+//            card.animate()
+//                    .scaleX(0.95f)
+//                    .scaleY(0.95f)
+//                    .setDuration(100)
+//                    .withEndAction(() -> {
+//                        card.animate()
+//                                .scaleX(1.0f)
+//                                .scaleY(1.0f)
+//                                .setDuration(100)
+//                                .start();
+//                    })
+//                    .start();
+//        }
+//
+//        // Entrance animation for cards
+//        private void animateCardEntrance(MaterialCardView card) {
+//            card.setAlpha(0f);
+//            card.setTranslationY(50f);
+//            card.animate()
+//                    .alpha(1f)
+//                    .translationY(0f)
+//                    .setDuration(300)
+//                    .setInterpolator(new DecelerateInterpolator())
+//                    .start();
+//        }
+//    }
 
     // Data model class
     public static class CardItem {
