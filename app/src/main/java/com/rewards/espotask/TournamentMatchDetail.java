@@ -36,6 +36,11 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.unity3d.ads.IUnityAdsShowListener;
+import com.unity3d.ads.UnityAds;
+import com.unity3d.ads.IUnityAdsLoadListener;
+import com.unity3d.ads.UnityAdsShowOptions;
+import com.unity3d.ads.IUnityAdsInitializationListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,12 +67,15 @@ public class TournamentMatchDetail extends AppCompatActivity {
     String entryType = "coin";
     String joinType = "coin";
 
+    // Unity Ads variables
+    private boolean isUnityAdsEnabled = false;
+    private String unityInterstitialId = null;
+    private boolean isUnityInitialized = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match_details);
-
 
         // Initialize views
         ViewPager2 viewPager = findViewById(R.id.view_pager);
@@ -91,6 +99,9 @@ public class TournamentMatchDetail extends AppCompatActivity {
         }
         Log.d(TAG, "User ID from SharedPreferences: " + userId);
 
+        // Fetch and setup Unity ads from backend
+        fetchAndSetupUnityAds();
+
         // Get userId and tournamentId values before this
         if (userId > 0 && tournamentId > 0) {
             checkIfAlreadyJoinedAndSetupUI();
@@ -100,7 +111,6 @@ public class TournamentMatchDetail extends AppCompatActivity {
 
         // Set up ViewPager2 and TabLayout
         MatchDetailsAdapter adapter = new MatchDetailsAdapter(this, tournamentId);
-
         viewPager.setAdapter(adapter);
 
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
@@ -117,10 +127,81 @@ public class TournamentMatchDetail extends AppCompatActivity {
         // Fetch and show match details
         updateMatchDetails(tournamentId);
         fetchUserData(userId);
-
     }
+
+    // Fetch Unity Ads configuration from backend
+    private void fetchAndSetupUnityAds() {
+        String url = getString(R.string.app_url) + "/get_active_ads.php";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                response -> {
+                    try {
+                        JSONObject json = new JSONObject(response);
+                        if (json.getString("status").equals("success")) {
+                            JSONObject data = json.getJSONObject("data");
+                            String provider = data.getString("provider_name");
+
+                            Log.d(TAG, "Ad Provider: " + provider);
+
+                            if (provider.equalsIgnoreCase("Unity")) {
+                                String unityAppId = data.getString("app_id");
+
+                                // Initialize Unity Ads if not already initialized
+                                if (!UnityAds.isInitialized()) {
+                                    UnityAds.initialize(this, unityAppId, false, new IUnityAdsInitializationListener() {
+                                        @Override
+                                        public void onInitializationComplete() {
+                                            isUnityInitialized = true;
+                                            Log.d(TAG, "Unity Ads initialized successfully");
+                                        }
+
+                                        @Override
+                                        public void onInitializationFailed(UnityAds.UnityAdsInitializationError error, String message) {
+                                            isUnityInitialized = false;
+                                            Log.e(TAG, "Unity Ads initialization failed: " + message);
+                                        }
+                                    });
+                                } else {
+                                    isUnityInitialized = true;
+                                }
+
+                                // Check if interstitial ads are enabled
+                                if (data.optBoolean("is_interstitial_enabled", false)) {
+                                    isUnityAdsEnabled = true;
+                                    unityInterstitialId = data.optString("interstitial_ad_id", "");
+                                    loadUnityInterstitialAd(unityInterstitialId);
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Log.e(TAG, "Error fetching ads: " + e.getMessage());
+                    }
+                },
+                error -> Log.e(TAG, "Ad Fetch Error: " + error.toString())
+        );
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(stringRequest);
+    }
+
+    // Load Unity Interstitial Ad
+    private void loadUnityInterstitialAd(String adUnitId) {
+        UnityAds.load(adUnitId, new IUnityAdsLoadListener() {
+            @Override
+            public void onUnityAdsAdLoaded(String placementId) {
+                Log.d(TAG, "Unity Interstitial Loaded: " + placementId);
+            }
+
+            @Override
+            public void onUnityAdsFailedToLoad(String placementId, UnityAds.UnityAdsLoadError error, String message) {
+                Log.e(TAG, "Interstitial Load Failed: " + message);
+            }
+        });
+    }
+
     private void fetchUserData(int userId) {
-        String url = getString(R.string.app_url) +"/get_user_info_api.php?id=" + userId;
+        String url = getString(R.string.app_url) + "/get_user_info_api.php?id=" + userId;
 
         RequestQueue queue = Volley.newRequestQueue(this);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -132,9 +213,6 @@ public class TournamentMatchDetail extends AppCompatActivity {
 
                             userCoins = user.getInt("coins");
                             userTickets = user.getInt("tickets");
-
-//                            Toast.makeText(this, "Error parsing data" + coins, Toast.LENGTH_SHORT).show();
-
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -147,9 +225,6 @@ public class TournamentMatchDetail extends AppCompatActivity {
 
         queue.add(stringRequest);
     }
-
-
-    // Add this in the updateMatchDetails method where you're preparing the bundle
 
     private void updateMatchDetails(int tournamentId) {
         String url = getResources().getString(R.string.app_url) + "/tournament_details_api.php?id=" + tournamentId;
@@ -171,8 +246,8 @@ public class TournamentMatchDetail extends AppCompatActivity {
 
                         JSONObject match = jsonResponse.getJSONObject("data");
                         matchType = match.optString("type", "Unknown").trim();
-                        String matchStatus = match.optString("match_status", "1").trim(); // 3 = ongoing
-                        String videoUrl = match.optString("match_url", "").trim(); // ✅ define it
+                        String matchStatus = match.optString("match_status", "1").trim();
+                        String videoUrl = match.optString("match_url", "").trim();
 
                         // Pass match data to DescriptionFragment
                         Bundle bundle = new Bundle();
@@ -188,8 +263,6 @@ public class TournamentMatchDetail extends AppCompatActivity {
                                 "\n" + match.optString("prize_description", ""));
                         bundle.putString("match_desc", match.optString("match_desc", ""));
                         bundle.putString("match_banner", match.optString("match_banner", ""));
-
-                        // ADD THIS LINE - Room Description
                         bundle.putString("room_description", match.optString("room_description", ""));
 
                         entryFeeCoins = match.optInt("entry_fee_coins", 0);
@@ -229,7 +302,6 @@ public class TournamentMatchDetail extends AppCompatActivity {
                     }
                 },
                 error -> {
-                    // Error handling code remains the same
                     String errorMsg = "Unknown error";
                     int statusCode = error.networkResponse != null ? error.networkResponse.statusCode : -1;
                     String responseData = error.networkResponse != null && error.networkResponse.data != null ?
@@ -256,7 +328,6 @@ public class TournamentMatchDetail extends AppCompatActivity {
         Log.d(TAG, "Match details API request queued");
     }
 
-
     private void sendJoinRequest(String joinType, String inGameUsername) {
         if (matchType.isEmpty() || matchType.equalsIgnoreCase("Unknown")) {
             Toast.makeText(this, "Match type not loaded: " + matchType, Toast.LENGTH_LONG).show();
@@ -272,7 +343,6 @@ public class TournamentMatchDetail extends AppCompatActivity {
 
         String url = getString(R.string.app_url) + "/join_tournament_api.php";
         Log.d(TAG, "Join API URL: " + url);
-        Toast.makeText(this, userId + matchType + tournamentId, Toast.LENGTH_LONG).show();
 
         Map<String, String> params = new HashMap<>();
         params.put("user", String.valueOf(userId));
@@ -379,8 +449,6 @@ public class TournamentMatchDetail extends AppCompatActivity {
         Log.d(TAG, "Join API request queued (Retry count: " + retryCount + ")");
     }
 
-
-
     private void checkIfAlreadyJoinedAndSetupUI() {
         String checkUrl = getString(R.string.app_url) +
                 "/join_tournament_api.php?user=" + userId + "&match=" + tournamentId;
@@ -390,10 +458,8 @@ public class TournamentMatchDetail extends AppCompatActivity {
                     try {
                         JSONObject jsonResponse = new JSONObject(response);
                         if (jsonResponse.optBoolean("status", false)) {
-                            boolean alreadyJoined = jsonResponse.optBoolean("already_joined", false); // your key is `joined`
+                            boolean alreadyJoined = jsonResponse.optBoolean("already_joined", false);
                             boolean slotsFull = jsonResponse.optBoolean("slots_full", false);
-
-//                            Toast.makeText(this, "Already Joined: " + alreadyJoined, Toast.LENGTH_SHORT).show();
 
                             if (alreadyJoined) {
                                 joinButton.setEnabled(false);
@@ -406,13 +472,12 @@ public class TournamentMatchDetail extends AppCompatActivity {
                             } else {
                                 joinButton.setEnabled(true);
                                 joinButton.setText("Join Match");
-                                joinButton.setOnClickListener(v -> showJoinMethodPopup(userCoins, userTickets, entryFeeCoins, entryFeeTickets, entryType)
-);
+                                joinButton.setOnClickListener(v -> showJoinMethodPopup(userCoins, userTickets, entryFeeCoins, entryFeeTickets, entryType));
                             }
                         } else {
                             Toast.makeText(this, "API error: " + jsonResponse.optString("message"), Toast.LENGTH_SHORT).show();
                         }
-                    }catch (JSONException e) {
+                    } catch (JSONException e) {
                         Toast.makeText(this, "Error parsing join status", Toast.LENGTH_SHORT).show();
                     }
                 },
@@ -462,7 +527,7 @@ public class TournamentMatchDetail extends AppCompatActivity {
             radioCoin.setVisibility(View.GONE);
         }
 
-        builder.setPositiveButton("Join", null); // We'll override the click later
+        builder.setPositiveButton("Join", null);
         builder.setNegativeButton("Cancel", null);
 
         AlertDialog dialog = builder.create();
@@ -492,23 +557,60 @@ public class TournamentMatchDetail extends AppCompatActivity {
             if (selectedType.equals("coin") && userCoins >= entryCoins) {
                 joinType = "coin";
                 dialog.dismiss();
-                sendJoinRequest(joinType, inGameUsername);
+                // Show ad before joining
+                showInterstitialAdBeforeJoin(joinType, inGameUsername);
             } else if (selectedType.equals("tickets") && userTickets >= entryTickets) {
                 joinType = "tickets";
                 dialog.dismiss();
-                sendJoinRequest(joinType, inGameUsername);
+                // Show ad before joining
+                showInterstitialAdBeforeJoin(joinType, inGameUsername);
             } else {
                 Toast.makeText(this, "Not enough " + selectedType, Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+    // Show Unity Interstitial Ad before joining match
+    private void showInterstitialAdBeforeJoin(String joinType, String inGameUsername) {
+        // Check if Unity Ads are enabled and initialized
+        if (isUnityAdsEnabled && isUnityInitialized && unityInterstitialId != null && !unityInterstitialId.isEmpty()) {
+            Log.d(TAG, "Attempting to show Unity Interstitial Ad");
 
+            UnityAds.show(this, unityInterstitialId, new UnityAdsShowOptions(), new IUnityAdsShowListener() {
+                @Override
+                public void onUnityAdsShowComplete(String placementId, UnityAds.UnityAdsShowCompletionState state) {
+                    Log.d(TAG, "Unity Ad completed with state: " + state);
+                    // Ad completed, proceed with join request
+                    runOnUiThread(() -> sendJoinRequest(joinType, inGameUsername));
 
+                    // Reload the ad for next time
+                    loadUnityInterstitialAd(unityInterstitialId);
+                }
 
+                @Override
+                public void onUnityAdsShowFailure(String placementId, UnityAds.UnityAdsShowError error, String message) {
+                    Log.e(TAG, "Unity Ad failed to show: " + message);
+                    // Ad failed, still proceed with join request
+                    runOnUiThread(() -> {
+                        Toast.makeText(TournamentMatchDetail.this, "Ad not available", Toast.LENGTH_SHORT).show();
+                        sendJoinRequest(joinType, inGameUsername);
+                    });
+                }
 
+                @Override
+                public void onUnityAdsShowStart(String placementId) {
+                    Log.d(TAG, "Unity Ad started showing");
+                }
 
-
-
-
+                @Override
+                public void onUnityAdsShowClick(String placementId) {
+                    Log.d(TAG, "Unity Ad clicked");
+                }
+            });
+        } else {
+            // Unity Ads not configured or not ready, proceed directly
+            Log.d(TAG, "Unity Ads not enabled/ready, proceeding without ad");
+            sendJoinRequest(joinType, inGameUsername);
+        }
+    }
 }

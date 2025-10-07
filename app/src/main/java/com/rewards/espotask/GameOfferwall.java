@@ -40,7 +40,7 @@ public class GameOfferwall extends AppCompatActivity {
         connectFlags.put(TapjoyConnectFlag.TJC_OPTION_LOGGING_LEVEL, TJLogLevel.DEBUG);
         connectFlags.put(TapjoyConnectFlag.USER_ID, "user123");
 
-        Tapjoy.connect(getApplicationContext(), "PJV3hj3FTHqM06rXziHEggECzeONpkgPA7EzSQ2P5TPqKvf44NmZCvInGHlb", connectFlags, new TJConnectListener() {
+        Tapjoy.connect(getApplicationContext(), "nGn9aqN8TJ6Kik9CxDHSewECTJokN0KJi2SUnkAIjgLBLS25pWjUZ9S9gMTc", connectFlags, new TJConnectListener() {
             @Override
             public void onConnectSuccess() {
                 Toast.makeText(GameOfferwall.this, "Tapjoy Connected Successfully", Toast.LENGTH_SHORT).show();
@@ -64,7 +64,7 @@ public class GameOfferwall extends AppCompatActivity {
     }
 
     private void setupOfferwall() {
-        offerwallPlacement = Tapjoy.getPlacement("App Offerwall", new TJPlacementListener() {
+        offerwallPlacement = Tapjoy.getPlacement("Offerwall_Earn", new TJPlacementListener() {
             @Override
             public void onRequestSuccess(TJPlacement placement) {
                 // Optional: request successful
