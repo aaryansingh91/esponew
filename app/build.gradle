@@ -16,6 +16,11 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        // Add this for 16KB page size support
+        ndk {
+            abiFilters 'arm64-v8a', 'armeabi-v7a'
+        }
     }
 
     buildTypes {
@@ -24,9 +29,17 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    // Add this for 16KB page size support
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging = false
+        }
     }
 }
 
@@ -38,28 +51,26 @@ dependencies {
     implementation libs.constraintlayout
     implementation libs.recyclerview
     implementation libs.swiperefreshlayout
+    implementation libs.cardview
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
 
-
     // ViewPager2 for onboarding screens
-    implementation 'androidx.viewpager2:viewpager2:1.0.0'
+    implementation 'androidx.viewpager2:viewpager2:1.1.0'
 
     // Dots Indicator for ViewPager2
-    implementation 'com.tbuonomo:dotsindicator:4.3'
-//
-//
-//    // ADMOB
-//    implementation 'com.google.android.gms:play-services-ads:21.5.0'
+    implementation 'com.tbuonomo:dotsindicator:5.0'
+
+    implementation 'com.github.MakeOpinionGmbH:cpx-research-SDK-Android:1.6.0'
 
     // Kotlin Standard Library
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.20"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:2.0.21"
 
     // Image and GIF Libraries
-    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.27'
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.29'
     implementation 'com.squareup.picasso:picasso:2.8'
-    implementation 'com.airbnb.android:lottie:6.1.0'
+    implementation 'com.airbnb.android:lottie:6.6.2'
 
     // Gson for JSON parsing
     implementation 'com.google.code.gson:gson:2.11.0'
@@ -68,28 +79,28 @@ dependencies {
     implementation 'com.android.volley:volley:1.2.1'
 
     // OneSignal for push notifications
-    implementation 'com.onesignal:OneSignal:5.1.18'
+    implementation 'com.onesignal:OneSignal:5.1.23'
 
     // Firebase Libraries
-    implementation platform('com.google.firebase:firebase-bom:32.7.1')
+    implementation platform('com.google.firebase:firebase-bom:33.6.0')
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-crashlytics'
-    implementation 'com.google.firebase:firebase-messaging:23.4.1' // latest as of now
+    implementation 'com.google.firebase:firebase-messaging'
 
-    // Ads
-    implementation 'com.unity3d.ads:unity-ads:4.12.2'
+    // Unity Ads (single, latest version)
+    implementation 'com.unity3d.ads:unity-ads:4.15.0'
 
     // Shimmer and Image Slideshow Libraries
-    implementation 'com.facebook.shimmer:shimmer:0.1.0'
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
     implementation 'com.github.denzcoskun:ImageSlideshow:0.1.2'
 
     // AppLovin SDK
-    implementation 'com.applovin:applovin-sdk:13.2.0'
-    implementation 'com.applovin.mediation:unityads-adapter:4.14.2.0'
+    implementation 'com.applovin:applovin-sdk:13.0.1'
+    implementation 'com.applovin.mediation:unityads-adapter:4.15.0.0'
 
     // Akash Libs
     implementation("com.google.androidbrowserhelper:androidbrowserhelper:2.5.0")
-    implementation 'androidx.browser:browser:1.6.0'
+    implementation 'androidx.browser:browser:1.8.0'
 
     // Exclude conflicting protobuf dependencies
     implementation('com.google.protobuf:protobuf-javalite:3.21.12') {
@@ -107,27 +118,12 @@ dependencies {
     // Ads Lib for recycler view
     implementation 'com.github.saitawngpha:NativeAds-RecyclerView:1.0.2'
 
+    // Glide
     implementation 'com.github.bumptech.glide:glide:4.16.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
 
-    // Shimmer
-    implementation 'com.facebook.shimmer:shimmer:0.5.0'
-
-//    implementation fileTree(include: ['tapjoyconnectlibrary'], dir: 'libs')
-
+    // Tapjoy
     implementation 'com.tapjoy:tapjoy-android-sdk:14.3.1'
 
-//    Ads Dependencies
-
-    implementation 'com.unity3d.ads:unity-ads:4.15.0' // or latest
-
-    implementation 'com.airbnb.android:lottie:6.1.0'
-
-
-    implementation 'com.github.bumptech.glide:glide:4.16.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
-
-    implementation 'com.tbuonomo:dotsindicator:4.3'
-
+    implementation 'com.google.android.gms:play-services-ads:24.7.0'
 }
-

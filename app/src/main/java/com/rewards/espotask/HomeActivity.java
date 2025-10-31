@@ -81,6 +81,15 @@ import com.unity3d.services.ads.offerwall.OfferwallAdapterBridge;
 import com.unity3d.services.banners.BannerView;
 import com.unity3d.services.banners.UnityBannerSize;
 
+import com.makeopinion.cpxresearchlib.CPXResearch;
+import com.makeopinion.cpxresearchlib.CPXResearchListener;
+import com.makeopinion.cpxresearchlib.models.CPXCardConfiguration;
+import com.makeopinion.cpxresearchlib.models.CPXCardStyle;
+import com.makeopinion.cpxresearchlib.models.SurveyItem;
+import com.makeopinion.cpxresearchlib.models.TransactionItem;
+import android.graphics.Color;
+import java.util.List;
+
 public class HomeActivity extends AppCompatActivity {
 
     // Declare this at the top of your class
@@ -116,12 +125,55 @@ public class HomeActivity extends AppCompatActivity {
     private Switch switchPushNotification;
     private SharedPreferences notificationPrefs;
 
+    private CPXResearch cpxResearch;
+    private LinearLayout surveyCardsContainer;
+
 
     @SuppressLint({"MissingInflatedId", "ClickableViewAccessibility"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        // Initialize CPX Research
+        initializeCPXResearch();
+
+        // Setup CPX Survey Cards
+        setupCPXSurveyCards();
+
+
+        // Validate session on app start
+        SessionHelper.validateSession(this, new SessionHelper.SessionValidationCallback() {
+            @Override
+            public void onSessionValid() {
+                // Session is valid, continue normally
+            }
+
+            @Override
+            public void onSessionInvalid(String reason, String message) {
+                if (reason.equals("user_blocked")) {
+                    new AlertDialog.Builder(HomeActivity.this)
+                            .setTitle("Account Blocked")
+                            .setMessage(message)
+                            .setPositiveButton("OK", (dialog, which) -> {
+                                SessionHelper.handleSessionExpired(HomeActivity.this);
+                            })
+                            .setCancelable(false)
+                            .show();
+                } else if (reason.equals("device_blocked")) {
+                    new AlertDialog.Builder(HomeActivity.this)
+                            .setTitle("Device Blocked")
+                            .setMessage(message)
+                            .setPositiveButton("OK", (dialog, which) -> {
+                                SessionHelper.handleSessionExpired(HomeActivity.this);
+                            })
+                            .setCancelable(false)
+                            .show();
+                } else if (reason.equals("session_expired")) {
+                    SessionHelper.handleSessionExpired(HomeActivity.this);
+                }
+            }
+        });
 
         // Bind Buttons
         btnFacebook = findViewById(R.id.btnFacebook);
@@ -588,20 +640,19 @@ public class HomeActivity extends AppCompatActivity {
 
     // Logout method for the MaterialCardView onClick
     public void logoutUser(View view) {
-        // Clear SharedPreferences
-        SharedPreferences sharedPreferences = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear();
-        editor.apply();
+        // Use SessionHelper to logout
+        SessionHelper.logout(this, new SessionHelper.LogoutCallback() {
+            @Override
+            public void onLogoutComplete(boolean success) {
+                Toast.makeText(getApplicationContext(), "Logged Out Successfully!", Toast.LENGTH_SHORT).show();
 
-        // Show toast message
-        Toast.makeText(this, "Logged Out Successfully!", Toast.LENGTH_SHORT).show();
-
-        // Redirect to OnboardingDisclosureActivity
-        Intent intent = new Intent(this, OnboardingDisclosureActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        finish();
+                // Redirect to OnboardingDisclosureActivity
+                Intent intent = new Intent(getApplicationContext(), OnboardingDisclosureActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
     // Called when the LinearLayout is clicked
@@ -845,7 +896,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void btn_fn_sec2_luckydraw(View view) {
-        Intent intent = new Intent(this, GameOfferwall.class);
+        Intent intent = new Intent(this, LuckyDrawActivity.class);
         startActivity(intent);
     }
 
@@ -893,25 +944,35 @@ public class HomeActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void settings_terms_conditions(View view) {
-        try {
-            SharedPreferences sharedPreferences = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
-            String url = sharedPreferences.getString("app_internal_settings_page_terms_condition_page_link", "NULL");
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-            startActivity(intent);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
     public void settings_privcay_policy(View view) {
         try {
             SharedPreferences sharedPreferences = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
             String url = sharedPreferences.getString("app_internal_settings_page_privacy_page_link", "NULL");
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+
+            Intent intent = new Intent(this, WebViewActivity.class);
+            intent.putExtra("PAGE_TITLE", "Privacy Policy");
+            intent.putExtra("PAGE_SUBTITLE", "Read our policy");
+            intent.putExtra("URL", url);
             startActivity(intent);
         } catch (Exception e) {
             System.out.println(e.getMessage());
+            Toast.makeText(this, "Error opening Privacy Policy", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void settings_terms_conditions(View view) {
+        try {
+            SharedPreferences sharedPreferences = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
+            String url = sharedPreferences.getString("app_internal_settings_page_terms_condition_page_link", "NULL");
+
+            Intent intent = new Intent(this, WebViewActivity.class);
+            intent.putExtra("PAGE_TITLE", "Terms & Conditions");
+            intent.putExtra("PAGE_SUBTITLE", "Read our terms");
+            intent.putExtra("URL", url);
+            startActivity(intent);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            Toast.makeText(this, "Error opening Terms & Conditions", Toast.LENGTH_SHORT).show();
         }
     }
     // Java Example - How to use the layout dynamically
@@ -1120,10 +1181,15 @@ CardItemHelper.bindCardData(cardView, premiumFeature);
         try {
             SharedPreferences sharedPreferences = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
             String url = sharedPreferences.getString("app_internal_settings_page_helpandsupport_page_link", "NULL");
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+
+            Intent intent = new Intent(this, WebViewActivity.class);
+            intent.putExtra("PAGE_TITLE", "Help & Support");
+            intent.putExtra("PAGE_SUBTITLE", "FAQs");
+            intent.putExtra("URL", url);
             startActivity(intent);
         } catch (Exception e) {
             System.out.println(e.getMessage());
+            Toast.makeText(this, "Error opening Help & Support", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -1280,7 +1346,7 @@ CardItemHelper.bindCardData(cardView, premiumFeature);
                                 String provider = data.getString("provider_name");
 
                                 Log.e("UNITY_AD", provider);
-                                Toast.makeText(context, "Ad Provider: " + provider, Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(context, "Ad Provider: " + provider, Toast.LENGTH_SHORT).show();
 
                                 if (provider.equalsIgnoreCase("Unity")) {
                                     String unityAppId = data.getString("app_id");
@@ -1471,6 +1537,216 @@ CardItemHelper.bindCardData(cardView, premiumFeature);
     }
 
     private class EditProfileActivity {
+    }
+
+    private void initializeCPXResearch() {
+        try {
+            CPXApplication app = (CPXApplication) getApplication();
+            cpxResearch = app.getCpxResearch();
+
+            // Register listener for survey updates
+            cpxResearch.registerListener(new CPXResearchListener() {
+                @Override
+                public void onSurveysUpdated() {
+                    List<SurveyItem> surveys = cpxResearch.getSurveys();
+                    Log.d("CPX_SURVEYS", "Surveys updated: " + surveys.size() + " surveys available");
+
+                    // Update UI with new survey count
+                    runOnUiThread(() -> {
+                        if (surveys.size() > 0) {
+                            Toast.makeText(HomeActivity.this,
+                                    surveys.size() + " surveys available",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+
+                @Override
+                public void onTransactionsUpdated(List<TransactionItem> unpaidTransactions) {
+                    for (TransactionItem transaction : unpaidTransactions) {
+                        Log.d("CPX_TRANSACTION", "Earning: " + transaction.getEarningPublisher());
+
+                        // Award coins to user
+//                        awardCoinsForTransaction(transaction);
+                    }
+                }
+
+                @Override
+                public void onSurveysDidOpen() {
+                    Log.d("CPX_SURVEYS", "Surveys list opened");
+                }
+
+                @Override
+                public void onSurveysDidClose() {
+                    Log.d("CPX_SURVEYS", "Surveys list closed");
+                    // Refresh user balance when they return
+                    SharedPreferences sharedPreferences = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
+                    String userId = sharedPreferences.getString("userID", "NULL");
+                    if (!userId.equals("NULL")) {
+                        fetchUserData(Integer.parseInt(userId));
+                    }
+                }
+
+                @Override
+                public void onSurveyDidOpen() {
+                    Log.d("CPX_SURVEYS", "Survey opened");
+                }
+
+                @Override
+                public void onSurveyDidClose() {
+                    Log.d("CPX_SURVEYS", "Survey closed");
+                }
+            });
+
+            // Enable automatic banner display (if you want floating banner)
+            // cpxResearch.setSurveyVisibleIfAvailable(true, this);
+
+            // Request initial survey update
+            cpxResearch.requestSurveyUpdate(true);
+
+        } catch (Exception e) {
+            Log.e("CPX_INIT", "Error initializing CPX: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void setupCPXSurveyCards() {
+        try {
+            // Find the container where you want to add survey cards
+            LinearLayout surveyCardsParent = findViewById(R.id.survey_cards_container);
+
+            if (surveyCardsParent == null) {
+                Log.e("CPX_SETUP", "Survey cards container not found in layout");
+                return;
+            }
+
+            // Configure CPX card appearance
+            CPXCardConfiguration cardConfig = new CPXCardConfiguration.Builder()
+                    .accentColor(Color.parseColor("#260975"))        // Purple accent color
+                    .backgroundColor(Color.WHITE)                     // White background
+                    .starColor(Color.parseColor("#ffaa00"))          // Gold stars
+                    .inactiveStarColor(Color.parseColor("#dfdfdf"))  // Gray inactive stars
+                    .textColor(Color.DKGRAY)                         // Dark gray text
+                    .dividerColor(Color.parseColor("#260975"))       // Purple divider
+                    .promotionAmountColor(Color.parseColor("#FF0000")) // Red for promotions
+                    .cardsOnScreen(3)                                 // Show 3 cards at once
+                    .cornerRadius(15f)                                // Rounded corners
+                    .maximumSurveys(6)                               // Show max 6 surveys
+                    .paddingHorizontal(0)                          // Horizontal spacing
+                    .paddingVertical(10f)                            // Vertical spacing
+                    .cpxCardStyle(CPXCardStyle.DEFAULT)              // Use default card style
+                    .hideCurrencyName(false)                         // Show "Coins"
+                    .hideRatingAmount(false)                         // Show rating count
+                    .showCurrencyBeforeValue(false)                  // Show value before currency
+                    .build();
+
+            // Insert CPX cards into the container
+            CPXApplication app = (CPXApplication) getApplication();
+            app.getCpxResearch().insertCPXResearchCardsIntoContainer(
+                    this,
+                    surveyCardsParent,
+                    cardConfig
+            );
+
+            Log.d("CPX_SETUP", "CPX survey cards setup complete");
+
+        } catch (Exception e) {
+            Log.e("CPX_SETUP", "Error setting up CPX cards: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    // Method to award coins when user completes survey
+//    private void awardCoinsForTransaction(TransactionItem transaction) {
+//        SharedPreferences sharedPreferences = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
+//        String userId = sharedPreferences.getString("userID", "NULL");
+//
+//        if (userId.equals("NULL")) {
+//            Log.e("CPX_REWARD", "User ID not found");
+//            return;
+//        }
+//
+//        String url = getString(R.string.app_url) + "/award_survey_coins.php";
+//
+//        StringRequest request = new StringRequest(Request.Method.POST, url,
+//                response -> {
+//                    try {
+//                        JSONObject json = new JSONObject(response);
+//                        if (json.getBoolean("success")) {
+//                            // Mark transaction as paid in CPX system
+//                            cpxResearch.markTransactionAsPaid(
+//                                    transaction.getTransactionId(),
+//                                    transaction.getMessageId()
+//                            );
+//
+//                            // Show success message
+//                            int coinsEarned = (int) transaction.getEarningPublisher();
+//                            runOnUiThread(() -> {
+//                                Toast.makeText(HomeActivity.this,
+//                                        "Earned " + coinsEarned + " coins!",
+//                                        Toast.LENGTH_LONG).show();
+//                            });
+//
+//                            // Refresh user balance
+//                            fetchUserData(Integer.parseInt(userId));
+//
+//                            Log.d("CPX_REWARD", "Successfully awarded " + coinsEarned + " coins");
+//                        } else {
+//                            Log.e("CPX_REWARD", "Server returned error: " + json.getString("message"));
+//                        }
+//                    } catch (JSONException e) {
+//                        Log.e("CPX_REWARD", "JSON parsing error: " + e.getMessage());
+//                        e.printStackTrace();
+//                    }
+//                },
+//                error -> {
+//                    Log.e("CPX_REWARD", "Network error awarding coins: " + error.toString());
+//                }
+//        ) {
+//            @Override
+//            protected Map<String, String> getParams() {
+//                Map<String, String> params = new HashMap<>();
+//                params.put("user_id", userId);
+//                params.put("coins", String.valueOf((int) transaction.getEarningPublisher()));
+//                params.put("transaction_id", transaction.getTransactionId());
+//                return params;
+//            }
+//        };
+//
+//        RequestQueue queue = Volley.newRequestQueue(this);
+//        queue.add(request);
+//    }
+
+    // Method to manually open survey list (connect to button click)
+    public void openCPXSurveyList(View view) {
+        try {
+            CPXApplication app = (CPXApplication) getApplication();
+            app.getCpxResearch().openSurveyList(this);
+        } catch (Exception e) {
+            Log.e("CPX_OPEN", "Error opening survey list: " + e.getMessage());
+            Toast.makeText(this, "Unable to open surveys", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // Method to open specific survey
+    private void openSpecificSurvey(String surveyId) {
+        try {
+            CPXApplication app = (CPXApplication) getApplication();
+            app.getCpxResearch().openSurvey(this, surveyId);
+        } catch (Exception e) {
+            Log.e("CPX_OPEN", "Error opening specific survey: " + e.getMessage());
+        }
+    }
+
+    // Method to manually refresh surveys
+    public void refreshCPXSurveys(View view) {
+        try {
+            CPXApplication app = (CPXApplication) getApplication();
+            app.getCpxResearch().requestSurveyUpdate(false);
+            Toast.makeText(this, "Refreshing surveys...", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Log.e("CPX_REFRESH", "Error refreshing surveys: " + e.getMessage());
+        }
     }
 }
 

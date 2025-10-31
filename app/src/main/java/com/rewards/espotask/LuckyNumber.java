@@ -1,6 +1,7 @@
 package com.rewards.espotask;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -46,11 +47,27 @@ public class LuckyNumber extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lucky_number);
 
+        initializeViews();
+        setupShimmer();
+
+        if (!loadUserId()) {
+            finish();
+            return;
+        }
+
+        requestQueue = Volley.newRequestQueue(this);
+        backButton.setOnClickListener(v -> finish());
+        fetchLuckyNumbers();
+    }
+
+    private void initializeViews() {
         shimmerLayout = findViewById(R.id.shimmer_layout);
         shimmerContainer = findViewById(R.id.shimmer_container);
         container = findViewById(R.id.container);
         backButton = findViewById(R.id.back_button);
+    }
 
+    private void setupShimmer() {
         shimmerLayout.setVisibility(View.VISIBLE);
         shimmerLayout.startShimmer();
         shimmerContainer.removeAllViews();
@@ -59,113 +76,186 @@ public class LuckyNumber extends AppCompatActivity {
             View shimmerItem = LayoutInflater.from(this).inflate(R.layout.lucky_draw_shimmer, shimmerContainer, false);
             shimmerContainer.addView(shimmerItem);
         }
+    }
 
+    private boolean loadUserId() {
         SharedPreferences prefs = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
         String userIdStr = prefs.getString("userID", null);
+
         if (userIdStr == null || userIdStr.trim().isEmpty()) {
-            finish();
-            return;
+            return false;
         }
 
         try {
             userId = Integer.parseInt(userIdStr);
+            return true;
         } catch (NumberFormatException e) {
-            finish();
-            return;
+            return false;
         }
-
-        requestQueue = Volley.newRequestQueue(this);
-        backButton.setOnClickListener(v -> finish());
-
-        fetchLuckyNumbers();
     }
 
     private void fetchLuckyNumbers() {
         String url = getResources().getString(R.string.app_url) + "/lucky_number_api.php?user_id=" + userId;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                response -> {
-                    try {
-                        boolean status = response.getBoolean("status");
-                        if (status && !response.isNull("data")) {
-                            container.removeAllViews();
-                            JSONArray data = response.getJSONArray("data");
+                this::handleLuckyNumbersResponse,
+                error -> handleError("Error: " + (error.getMessage() != null ? error.getMessage() : "Network error"))
+        );
 
-                            if (data.length() == 0) {
-                                showMessage("No lucky numbers available");
-                            } else {
-                                for (int i = 0; i < data.length(); i++) {
-                                    JSONObject draw = data.getJSONObject(i);
-                                    addLuckyNumberCard(draw);
-                                }
-                            }
-                        } else {
-                            showMessage(response.optString("message", "Failed to fetch lucky numbers"));
-                        }
-                    } catch (JSONException e) {
-                        showMessage("Parsing error: " + e.getMessage());
-                    } finally {
-                        shimmerLayout.stopShimmer();
-                        shimmerLayout.setVisibility(View.GONE);
-                        container.setVisibility(View.VISIBLE);
-                    }
-                },
-                error -> {
-                    String errorMessage = error.getMessage() != null ? error.getMessage() : "Network error";
-                    showMessage("Error: " + errorMessage);
-                });
-
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
-                30000,
-                2,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(30000, 2, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(jsonObjectRequest);
+    }
+
+    private void handleLuckyNumbersResponse(JSONObject response) {
+        try {
+            boolean status = response.getBoolean("status");
+            if (status && !response.isNull("data")) {
+                container.removeAllViews();
+                JSONArray data = response.getJSONArray("data");
+
+                if (data.length() == 0) {
+                    showMessage("No lucky numbers available");
+                } else {
+                    for (int i = 0; i < data.length(); i++) {
+                        addLuckyNumberCard(data.getJSONObject(i));
+                    }
+                }
+            } else {
+                showMessage(response.optString("message", "Failed to fetch lucky numbers"));
+            }
+        } catch (JSONException e) {
+            showMessage("Parsing error: " + e.getMessage());
+        } finally {
+            hideShimmer();
+        }
+    }
+
+    private void hideShimmer() {
+        shimmerLayout.stopShimmer();
+        shimmerLayout.setVisibility(View.GONE);
+        container.setVisibility(View.VISIBLE);
+    }
+
+    private void handleError(String message) {
+        showMessage(message);
+        hideShimmer();
     }
 
     private void addLuckyNumberCard(JSONObject draw) {
         try {
             String id = draw.getString("id");
-            String luckyNumber = draw.getString("lucky_number");
+            String luckyNumber = draw.getString("coins");
             int totalSlots = draw.getInt("total_slots");
             int takenSlots = draw.getInt("taken_slots");
             boolean joined = draw.has("joined") && draw.getBoolean("joined");
 
             View cardView = LayoutInflater.from(this).inflate(R.layout.item_lucky_number, container, false);
-
-            TextView tvWinAmount = cardView.findViewById(R.id.tv_win_amount);
-            TextView tvDrawId = cardView.findViewById(R.id.tv_draw_id);
-            TextView tvSlotsLeft = cardView.findViewById(R.id.tv_slots_left);
-            TextView tvPercentageFilled = cardView.findViewById(R.id.tv_percentage_filled);
-            ProgressBar progressBar = cardView.findViewById(R.id.progress_bar);
-            Button btnCheckWinners = cardView.findViewById(R.id.btn_check_winners);
-            MaterialButton btnGetFreeEntry = cardView.findViewById(R.id.btn_get_free_entry);
-
-            tvWinAmount.setText("Win " + luckyNumber);
-            tvDrawId.setText("#" + id);
-            tvSlotsLeft.setText("Left: " + (totalSlots - takenSlots) + "/" + totalSlots);
-
-            int percentage = (int) ((takenSlots * 100.0) / totalSlots);
-            tvPercentageFilled.setText(percentage + "% Filled");
-            progressBar.setProgress(percentage);
-
-            if (joined) {
-                btnGetFreeEntry.setText("Participated");
-                btnGetFreeEntry.setEnabled(false);
-                btnGetFreeEntry.setAlpha(0.5f);
-            } else {
-                btnGetFreeEntry.setOnClickListener(v -> showNumberPickerDialog(id));
-            }
-
-            btnCheckWinners.setOnClickListener(v -> {
-                // Optional: implement winners view
-            });
-
+            setupCardViews(cardView, id, luckyNumber, totalSlots, takenSlots, joined);
             container.addView(cardView);
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private void setupCardViews(View cardView, String id, String luckyNumber, int totalSlots, int takenSlots, boolean joined) {
+        TextView tvWinAmount = cardView.findViewById(R.id.tv_win_amount);
+        TextView tvDrawId = cardView.findViewById(R.id.tv_draw_id);
+        TextView tvSlotsLeft = cardView.findViewById(R.id.tv_slots_left);
+        TextView tvPercentageFilled = cardView.findViewById(R.id.tv_percentage_filled);
+        ProgressBar progressBar = cardView.findViewById(R.id.progress_bar);
+        Button btnCheckWinners = cardView.findViewById(R.id.btn_check_winners);
+        MaterialButton btnGetFreeEntry = cardView.findViewById(R.id.btn_get_free_entry);
+
+        tvWinAmount.setText("Win " + luckyNumber);
+        tvDrawId.setText("#" + id);
+        tvSlotsLeft.setText("Left: " + (totalSlots - takenSlots) + "/" + totalSlots);
+
+        int percentage = (int) ((takenSlots * 100.0) / totalSlots);
+        tvPercentageFilled.setText(percentage + "% Filled");
+        progressBar.setProgress(percentage);
+
+        setupEntryButton(btnGetFreeEntry, joined, id);
+        btnCheckWinners.setOnClickListener(v -> checkWinners(id));
+    }
+
+    private void setupEntryButton(MaterialButton btnGetFreeEntry, boolean joined, String id) {
+        if (joined) {
+            btnGetFreeEntry.setText("Participated");
+            btnGetFreeEntry.setEnabled(false);
+            btnGetFreeEntry.setAlpha(0.5f);
+        } else {
+            btnGetFreeEntry.setOnClickListener(v -> showNumberPickerDialog(id));
+        }
+    }
+
+    private Dialog loadingDialog;
+
+    private void checkWinners(String luckyNumberId) {
+        showLoadingDialog();
+
+        String url = getResources().getString(R.string.app_url) + "/get_lucky_number_winner.php?lucky_number_id=" + luckyNumberId;
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                response -> {
+                    dismissLoadingDialog();
+                    handleWinnerCheckResponse(response, luckyNumberId);
+                },
+                error -> {
+                    dismissLoadingDialog();
+                    Toast.makeText(this, "Network error", Toast.LENGTH_SHORT).show();
+                }
+        );
+
+        request.setRetryPolicy(new DefaultRetryPolicy(30000, 2, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        requestQueue.add(request);
+    }
+
+    private void showLoadingDialog() {
+        loadingDialog = new Dialog(this);
+        loadingDialog.setContentView(R.layout.dialog_loading);
+        loadingDialog.setCancelable(false);
+        loadingDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        loadingDialog.show();
+    }
+
+    private void dismissLoadingDialog() {
+        if (loadingDialog != null && loadingDialog.isShowing()) {
+            loadingDialog.dismiss();
+        }
+    }
+
+    private void handleWinnerCheckResponse(JSONObject response, String luckyNumberId) {
+        try {
+            boolean success = response.getBoolean("success");
+            if (success) {
+                openWinnerActivity(luckyNumberId);
+            } else {
+                showResultNotDeclaredDialog();
+            }
+        } catch (JSONException e) {
+            Toast.makeText(this, "Invalid response", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void openWinnerActivity(String luckyNumberId) {
+        Intent intent = new Intent(this, LuckyNumberWinnerActivity.class);
+        intent.putExtra("lucky_number_id", luckyNumberId);
+        startActivity(intent);
+    }
+
+    private void showResultNotDeclaredDialog() {
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dialog_result_not_declared);
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        ImageView closeIcon = dialog.findViewById(R.id.close_icon);
+        Button btnOkay = dialog.findViewById(R.id.btn_okay);
+
+        closeIcon.setOnClickListener(v -> dialog.dismiss());
+        btnOkay.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
     }
 
     private void showMessage(String message) {
@@ -206,41 +296,36 @@ public class LuckyNumber extends AppCompatActivity {
         String url = getResources().getString(R.string.app_url) + "/join_lucky_number.php";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                response -> {
-                    try {
-                        JSONObject json = new JSONObject(response);
-                        String status = json.getString("status");
-                        String message = json.getString("message");
-
-                        Toast.makeText(LuckyNumber.this, message, Toast.LENGTH_SHORT).show();
-
-                        if (status.equals("success")) {
-                            fetchLuckyNumbers(); // Refresh UI if joined
-                        }
-                    } catch (JSONException e) {
-                        Toast.makeText(LuckyNumber.this, "Invalid response format", Toast.LENGTH_SHORT).show();
-                    }
-                },
-                error -> Toast.makeText(LuckyNumber.this, "Network error", Toast.LENGTH_SHORT).show()
+                this::handleJoinResponse,
+                error -> Toast.makeText(this, "Network error", Toast.LENGTH_SHORT).show()
         ) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 params.put("user_id", String.valueOf(userId));
-                params.put("lucky_number_id", luckyNumberId); // matches PHP variable
+                params.put("lucky_number_id", luckyNumberId);
                 params.put("unique_number", String.valueOf(uniqueNumber));
                 return params;
             }
         };
 
-        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
-                30000,
-                2,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-        ));
-
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(30000, 2, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(stringRequest);
     }
 
+    private void handleJoinResponse(String response) {
+        try {
+            JSONObject json = new JSONObject(response);
+            String status = json.getString("status");
+            String message = json.getString("message");
 
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+
+            if (status.equals("success")) {
+                fetchLuckyNumbers();
+            }
+        } catch (JSONException e) {
+            Toast.makeText(this, "Invalid response format", Toast.LENGTH_SHORT).show();
+        }
+    }
 }

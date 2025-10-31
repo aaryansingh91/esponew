@@ -20,6 +20,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -43,21 +44,23 @@ import java.security.NoSuchAlgorithmException;
 public class OnboardingDisclosureActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE_POST_NOTIFICATIONS = 101;
-    TextInputEditText phone_number_input,login_password_input;
-    TextInputEditText signup_name_input,signup_email_input, signup_number_input, signup_password_input, signup_refer_input;
+    TextInputEditText phone_number_input, login_password_input;
+    TextInputEditText signup_name_input, signup_email_input, signup_number_input, signup_password_input, signup_refer_input;
     Dialog loading_dialog;
 
-//    MaterialCardView  signup_with_number_layout ;
-    MaterialCardView disclosure_box , login_selectionbox, signup_with_number_layout, login_section_number_pass;
-
+    MaterialCardView disclosure_box, login_selectionbox, signup_with_number_layout, login_section_number_pass;
 
     int retry = 0;
+    String pendingSessionToken = "";
+    boolean isForceLogoutPending = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_onboardingdisclosure);
         FirebaseApp.initializeApp(this);
         checkNotificationPermission();
+
         MaterialCardView btnCancel = findViewById(R.id.btnCancel);
         MaterialCardView btnAgree = findViewById(R.id.btnAgree);
 
@@ -71,7 +74,6 @@ public class OnboardingDisclosureActivity extends AppCompatActivity {
         signup_email_input = findViewById(R.id.signup_email_input);
         signup_number_input = findViewById(R.id.signup_number_input);
         signup_password_input = findViewById(R.id.signup_password_input);
-
         signup_refer_input = findViewById(R.id.signup_refer_input);
 
         login_section_number_pass = findViewById(R.id.login_with_number_1st_box);
@@ -84,63 +86,39 @@ public class OnboardingDisclosureActivity extends AppCompatActivity {
             window.setStatusBarColor(ContextCompat.getColor(this, R.color.purple_bg));
         }
 
-
-
-
-
-
         loading_dialog = new Dialog(this);
         loading_dialog.setContentView(R.layout.loading_layout);
-        if (loading_dialog.getWindow()!=null)
-        {
+        if (loading_dialog.getWindow() != null) {
             loading_dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         }
         loading_dialog.setCancelable(false);
         loading_dialog.show();
 
-
-        btnCancel.setOnClickListener(v -> finish()); // Close Activity
+        btnCancel.setOnClickListener(v -> finish());
 
         btnAgree.setOnClickListener(v -> {
-            // Navigate to the main screen after agreement
             disclosure_box.setVisibility(View.GONE);
             login_selectionbox.setVisibility(View.VISIBLE);
         });
 
-
         loading_dialog.hide();
     }
 
-    // ✅ Move this outside onCreate
     private void checkNotificationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                     != PackageManager.PERMISSION_GRANTED) {
-
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.POST_NOTIFICATIONS},
                         REQUEST_CODE_POST_NOTIFICATIONS);
             }
-        } else {
-            NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            if (!nm.areNotificationsEnabled()) {
-                // Optional: Show prompt to user to enable notifications
-            }
         }
     }
 
-    // ✅ Move this outside onCreate
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_CODE_POST_NOTIFICATIONS) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted
-            } else {
-                // Permission denied
-            }
-        }
     }
 
     public void openPrivacyPolicy(View view) {
@@ -150,8 +128,6 @@ public class OnboardingDisclosureActivity extends AppCompatActivity {
 
     public void login_with_google_btn(View view) {
         Toast.makeText(this, "Google Login Selected", Toast.LENGTH_SHORT).show();
-        // Add your Google login logic here
-
     }
 
     public void login_with_fb_btn(View view) {
@@ -164,165 +140,155 @@ public class OnboardingDisclosureActivity extends AppCompatActivity {
         signup_with_number_layout.setVisibility(View.GONE);
     }
 
-    public void sign_in_btn_fn(View view){
-        if (!phone_number_input.getText().toString().trim().isEmpty()){
-            if (!login_password_input.getText().toString().trim().isEmpty()){
-                login_thread();
+    public void sign_in_btn_fn(View view) {
+        if (!phone_number_input.getText().toString().trim().isEmpty()) {
+            if (!login_password_input.getText().toString().trim().isEmpty()) {
+                loading_dialog.show();
+                login_thread(false);
             } else {
                 Toast.makeText(this, "Please Enter Valid Password", Toast.LENGTH_SHORT).show();
             }
-
         } else {
             Toast.makeText(this, "Please Enter Valid Phone Number", Toast.LENGTH_SHORT).show();
         }
     }
 
-    public void sign_up_btn_fn(View view){
-        if (!signup_number_input.getText().toString().trim().isEmpty()){
-            if (!signup_password_input.getText().toString().trim().isEmpty()){
-                signup_thread();
-                loading_dialog.show();
+    public void sign_up_btn_fn(View view) {
+        if (!signup_number_input.getText().toString().trim().isEmpty()) {
+            if (!signup_password_input.getText().toString().trim().isEmpty()) {
+                if (!signup_email_input.getText().toString().trim().isEmpty()) {
+                    if (!signup_name_input.getText().toString().trim().isEmpty()) {
+                        signup_thread();
+                        loading_dialog.show();
+                    } else {
+                        Toast.makeText(this, "Please Enter Your Name", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(this, "Please Enter Your Email", Toast.LENGTH_SHORT).show();
+                }
             } else {
-                Toast.makeText(this, "Please Enter Your Registered Password", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Please Enter Your Password", Toast.LENGTH_SHORT).show();
             }
-
         } else {
-            Toast.makeText(this, "Please Enter Your Registered Phone Number", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please Enter Your Phone Number", Toast.LENGTH_SHORT).show();
         }
     }
 
+    private String getUniqueDeviceId() {
+        String androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        String deviceSerial = Build.SERIAL;
+        if (deviceSerial != null && !deviceSerial.isEmpty() && !deviceSerial.equals("unknown")) {
+            return deviceSerial;
+        } else {
+            return androidId;
+        }
+    }
 
-    public void login_thread(){
+    private String getDeviceInfoString() {
+        return Build.BRAND + " " + Build.MODEL;
+    }
+
+    public void login_thread(boolean forceLogout) {
         String loginid_encoded = phone_number_input.getText().toString().trim();
         String loginpass_encoded = login_password_input.getText().toString().trim();
+        String deviceId = getUniqueDeviceId();
+        String deviceInfo = getDeviceInfoString();
+
         try {
             loginid_encoded = URLEncoder.encode(phone_number_input.getText().toString().trim(), "UTF-8");
             loginpass_encoded = URLEncoder.encode(login_password_input.getText().toString().trim(), "UTF-8");
-        } catch(Exception e){
+        } catch (Exception e) {
             loginid_encoded = phone_number_input.getText().toString().trim();
             loginpass_encoded = login_password_input.getText().toString().trim();
         }
 
-        String qry = getResources().getString(R.string.app_url) + "/accounts/loginapi.php?u=" + loginid_encoded + "&p=" + loginpass_encoded;
+        String apiEndpoint = forceLogout ? "/accounts/force_logout.php" : "/accounts/loginapi.php";
+        String qry = getResources().getString(R.string.app_url) + apiEndpoint +
+                "?u=" + loginid_encoded +
+                "&p=" + loginpass_encoded +
+                "&d=" + deviceId +
+                "&device_info=" + deviceInfo;
+
+        if (forceLogout) {
+            qry += "&force_logout=1";
+        }
+
+        String finalQry = qry;
+
         class dbprocess extends AsyncTask<String, Void, String> implements com.rewards.espotask.dbprocess {
             @Override
             protected void onPostExecute(String data) {
-                if (data.equals("0")){
-                    Toast.makeText(getApplicationContext(), "Invalid Credentials ! - Please Try Again", Toast.LENGTH_SHORT).show();
-                    String preview_message = null;
-                    try {
-                        preview_message = "Login Failed - Data "+data + " <br>Request - "+ URLEncoder.encode(phone_number_input.getText().toString().trim(), "UTF-8") + " and pass = " + URLEncoder.encode(login_password_input.getText().toString().trim(), "UTF-8");
-                    } catch (UnsupportedEncodingException e) {
-                        throw new RuntimeException(e);
-                    }
-                    try {
-                        sendErrortoServer.sendErrorToServer(
-                                OnboardingDisclosureActivity.this,  // Context
-                                phone_number_input.getText().toString().trim(),
-                                "Login Failed - Data " + data + " Request - " + URLEncoder.encode(qry, "UTF-8"),
-                                "Login Screen Issue",
-                                preview_message,
-                                "GameFever App"
-                        );
-                    } catch (Exception e) {
-                        sendErrortoServer.sendErrorToServer(
-                                OnboardingDisclosureActivity.this,  // Context
-                                phone_number_input.getText().toString().trim(),
-                                "Login Failed - Data " + data + " Request - Try catch got catch with " + e.getMessage(),
-                                "Login Screen Issue",
-                                preview_message,
-                                "GameFever App"
-                        );
+                loading_dialog.hide();
+
+                if (data.equals("0")) {
+                    Toast.makeText(getApplicationContext(), "Invalid Credentials! Please Try Again", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                try {
+                    JSONObject jsonObject = new JSONObject(data);
+                    String status = jsonObject.getString("status");
+
+                    if (status.equals("user_blocked")) {
+                        String message = jsonObject.getString("message");
+                        showBlockedDialog("Account Blocked", message);
+                        return;
                     }
 
-
-                    loading_dialog.hide();
-                    //            login_btn_lottie.setVisibility(View.GONE);
-                } else{
-                    String status="",id="",name="";
-                    try {
-                        // Create a JSONObject from the JSON response string
-                        JSONObject jsonObject = new JSONObject(data);
-                        status = jsonObject.getString("status");
-                        id = jsonObject.getString("id");
-                        name = jsonObject.getString("name");
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                    if (status.equals("device_blocked")) {
+                        String message = jsonObject.getString("message");
+                        showBlockedDialog("Device Blocked", message);
+                        return;
                     }
+
+                    if (status.equals("already_logged_in")) {
+                        String message = jsonObject.getString("message");
+                        pendingSessionToken = jsonObject.getString("session_token");
+                        showForceLogoutDialog(message);
+                        return;
+                    }
+
+                    if (status.equals("0") || status.equals("Blocked")) {
+                        Toast.makeText(getApplicationContext(), "Your Account has been Blocked - Contact Support", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
+                    if (status.equals("2") || status.equals("Suspended")) {
+                        Toast.makeText(getApplicationContext(), "Your Account has been Suspended - Contact Support", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
                     if (status.equals("Active") || status.equals("1")) {
-                        final String finalId = id; // Create a final copy of `id`
-                        // 2. Get FCM Token and Send to Server
+                        String id = jsonObject.getString("id");
+                        String name = jsonObject.getString("name");
+                        String sessionToken = jsonObject.getString("session_token");
+
                         FirebaseMessaging.getInstance().getToken()
                                 .addOnCompleteListener(task -> {
                                     if (task.isSuccessful()) {
                                         String deviceToken = task.getResult();
-                                        sendTokenToServer(finalId, deviceToken);  // Call function below
-                                        Log.e("FCM", "Fetching Success"+ deviceToken);
-                                    } else {
-                                        Log.e("FCM", "Fetching FCM registration token failed", task.getException());
+                                        sendTokenToServer(id, deviceToken);
                                     }
                                 });
 
-                        // 1. Subscribe to Topic "all"
-                        FirebaseMessaging.getInstance().subscribeToTopic("all")
-                                .addOnCompleteListener(task -> {
-                                    if (task.isSuccessful()) {
-                                        Log.d("FCM", "Subscribed to topic: all");
-                                    } else {
-                                        Log.e("FCM", "Subscription failed", task.getException());
-                                    }
-                                });
+                        FirebaseMessaging.getInstance().subscribeToTopic("all");
+
                         SharedPreferences sharedPreferences = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
-                        //Editor To Edit Shared Preferences Values
                         SharedPreferences.Editor myEdit = sharedPreferences.edit();
                         myEdit.putString("userID", id);
                         myEdit.putString("userName", name);
+                        myEdit.putString("sessionToken", sessionToken);
+                        myEdit.putString("deviceId", deviceId);
                         myEdit.apply();
-                        Toast.makeText(getApplicationContext(), "Login Success !", Toast.LENGTH_SHORT).show();
 
+                        Toast.makeText(getApplicationContext(), "Login Success!", Toast.LENGTH_SHORT).show();
 
-
-                        // Getting User Data
                         get_user_data_thread(id);
-
-                    } else if (status.equals("Blocked") || status.equals("0")) {
-                        Toast.makeText(getApplicationContext(), "Your Account has been Blocked - Contact Our Support team For More Info", Toast.LENGTH_SHORT).show();
-                        loading_dialog.hide();
-                    } else if (status.equals("Suspended") || status.equals("2")) {
-                        Toast.makeText(getApplicationContext(), "Your Account has been Suspended - Contact Our Support team For More Info", Toast.LENGTH_SHORT).show();
-                        loading_dialog.hide();
-                    } else {
-
-                        System.out.println(data);
-                        Toast.makeText(getApplicationContext(), "Something Went Wrong ! - Contact Support", Toast.LENGTH_SHORT).show();
-                        loading_dialog.hide();
-                        String preview_message = null;
-                        try {
-                            preview_message = "Login Failed - Data "+data + " <br>Request - "+ URLEncoder.encode(phone_number_input.getText().toString().trim(), "UTF-8") + " and pass = " + URLEncoder.encode(login_password_input.getText().toString().trim(), "UTF-8");
-                        } catch (UnsupportedEncodingException e) {
-                            throw new RuntimeException(e);
-                        }
-                        try {
-                            sendErrortoServer.sendErrorToServer(
-                                    OnboardingDisclosureActivity.this,  // Context
-                                    phone_number_input.getText().toString().trim(),
-                                    "Login Failed - Data " + data + " Request - " + URLEncoder.encode(qry, "UTF-8"),
-                                    "Login Screen Issue",
-                                    preview_message,
-                                    "GameFever App"
-                            );
-                        } catch (Exception e) {
-                            sendErrortoServer.sendErrorToServer(
-                                    OnboardingDisclosureActivity.this,  // Context
-                                    phone_number_input.getText().toString().trim(),
-                                    "Login Failed - Data " + data + " Request - Try catch got catch with " + e.getMessage(),
-                                    "Login Screen Issue",
-                                    preview_message,
-                                    "GameFever App"
-                            );
-                        }
-
                     }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "Something Went Wrong! Contact Support", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -344,9 +310,34 @@ public class OnboardingDisclosureActivity extends AppCompatActivity {
         obj.execute(qry);
     }
 
+    private void showBlockedDialog(String title, String message) {
+        new AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("OK", (dialog, which) -> {
+                    dialog.dismiss();
+                })
+                .setCancelable(false)
+                .show();
+    }
+
+    private void showForceLogoutDialog(String message) {
+        new AlertDialog.Builder(this)
+                .setTitle("Already Logged In")
+                .setMessage(message)
+                .setPositiveButton("Yes, Continue Here", (dialog, which) -> {
+                    loading_dialog.show();
+                    login_thread(true);
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> {
+                    dialog.dismiss();
+                })
+                .setCancelable(false)
+                .show();
+    }
+
     private void sendTokenToServer(String userId, String token) {
         String url = getResources().getString(R.string.app_url) + "/accounts/save_token.php?user_id=" + userId + "&token=" + token;
-
         new Thread(() -> {
             try {
                 URL obj = new URL(url);
@@ -354,20 +345,14 @@ public class OnboardingDisclosureActivity extends AppCompatActivity {
                 conn.setRequestMethod("GET");
                 conn.setConnectTimeout(5000);
                 conn.setReadTimeout(5000);
-
-                int responseCode = conn.getResponseCode();
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    Log.d("FCM", "Token sent successfully");
-                } else {
-                    Log.e("FCM", "Failed to send token, code: " + responseCode);
-                }
+                conn.getResponseCode();
             } catch (Exception e) {
                 Log.e("FCM", "Error sending token: " + e.getMessage());
             }
         }).start();
     }
 
-    public void signup_with_phone_btn_inselection_layout (View view){
+    public void signup_with_phone_btn_inselection_layout(View view) {
         login_selectionbox.setVisibility(View.GONE);
         login_section_number_pass.setVisibility(View.GONE);
         signup_with_number_layout.setVisibility(View.VISIBLE);
@@ -391,29 +376,30 @@ public class OnboardingDisclosureActivity extends AppCompatActivity {
         signup_with_number_layout.setVisibility(View.VISIBLE);
     }
 
-    public void get_user_data_thread(String user_id){
+    public void get_user_data_thread(String user_id) {
         String get_user_data_qry = getResources().getString(R.string.app_url) + "/user/get_view_homescrdata.php?";
-        String datatohash="";
+        String datatohash = "";
         try {
-            datatohash ="i=" + URLEncoder.encode(user_id, "UTF-8");
+            datatohash = "i=" + URLEncoder.encode(user_id, "UTF-8");
             String token = temp.sha256_temp(datatohash);
-            get_user_data_qry = get_user_data_qry+datatohash+"&token="+token;
+            get_user_data_qry = get_user_data_qry + datatohash + "&token=" + token;
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+
         String finalget_user_data_qry = get_user_data_qry;
+
         class dbprocess extends AsyncTask<String, Void, String> implements com.rewards.espotask.dbprocess {
             @Override
             protected void onPostExecute(String data) {
-                if(data.isEmpty()){
-                    Toast.makeText(getApplicationContext(), "Something went Wrong ! - Contact Support Now", Toast.LENGTH_SHORT).show();
+                if (data.isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "Something went Wrong! Contact Support Now", Toast.LENGTH_SHORT).show();
                     loading_dialog.hide();
-                }else if (data.equals("0")) {
-                    Toast.makeText(getApplicationContext(), "Something went Wrong ! - Contact Support Now", Toast.LENGTH_SHORT).show();
+                } else if (data.equals("0")) {
+                    Toast.makeText(getApplicationContext(), "Something went Wrong! Contact Support Now", Toast.LENGTH_SHORT).show();
                     loading_dialog.hide();
                 } else {
                     try {
-                        // Create a JSONObject from the JSON response string
                         JSONObject jsonObject = new JSONObject(data);
                         String status = jsonObject.getString("status");
                         String email = jsonObject.getString("email");
@@ -422,7 +408,6 @@ public class OnboardingDisclosureActivity extends AppCompatActivity {
                         String kyc = jsonObject.getString("kyc");
                         String name = jsonObject.getString("name");
 
-                        // Storing Into Shared preferences
                         SharedPreferences sharedPreferences = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
                         SharedPreferences.Editor myEdit = sharedPreferences.edit();
                         myEdit.putString("status", status);
@@ -433,20 +418,17 @@ public class OnboardingDisclosureActivity extends AppCompatActivity {
                         myEdit.putString("name", name);
                         myEdit.apply();
 
-                        // Calculating Update Versions and Maintenance here
-                        if (status.equals("Blocked") || status.equals("0")){
-                            Toast.makeText(getApplicationContext(), "Your Account has been Blocked - Contact Our Support team For More Info", Toast.LENGTH_SHORT).show();
+                        if (status.equals("Blocked") || status.equals("0")) {
+                            Toast.makeText(getApplicationContext(), "Your Account has been Blocked - Contact Support", Toast.LENGTH_SHORT).show();
                             loading_dialog.hide();
                         } else {
-                            // Goto Main Screen
                             new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Intent intent;
-                                    intent = new Intent(OnboardingDisclosureActivity.this, HomeActivity.class);
+                                    Intent intent = new Intent(OnboardingDisclosureActivity.this, HomeActivity.class);
                                     startActivity(intent);
                                     loading_dialog.hide();
-                                    finish(); // Deleting Current Activity
+                                    finish();
                                 }
                             }, 1);
                         }
@@ -454,7 +436,7 @@ public class OnboardingDisclosureActivity extends AppCompatActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                         loading_dialog.hide();
-                        Toast.makeText(OnboardingDisclosureActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(OnboardingDisclosureActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -477,24 +459,12 @@ public class OnboardingDisclosureActivity extends AppCompatActivity {
         obj.execute(finalget_user_data_qry);
     }
 
-    public void signup_thread(){
-//        String Referedby = "NA";
+    public void signup_thread() {
         String Referedby = signup_refer_input.getText().toString().trim();
-        String DeviceID;
-        // Get the device serial number
-        String androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        String deviceSerialNumber = Build.SERIAL;
-        if (deviceSerialNumber.equals("unknown")) {
-            DeviceID = signup_number_input.getText().toString().trim();
-        }else if (deviceSerialNumber != null && !deviceSerialNumber.isEmpty()) {
-            DeviceID = deviceSerialNumber;
-        } else {
-            // Device Serial Number Null
-            DeviceID = signup_number_input.getText().toString().trim();
-        }
-        if (Referedby.isEmpty())
-        {
-            Referedby="NA";
+        String DeviceID = getUniqueDeviceId();
+
+        if (Referedby.isEmpty()) {
+            Referedby = "NA";
         }
 
         String deviceModel = Build.MODEL;
@@ -503,122 +473,58 @@ public class OnboardingDisclosureActivity extends AppCompatActivity {
         String deviceSerial = Build.SERIAL;
 
         String signup_qry = getResources().getString(R.string.app_url) + "/accounts/signupapi.php?";
-        String datatohash="";
+        String datatohash = "";
         try {
-            datatohash =  "e=" + URLEncoder.encode(signup_email_input.getText().toString().trim(), "UTF-8") +
+            datatohash = "e=" + URLEncoder.encode(signup_email_input.getText().toString().trim(), "UTF-8") +
                     "&m=" + URLEncoder.encode(signup_number_input.getText().toString().trim(), "UTF-8") +
                     "&p=" + URLEncoder.encode(signup_password_input.getText().toString().trim(), "UTF-8") +
                     "&n=" + URLEncoder.encode(signup_name_input.getText().toString().trim(), "UTF-8") +
                     "&r=" + URLEncoder.encode(Referedby, "UTF-8") +
-                    "&d=" + URLEncoder.encode(androidId, "UTF-8") +
+                    "&d=" + URLEncoder.encode(DeviceID, "UTF-8") +
                     "&deviceModel=" + URLEncoder.encode(deviceModel, "UTF-8") +
                     "&deviceManufacturer=" + URLEncoder.encode(deviceManufacturer, "UTF-8") +
                     "&deviceBrand=" + URLEncoder.encode(deviceBrand, "UTF-8") +
                     "&deviceSerial=" + URLEncoder.encode(deviceSerial, "UTF-8");
             String token = temp.sha256_temp(datatohash);
-            signup_qry = signup_qry+datatohash+"&token="+token;
+            signup_qry = signup_qry + datatohash + "&token=" + token;
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+
         String finalSignup_qry = signup_qry;
-        String finalDatatohash = datatohash;
+
         class dbprocess extends AsyncTask<String, Void, String> implements com.rewards.espotask.dbprocess {
             @Override
             protected void onPostExecute(String data) {
-                String preview_message = null;
-                try {
-                    preview_message = "Signup Failed - Data "+data + " <br>Request - "+ URLEncoder.encode(signup_email_input.getText().toString().trim(), "UTF-8") + " and pass = " + URLEncoder.encode(signup_password_input.getText().toString().trim(), "UTF-8") +" and name =" + URLEncoder.encode(signup_name_input.getText().toString().trim(), "UTF-8") + " and mobile =" + URLEncoder.encode(signup_number_input.getText().toString().trim(), "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    throw new RuntimeException(e);
-                }
-                if (data.isEmpty()){
-                    Toast.makeText(getApplicationContext(), "Something Went Wrong ! - Please Try Restarting application and try again", Toast.LENGTH_SHORT).show();
-                    try {
-                        sendErrortoServer.sendErrorToServer(
-                                OnboardingDisclosureActivity.this,  // <-- Context
-                                signup_number_input.getText().toString().trim(),
-                                "Signup Failed - Data " + data + " Request - " +
-                                        URLEncoder.encode(signup_email_input.getText().toString().trim(), "UTF-8") +
-                                        " and pass = " +
-                                        URLEncoder.encode(signup_password_input.getText().toString().trim(), "UTF-8"),
-                                "Login Screen Issue",
-                                preview_message,
-                                "GameFever App"
-                        );
-                    } catch (Exception e) {
-                        sendErrortoServer.sendErrorToServer(
-                                OnboardingDisclosureActivity.this,  // <-- Context
-                                signup_number_input.getText().toString().trim(),
-                                "Signup Failed - Data " + data + " Request - Try catch got catch with " + e.getMessage(),
-                                "Login Screen Issue",
-                                preview_message,
-                                "GameFever App"
-                        );
-                    }
+                loading_dialog.hide();
 
-                    loading_dialog.hide();
-                } else if (data.equals("0")){
-                    Toast.makeText(getApplicationContext(), "Something Went Wrong ! - Please Try Again", Toast.LENGTH_SHORT).show();
-                    loading_dialog.hide();
-                } else if (data.equals("3")){
-                    Toast.makeText(getApplicationContext(), "Device Already Registered With us", Toast.LENGTH_SHORT).show();
-                    loading_dialog.hide();
-                } else if (data.equals("4")){
-                    Toast.makeText(getApplicationContext(), "Mobile Number Already Registered With us", Toast.LENGTH_SHORT).show();
-                    loading_dialog.hide();
-                } else if (data.equals("5")){
+                if (data.isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "Something Went Wrong! Please Try Again", Toast.LENGTH_SHORT).show();
+                } else if (data.equals("0")) {
+                    Toast.makeText(getApplicationContext(), "Something Went Wrong! Please Try Again", Toast.LENGTH_SHORT).show();
+                } else if (data.equals("device_blocked")) {
+                    showBlockedDialog("Device Blocked", "This device has been blocked and cannot be used to create a new account. Please contact support.");
+                } else if (data.equals("3")) {
+                    Toast.makeText(getApplicationContext(), "Device Already Registered With Us", Toast.LENGTH_SHORT).show();
+                } else if (data.equals("4")) {
+                    Toast.makeText(getApplicationContext(), "Mobile Number Already Registered With Us", Toast.LENGTH_SHORT).show();
+                } else if (data.equals("5")) {
                     Toast.makeText(getApplicationContext(), "Invalid Refer Code", Toast.LENGTH_SHORT).show();
-                    loading_dialog.hide();
-                } else if (data.equals("2")){
-                    Toast.makeText(getApplicationContext(), "Email Already Registered With us", Toast.LENGTH_SHORT).show();
-                    loading_dialog.hide();
-                } else if (data.equals("1")){
-                    Toast.makeText(getApplicationContext(), "Signup Success! - Please Login Now", Toast.LENGTH_SHORT).show();
-                    loading_dialog.hide();
+                } else if (data.equals("2")) {
+                    Toast.makeText(getApplicationContext(), "Email Already Registered With Us", Toast.LENGTH_SHORT).show();
+                } else if (data.equals("1")) {
+                    Toast.makeText(getApplicationContext(), "Signup Success! Please Login Now", Toast.LENGTH_SHORT).show();
                     signup_with_number_layout.setVisibility(View.GONE);
                     login_section_number_pass.setVisibility(View.VISIBLE);
                     phone_number_input.setText(signup_number_input.getText().toString().trim());
                     login_password_input.setText(signup_password_input.getText().toString().trim());
                 } else {
-
-                    Toast.makeText(OnboardingDisclosureActivity.this, "Please wait", Toast.LENGTH_SHORT).show();
-
-                    if (retry<3){
+                    if (retry < 3) {
+                        retry++;
                         signup_thread();
-                        retry = retry ++;
                     } else {
-                        Toast.makeText(getApplicationContext(), "Something Went Wrong ! - Please Try Again Later", Toast.LENGTH_SHORT).show();
-                        try {
-                            preview_message = "Signup Failed - Data " + data +
-                                    " <br>Request - " + URLEncoder.encode(signup_number_input.getText().toString().trim(), "UTF-8") +
-                                    " and pass = " + URLEncoder.encode(signup_password_input.getText().toString().trim(), "UTF-8") +
-                                    " and name = " + URLEncoder.encode(signup_name_input.getText().toString().trim(), "UTF-8") +
-                                    " and mobile = " + URLEncoder.encode(signup_name_input.getText().toString().trim(), "UTF-8");
-
-                            sendErrortoServer.sendErrorToServer(
-                                    OnboardingDisclosureActivity.this,  // ✅ Context
-                                    signup_number_input.getText().toString().trim(),
-                                    "Signup Failed - Data " + data + " Request - " + finalSignup_qry + "   datatohash = " + finalDatatohash,
-                                    "Login Screen Issue",
-                                    preview_message,
-                                    "GameFever App"
-                            );
-                        } catch (Exception e) {
-                            sendErrortoServer.sendErrorToServer(
-                                    OnboardingDisclosureActivity.this,  // ✅ Context
-                                    signup_email_input.getText().toString().trim(),
-                                    "Signup Failed - Data " + data + " Request - Try catch got catch with " + e.getMessage(),
-                                    "Login Screen Issue",
-                                    preview_message,
-                                    "GameFever App"
-                            );
-                        }
-
-
-                        loading_dialog.hide();
+                        Toast.makeText(getApplicationContext(), "Something Went Wrong! Please Try Again Later", Toast.LENGTH_SHORT).show();
                     }
-
-
                 }
             }
 
@@ -639,5 +545,4 @@ public class OnboardingDisclosureActivity extends AppCompatActivity {
         dbprocess obj = new dbprocess();
         obj.execute(signup_qry);
     }
-
 }

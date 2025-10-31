@@ -12,14 +12,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import androidx.appcompat.app.AppCompatActivity;
 
-
 import com.airbnb.lottie.LottieAnimationView;
-
-import com.onesignal.Continue;
-import com.onesignal.OneSignal;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,24 +29,15 @@ import java.security.NoSuchAlgorithmException;
 
 public class SplashActivity extends AppCompatActivity {
 
-    String update_app_link ="https://cmhost.in";
+    String update_app_link = "https://cmhost.in";
 
-
-
-    LinearLayout main_splash, update_splash, maintenance_splash , blocked_splash_layout;
+    LinearLayout main_splash, update_splash, maintenance_splash, blocked_splash_layout;
     TextView maintenance_main_message, maintenance_progress_message;
 
-    LottieAnimationView splashMaintenanceAnim, splashUpdateAvailableAnim ;
-    int localappversion=3;
+    LottieAnimationView splashMaintenanceAnim, splashUpdateAvailableAnim;
+    int localappversion = 3;
 
-    String onesignalAppID = "42ea77df-dc24-4b99-9264-7e56de8e217b";
-
-    // Splash Ad Items
-    LinearLayout splash_ad_layout;
-    ImageView splash_ad_image_cover;
-    TextView splash_ad_text , splash_ad_sub_text;
-    Boolean is_splash_clicked = false;
-    String  storedID;
+    String storedID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,52 +49,28 @@ public class SplashActivity extends AppCompatActivity {
         maintenance_splash = findViewById(R.id.maintenance_splash_layout);
         blocked_splash_layout = findViewById(R.id.blocked_splash_layout);
 
-        splashMaintenanceAnim    = findViewById(R.id.lottie_splash_maintenance);
-        splashUpdateAvailableAnim    = findViewById(R.id.lottie_splash_update_available);
+        splashMaintenanceAnim = findViewById(R.id.lottie_splash_maintenance);
+        splashUpdateAvailableAnim = findViewById(R.id.lottie_splash_update_available);
 
         maintenance_main_message = findViewById(R.id.maintenance_message_lbl);
         maintenance_progress_message = findViewById(R.id.maintenance_progress_message_lbl);
 
-
         SharedPreferences sharedPreferences = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
         storedID = sharedPreferences.getString("userID", "NULL");
 
-
-        OneSignal.initWithContext(this, onesignalAppID);
-        OneSignal.getNotifications().requestPermission(true, Continue.with(r -> {
-            if (r.isSuccess()) {
-//                if (r.getData()) {
-//                }
-//                else {
-//                }
-            }
-            else {
-            }
-        }));
-
-        if (!storedID.equals("NULL")){
-            OneSignal.login(storedID); //    call when something occurs well and update every time user login
-        }
-
         get_data_thread();
-
-
     }
 
-
-    public void get_data_thread(){
+    public void get_data_thread() {
         String qry = getResources().getString(R.string.app_url) + "/appinfoapi.php";
+
         class dbprocess extends AsyncTask<String, Void, String> implements com.rewards.espotask.dbprocess {
             @Override
             protected void onPostExecute(String data) {
-                if (data.equals("0")){
-                    Toast.makeText(getApplicationContext(), "Something went Wrong ! - Contact Support Now", Toast.LENGTH_SHORT).show();
+                if (data.equals("0")) {
+                    Toast.makeText(getApplicationContext(), "Something went Wrong! Contact Support Now", Toast.LENGTH_SHORT).show();
                 } else {
-                    String status="",id="",name="";
                     try {
-                        // Getting Next Data for News and Promo
-
-                        // Create a JSONObject from the JSON response string
                         JSONObject jsonObject = new JSONObject(data);
                         String app_name = jsonObject.getString("app_name");
                         String app_version = jsonObject.getString("app_version");
@@ -154,23 +116,17 @@ public class SplashActivity extends AppCompatActivity {
                         String withdraw_data_setting = jsonObject.getString("withdraw_data_setting");
                         String withdraw_list_data_setting = jsonObject.getString("withdraw_list_data_setting");
 
-                        // String mining_ad_type = jsonObject.getString("mining_ad_type");
+                        String game_ad_type = jsonObject.getString("game_ad_type");
+                        String leaderboard_ad_type = jsonObject.getString("leaderboard_ad_type");
 
-
-                        // Ads Settings
-                        String game_ad_type = jsonObject.getString("game_ad_type"); // Admob - Max - Unity
-                        String leaderboard_ad_type = jsonObject.getString("leaderboard_ad_type"); // Admob - Max - Unity
-
-                        //Unity Ads Settings
-                        String unity_ads_on_off = jsonObject.getString("unity_ads_on_off"); //ON / OFF
-                        String unity_ads_testmode_on_off = jsonObject.getString("unity_ads_testmode_on_off"); //ON / OFF
+                        String unity_ads_on_off = jsonObject.getString("unity_ads_on_off");
+                        String unity_ads_testmode_on_off = jsonObject.getString("unity_ads_testmode_on_off");
                         String unity_game_id = jsonObject.getString("unity_game_id");
                         String unity_inter_ads_id = jsonObject.getString("unity_inter_ads_id");
                         String unity_inter_ads_on_off = jsonObject.getString("unity_inter_ads_on_off");
                         String unity_reward_ads_id = jsonObject.getString("unity_reward_ads_id");
                         String unity_reward_ads_on_off = jsonObject.getString("unity_reward_ads_on_off");
 
-                        //Max Ads Settings
                         String max_ads_on_off = jsonObject.getString("max_ads_on_off");
                         String max_reward_ads_id = jsonObject.getString("max_reward_ads_id");
                         String max_banner_ads_id = jsonObject.getString("max_banner_ads_id");
@@ -182,7 +138,6 @@ public class SplashActivity extends AppCompatActivity {
                         String max_inter_ads_id = jsonObject.getString("max_inter_ads_id");
                         String max_inter_ads_on_off = jsonObject.getString("max_inter_ads_on_off");
 
-                        // Admob Ads Settings
                         String admob_ads_app_id = jsonObject.getString("admob_ads_app_id");
                         String admob_all_ads_on_off = jsonObject.getString("admob_all_ads_on_off");
                         String admob_ads_banner_ads_id = jsonObject.getString("admob_ads_banner_ads_id");
@@ -194,8 +149,6 @@ public class SplashActivity extends AppCompatActivity {
                         String admob_ads_inter_ads_id = jsonObject.getString("admob_ads_inter_ads_id");
                         String admob_ads_inter_ads_id_on_off = jsonObject.getString("admob_ads_inter_ads_id_on_off");
 
-
-                        // Storing Into Shared preferences
                         SharedPreferences sharedPreferences = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
                         SharedPreferences.Editor myEdit = sharedPreferences.edit();
                         myEdit.putString("app_name", app_name);
@@ -231,7 +184,7 @@ public class SplashActivity extends AppCompatActivity {
                         myEdit.putString("app_home_top_sec_1_game_url", app_home_top_sec_1_game_url);
                         myEdit.putString("app_home_top_sec_1_apptask", app_home_top_sec_1_apptask);
                         myEdit.putString("app_home_top_sec_1_apptask_url", app_home_top_sec_1_apptask_url);
-                        myEdit.putString("app_home_top_sec_1_survey", app_home_top_sec_1_survey );
+                        myEdit.putString("app_home_top_sec_1_survey", app_home_top_sec_1_survey);
                         myEdit.putString("app_home_top_sec_1_survey_url", app_home_top_sec_1_survey_url);
                         myEdit.putString("app_home_top_sec_3_game_onoff", app_home_top_sec_3_game_onoff);
                         myEdit.putString("app_home_top_sec_3_game_url", app_home_top_sec_3_game_url);
@@ -242,14 +195,9 @@ public class SplashActivity extends AppCompatActivity {
                         myEdit.putString("withdraw_data_setting", withdraw_data_setting);
                         myEdit.putString("withdraw_list_data_setting", withdraw_list_data_setting);
 
-
-// ##########################################################################################################################
-// ###################################        ADS SETTINGS     ##############################################################
-// ##########################################################################################################################
                         myEdit.putString("game_ad_type", game_ad_type);
                         myEdit.putString("leaderboard_ad_type", leaderboard_ad_type);
 
-// ###################################        Unity ADS       ##############################################################
                         myEdit.putString("unity_game_id", unity_game_id);
                         myEdit.putString("unity_ads_on_off", unity_ads_on_off);
                         myEdit.putString("unity_ads_testmode_on_off", unity_ads_testmode_on_off);
@@ -258,7 +206,6 @@ public class SplashActivity extends AppCompatActivity {
                         myEdit.putString("unity_reward_ads_id", unity_reward_ads_id);
                         myEdit.putString("unity_reward_ads_on_off", unity_reward_ads_on_off);
 
-// ###################################   Applovin Max ADS       ###########################################################
                         myEdit.putString("max_ads_on_off", max_ads_on_off);
                         myEdit.putString("max_reward_ads_id", max_reward_ads_id);
                         myEdit.putString("max_banner_ads_id", max_banner_ads_id);
@@ -270,7 +217,6 @@ public class SplashActivity extends AppCompatActivity {
                         myEdit.putString("max_inter_ads_id", max_inter_ads_id);
                         myEdit.putString("max_inter_ads_on_off", max_inter_ads_on_off);
 
-// ###################################       ADMOB ADS          ###########################################################
                         myEdit.putString("admob_ads_app_id", admob_ads_app_id);
                         myEdit.putString("admob_all_ads_on_off", admob_all_ads_on_off);
                         myEdit.putString("admob_ads_banner_ads_id", admob_ads_banner_ads_id);
@@ -282,19 +228,16 @@ public class SplashActivity extends AppCompatActivity {
                         myEdit.putString("admob_ads_inter_ads_id", admob_ads_inter_ads_id);
                         myEdit.putString("admob_ads_inter_ads_id_on_off", admob_ads_inter_ads_id_on_off);
 
-// ###################################     Saving All Settings  ###########################################################
                         myEdit.apply();
 
-
-                        // Calculating Update Versions and Maintenance here
-                        if (app_maintenance_status.equals("ON")){
+                        if (app_maintenance_status.equals("ON")) {
                             splashMaintenanceAnim.setAnimationFromUrl(app_internal_settings_SPLASH_animations_maintenance);
                             maintenance_main_message.setText(app_maintenance_message);
                             maintenance_progress_message.setText(app_maintenance_progress_message);
                             main_splash.setVisibility(View.GONE);
                             maintenance_splash.setVisibility(View.VISIBLE);
                             blocked_splash_layout.setVisibility(View.GONE);
-                        } else if (Integer.parseInt(app_version)>localappversion){
+                        } else if (Integer.parseInt(app_version) > localappversion) {
                             splashUpdateAvailableAnim.setAnimationFromUrl(app_internal_settings_SPLASH_animations_update_available);
                             main_splash.setVisibility(View.GONE);
                             maintenance_splash.setVisibility(View.GONE);
@@ -306,50 +249,26 @@ public class SplashActivity extends AppCompatActivity {
                                 new Handler().postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Intent intent;
-                                        intent = new Intent(SplashActivity.this, MainActivity.class);
+                                        Intent intent = new Intent(SplashActivity.this, OnboardingDisclosureActivity.class);
                                         startActivity(intent);
                                         finish();
                                     }
                                 }, 1);
                             } else {
-                                get_user_data_thread(storedID);
+                                try {
+                                    get_user_data_thread(storedID);
+                                } catch (NoSuchAlgorithmException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
                     } catch (JSONException e) {
                         System.out.println(data);
-                        System.out.println("Exception : "+e.getMessage());
-                        String preview_message = "Error in Loading App - Json Exception <br>" + e.getMessage();
+                        System.out.println("Exception : " + e.getMessage());
                         Toast.makeText(SplashActivity.this, "Something Went Wrong", Toast.LENGTH_SHORT).show();
-                        try {
-                            sendErrortoServer.sendErrorToServer(
-                                    SplashActivity.this,  // Context
-                                    "N/A",
-                                    "App Not Loaded with error " + e.getMessage(),
-                                    "Splash Screen Issue",
-                                    preview_message,
-                                    "GameFever App"
-                            );
-                        } catch (Exception e2) {
-                            sendErrortoServer.sendErrorToServer(
-                                    SplashActivity.this,  // Context
-                                    "N/A",
-                                    "App Not Loaded with error " + e2.getMessage(),
-                                    "Splash Screen Issue",
-                                    preview_message,
-                                    "GameFever App"
-                            );
-                        }
-
-                        e.printStackTrace();
-                    } catch (NoSuchAlgorithmException e) {
-                        e.printStackTrace();
-                        Toast.makeText(SplashActivity.this, "Something Went Wrong", Toast.LENGTH_SHORT).show();
-                    }
+                        e.printStackTrace();}
                 }
                 Toast.makeText(SplashActivity.this, "Welcome to App", Toast.LENGTH_SHORT).show();
-
-
             }
 
             @Override
@@ -370,27 +289,26 @@ public class SplashActivity extends AppCompatActivity {
         obj.execute(qry);
     }
 
-
     public void get_user_data_thread(String user_id) throws NoSuchAlgorithmException {
-
         String get_user_data_qry = getResources().getString(R.string.app_url) + "/user/get_view_homescrdata.php?";
-        String datatohash="";
+        String datatohash = "";
         try {
-            datatohash ="i=" + URLEncoder.encode(user_id, "UTF-8");
+            datatohash = "i=" + URLEncoder.encode(user_id, "UTF-8");
             String token = temp.sha256_temp(datatohash);
-            get_user_data_qry = get_user_data_qry+datatohash+"&token="+token;
+            get_user_data_qry = get_user_data_qry + datatohash + "&token=" + token;
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+
         String finalget_user_data_qry = get_user_data_qry;
+
         class dbprocess extends AsyncTask<String, Void, String> implements com.rewards.espotask.dbprocess {
             @Override
             protected void onPostExecute(String data) {
-                if (data.equals("0")){
-                    Toast.makeText(getApplicationContext(), "Oops! Something went Wrong ! - Contact Support Now", Toast.LENGTH_SHORT).show();
+                if (data.equals("0")) {
+                    Toast.makeText(getApplicationContext(), "Oops! Something went Wrong! Contact Support Now", Toast.LENGTH_SHORT).show();
                 } else {
                     try {
-                        // Create a JSONObject from the JSON response string
                         JSONObject jsonObject = new JSONObject(data);
                         String status = jsonObject.getString("status");
                         String email = jsonObject.getString("email");
@@ -399,8 +317,6 @@ public class SplashActivity extends AppCompatActivity {
                         String kyc = jsonObject.getString("kyc");
                         String name = jsonObject.getString("name");
 
-
-                        // Storing Into Shared preferences
                         SharedPreferences sharedPreferences = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
                         SharedPreferences.Editor myEdit = sharedPreferences.edit();
                         myEdit.putString("status", status);
@@ -411,22 +327,18 @@ public class SplashActivity extends AppCompatActivity {
                         myEdit.putString("name", name);
                         myEdit.apply();
 
-                        // Calculating Update Versions and Maintenance here
-                        if (status.equals("0")){
-//                            splashAccountLockedAnim.setAnimationFromUrl(app_internal_settings_SPLASH_animations_account_locked);
+                        if (status.equals("0")) {
                             main_splash.setVisibility(View.GONE);
                             maintenance_splash.setVisibility(View.GONE);
                             update_splash.setVisibility(View.GONE);
                             blocked_splash_layout.setVisibility(View.VISIBLE);
                         } else {
-                            // Goto Main Screen
                             new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Intent intent;
-                                    intent = new Intent(SplashActivity.this, HomeActivity.class);
+                                    Intent intent = new Intent(SplashActivity.this, HomeActivity.class);
                                     startActivity(intent);
-                                    finish(); // Deleting Current Activity
+                                    finish();
                                 }
                             }, 1);
                         }
@@ -455,10 +367,8 @@ public class SplashActivity extends AppCompatActivity {
         obj.execute(finalget_user_data_qry);
     }
 
-
     public void update_app(View view) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(update_app_link));
         startActivity(intent);
     }
-
 }

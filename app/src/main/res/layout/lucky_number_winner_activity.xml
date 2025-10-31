@@ -88,7 +88,7 @@
                 android:id="@+id/luckyNumberText"
                 android:text="29"
                 android:layout_gravity="center"
-                android:textColor="#FF3D71"
+                android:textColor="@color/purple_bg"
                 android:textSize="40sp"
                 android:textStyle="bold"
                 android:layout_marginTop="8dp"
