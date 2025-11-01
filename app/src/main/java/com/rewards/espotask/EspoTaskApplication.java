@@ -9,13 +9,16 @@ import com.makeopinion.cpxresearchlib.models.CPXConfigurationBuilder;
 import com.makeopinion.cpxresearchlib.models.CPXStyleConfiguration;
 import com.makeopinion.cpxresearchlib.models.SurveyPosition;
 
-public class CPXApplication extends Application {
+public class EspoTaskApplication extends Application {
+
     private CPXResearch cpxResearch;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        // Don't initialize CPX here - wait until we have user ID
+
+        // ✅ Initialize AdManager
+        AdManager.getInstance().initialize(this);
     }
 
     @NonNull
@@ -27,18 +30,13 @@ public class CPXApplication extends Application {
     }
 
     public void initCPX() {
-        // Get user data from SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("EspoTaskApp", MODE_PRIVATE);
         String userId = sharedPreferences.getString("userID", "guest_user");
 
-        // CPX Research credentials (Get these from your CPX Dashboard)
         String cpxAppId = "29292";
         String cpxSecureKey = "QAEBN5DP8HNsvjacE6I2n1Gjfytl3HFU";
-
-        // Generate secure hash
         String secureHash = CPXHashGenerator.generateHash(cpxAppId, userId, cpxSecureKey);
 
-        // Style configuration for CPX banner
         CPXStyleConfiguration style = new CPXStyleConfiguration(
                 SurveyPosition.SideRightNormal,
                 "Earn up to 3 Coins in<br> 4 minutes with surveys",
@@ -48,22 +46,18 @@ public class CPXApplication extends Application {
                 true
         );
 
-        // Build CPX configuration
         CPXConfiguration config = new CPXConfigurationBuilder(
-                cpxAppId,      // Your CPX App ID
-                userId,        // User's unique ID
-                secureHash,    // Secure hash
+                cpxAppId,
+                userId,
+                secureHash,
                 style
         )
-                // Optional: Add additional user info
                 .withEmail(sharedPreferences.getString("email", ""))
                 .build();
 
-        // Initialize CPX Research - only pass config
         cpxResearch = CPXResearch.Companion.init(config);
     }
 
-    // Method to reinitialize CPX with new user
     public void reinitializeCPX(String newUserId) {
         String cpxAppId = "29292";
         String cpxSecureKey = "QAEBN5DP8HNsvjacE6I2n1Gjfytl3HFU";

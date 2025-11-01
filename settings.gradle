@@ -25,6 +25,9 @@ dependencyResolutionManagement {
             name "Tapjoy's maven repo"
             url "https://sdk.tapjoy.com/"
         }
+        maven {
+            url 'https://s3.amazonaws.com/vungle-sdk/'
+        }
     }
 }
 

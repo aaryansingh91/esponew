@@ -20,7 +20,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MgamerApp"
-        android:name=".CPXApplication"
+        android:name=".EspoTaskApplication"
         tools:targetApi="31">
         <activity
             android:name=".LuckyDrawWinnerActivity"
@@ -92,6 +92,7 @@
 
         <activity android:name=".LuckyDrawActivity" />
         <activity android:name=".LuckyNumberWinnerActivity" />
+
     </application>
 
 </manifest>
