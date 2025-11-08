@@ -213,7 +213,7 @@
 
 
                 <ScrollView
-                    android:visibility="visible"
+                    android:visibility="gone"
                     android:id="@+id/home_scroll_section"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
@@ -1359,7 +1359,7 @@
                 </ScrollView>
                 <!--game?-->
                 <ScrollView
-                    android:visibility="gone"
+                    android:visibility="visible"
                     android:background="@color/white"
                     android:id="@+id/game_scroll_section"
                     android:layout_width="match_parent"

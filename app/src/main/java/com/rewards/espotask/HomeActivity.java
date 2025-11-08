@@ -182,9 +182,13 @@ public class HomeActivity extends AppCompatActivity {
         btnYoutube = findViewById(R.id.btnYoutube);
 
         ViewPager2 viewPager2 = findViewById(R.id.imageSlider);
+        WormDotsIndicator dotsIndicator = findViewById(R.id.dots_indicator);
 
         // Fetch social links
         fetchSocialLinks();
+
+        // Fetch dynamic sliders from API
+        fetchSliders(viewPager2, dotsIndicator);
 
 
         Button cardTaskOffers = findViewById(R.id.card_task_offers);
@@ -295,45 +299,6 @@ public class HomeActivity extends AppCompatActivity {
             return false; // allow horizontal scroll to work
         });
 
-        // Sample images (from drawable)
-        WormDotsIndicator dotsIndicator = findViewById(R.id.dots_indicator);
-
-        // Sample images (from drawable)
-        List<Integer> images = Arrays.asList(
-                R.drawable.freefire,
-                R.drawable.freefire3,
-                R.drawable.freefire2
-        );
-
-        ImageSliderAdapter sliderAdapter = new ImageSliderAdapter(images);
-        viewPager2.setAdapter(sliderAdapter);
-
-        viewPager2.setClipToPadding(false);
-        viewPager2.setClipChildren(false);
-        viewPager2.setOffscreenPageLimit(3);
-        viewPager2.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
-
-        // Margin transformer for space between pages
-        int pageMargin =20; // adjust as needed
-        viewPager2.setPageTransformer(new MarginPageTransformer(pageMargin));
-
-        // Connect indicator with ViewPager2
-        dotsIndicator.setViewPager2(viewPager2);
-
-
-        // Optional: Auto-slide
-        new Handler().postDelayed(new Runnable() {
-            int currentPage = 0;
-
-            @Override
-            public void run() {
-                if (currentPage == images.size()) {
-                    currentPage = 0;
-                }
-                viewPager2.setCurrentItem(currentPage++, true);
-                new Handler().postDelayed(this, 3000); // 3 sec delay
-            }
-        }, 3000);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -747,6 +712,7 @@ public class HomeActivity extends AppCompatActivity {
         resetAllNavCards();
         nav_home.setCardBackgroundColor(getResources().getColor(R.color.bottomnavbar_activecard_bg_color));
         text_home.setTextColor(getResources().getColor(R.color.bottomnavbar_selected_color));
+        icon_home.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_home_selected));
         home_scroll_section.setVisibility(View.VISIBLE);
     }
 
@@ -1505,11 +1471,11 @@ CardItemHelper.bindCardData(cardView, premiumFeature);
 
                     // Update UI with new survey count
                     runOnUiThread(() -> {
-                        if (surveys.size() > 0) {
-                            Toast.makeText(HomeActivity.this,
-                                    surveys.size() + " surveys available",
-                                    Toast.LENGTH_SHORT).show();
-                        }
+//                        if (surveys.size() > 0) {
+//                            Toast.makeText(HomeActivity.this,
+//                                    surveys.size() + " surveys available",
+//                                    Toast.LENGTH_SHORT).show();
+//                        }
                     });
                 }
 
@@ -1699,6 +1665,114 @@ CardItemHelper.bindCardData(cardView, premiumFeature);
         } catch (Exception e) {
             Log.e("CPX_REFRESH", "Error refreshing surveys: " + e.getMessage());
         }
+    }
+
+    // Add this method to fetch sliders from API
+    private void fetchSliders(ViewPager2 viewPager2, WormDotsIndicator dotsIndicator) {
+        String url = getString(R.string.app_url) + "/get-sliders.php";
+
+        Log.d("SLIDER_API", "Fetching from: " + url); // ADD THIS
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                response -> {
+                    try {
+                        Log.d("SLIDER_API", "Response: " + response.toString()); // ADD THIS
+
+                        if (response.getBoolean("success")) {
+                            JSONArray dataArray = response.getJSONArray("data");
+                            List<SliderModel> sliderList = new ArrayList<>();
+
+                            Log.d("SLIDER_API", "Found " + dataArray.length() + " sliders"); // ADD THIS
+
+                            for (int i = 0; i < dataArray.length(); i++) {
+                                JSONObject obj = dataArray.getJSONObject(i);
+                                String imageUrl = obj.getString("image_url");
+
+                                Log.d("SLIDER_API", "Slider " + i + " URL: " + imageUrl); // ADD THIS
+
+                                SliderModel slider = new SliderModel(
+                                        obj.getString("id"),
+                                        imageUrl,
+                                        obj.optString("click_url", null),
+                                        obj.getString("status"),
+                                        obj.getString("created_at")
+                                );
+                                sliderList.add(slider);
+                            }
+
+                            if (sliderList.size() > 0) {
+                                setupViewPagerWithSliders(viewPager2, dotsIndicator, sliderList);
+                            } else {
+                                Log.e("SLIDER_API", "No sliders in list"); // ADD THIS
+                                setupDefaultSliders(viewPager2, dotsIndicator);
+                            }
+                        } else {
+                            Log.e("SLIDER_API", "API returned success=false"); // ADD THIS
+                            setupDefaultSliders(viewPager2, dotsIndicator);
+                        }
+                    } catch (Exception e) {
+                        Log.e("SLIDER_API", "Error parsing: " + e.getMessage()); // ADD THIS
+                        e.printStackTrace();
+                        setupDefaultSliders(viewPager2, dotsIndicator);
+                    }
+                },
+                error -> {
+                    Log.e("SLIDER_API_ERROR", "Network error: " + error.toString()); // ADD THIS
+                    setupDefaultSliders(viewPager2, dotsIndicator);
+                }
+        );
+
+        queue.add(request);
+    }
+    private void setupViewPagerWithSliders(ViewPager2 viewPager2, WormDotsIndicator dotsIndicator, List<SliderModel> sliderList) {
+        ImageSliderAdapter sliderAdapter = new ImageSliderAdapter(this, sliderList);
+        viewPager2.setAdapter(sliderAdapter);
+
+        viewPager2.setClipToPadding(false);
+        viewPager2.setClipChildren(false);
+        viewPager2.setOffscreenPageLimit(3);
+        viewPager2.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
+
+        // Margin transformer for space between pages
+        int pageMargin = 20;
+        viewPager2.setPageTransformer(new MarginPageTransformer(pageMargin));
+
+        // Connect indicator with ViewPager2
+        dotsIndicator.setViewPager2(viewPager2);
+
+        // Auto-slide if multiple sliders
+        if (sliderList.size() > 1) {
+            startAutoSlide(viewPager2, sliderList.size());
+        }
+    }
+
+    private void setupDefaultSliders(ViewPager2 viewPager2, WormDotsIndicator dotsIndicator) {
+        // Your original static slider code as fallback
+        List<Integer> images = Arrays.asList(
+                R.drawable.freefire,
+                R.drawable.freefire3,
+                R.drawable.freefire2
+        );
+
+        // Note: You'll need to create a separate adapter for static images
+        // or handle this differently
+        Toast.makeText(this, "Using default sliders", Toast.LENGTH_SHORT).show();
+    }
+
+    private void startAutoSlide(ViewPager2 viewPager2, int totalSlides) {
+        new Handler().postDelayed(new Runnable() {
+            int currentPage = 0;
+
+            @Override
+            public void run() {
+                if (currentPage == totalSlides) {
+                    currentPage = 0;
+                }
+                viewPager2.setCurrentItem(currentPage++, true);
+                new Handler().postDelayed(this, 3000); // 3 sec delay
+            }
+        }, 3000);
     }
 }
 

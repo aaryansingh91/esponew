@@ -268,7 +268,7 @@ public class SplashActivity extends AppCompatActivity {
                         Toast.makeText(SplashActivity.this, "Something Went Wrong", Toast.LENGTH_SHORT).show();
                         e.printStackTrace();}
                 }
-                Toast.makeText(SplashActivity.this, "Welcome to App", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(SplashActivity.this, "Welcome to App", Toast.LENGTH_SHORT).show();
             }
 
             @Override
