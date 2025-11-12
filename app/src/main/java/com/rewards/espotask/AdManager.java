@@ -32,6 +32,16 @@ import com.vungle.ads.RewardedAd;
 import com.vungle.ads.RewardedAdListener;
 import com.vungle.ads.AdConfig;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
+
 public class AdManager implements Application.ActivityLifecycleCallbacks {
 
     private static final String TAG = "AdManager";
@@ -66,6 +76,12 @@ public class AdManager implements Application.ActivityLifecycleCallbacks {
     private InterstitialAd vungleInterstitialAd;
     private RewardedAd vungleRewardedAd;
     private boolean isVungleInitialized = false;
+
+    // AdMob Ad Objects
+    private AdView admobBannerView;
+    private com.google.android.gms.ads.interstitial.InterstitialAd admobInterstitialAd;
+    private com.google.android.gms.ads.rewarded.RewardedAd admobRewardedAd;
+    private boolean isAdmobInitialized = false;
 
     // Tracking variables
     private int backPressCount = 0;
@@ -114,6 +130,8 @@ public class AdManager implements Application.ActivityLifecycleCallbacks {
             initializeUnity();
         } else if ("Vungle".equalsIgnoreCase(providerName)) {
             initializeVungle();
+        } else if ("AdMob".equalsIgnoreCase(providerName)) {
+            initializeAdMob();
         }
     }
 
@@ -133,6 +151,10 @@ public class AdManager implements Application.ActivityLifecycleCallbacks {
 
                 if (preloadRewardedAds && isRewardedEnabled) {
                     loadUnityRewardedAd();
+                }
+
+                if (isInterstitialEnabled) {
+                    preloadInterstitial();
                 }
 
                 if (showAdOnAppOpen && isInterstitialEnabled) {
@@ -270,6 +292,10 @@ public class AdManager implements Application.ActivityLifecycleCallbacks {
                     loadVungleRewardedAd();
                 }
 
+                if (isInterstitialEnabled) {
+                    preloadInterstitial();
+                }
+
                 if (showAdOnAppOpen && isInterstitialEnabled) {
                     loadAndShowVungleInterstitial(null);
                 }
@@ -324,7 +350,6 @@ public class AdManager implements Application.ActivityLifecycleCallbacks {
 
         vungleBannerAd.load(null);
 
-        // ✅ FIXED: Return the banner view, not the BannerAd object
         try {
             return vungleBannerAd.getBannerView();
         } catch (Exception e) {
@@ -472,6 +497,180 @@ public class AdManager implements Application.ActivityLifecycleCallbacks {
         }
     }
 
+    // ======================== ADMOB ADS ========================
+
+    private void initializeAdMob() {
+        if (isAdmobInitialized) {
+            Log.d(TAG, "AdMob already initialized");
+            return;
+        }
+
+        // ✅ Initialize AdMob dynamically (no manifest needed)
+        MobileAds.initialize(context, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+                isAdmobInitialized = true;
+                Log.d(TAG, "AdMob initialized successfully");
+
+                if (preloadRewardedAds && isRewardedEnabled) {
+                    loadAdMobRewardedAd();
+                }
+
+                if (isInterstitialEnabled) {
+                    preloadInterstitial();
+                }
+
+                if (showAdOnAppOpen && isInterstitialEnabled) {
+                    loadAndShowAdMobInterstitial(null);
+                }
+            }
+        });
+    }
+
+    public View loadAdMobBanner(Activity activity) {
+        if (!isBannerEnabled || !isAdmobInitialized) {
+            return null;
+        }
+
+        admobBannerView = new AdView(activity);
+        admobBannerView.setAdUnitId(bannerAdId);
+        admobBannerView.setAdSize(AdSize.BANNER);
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+        admobBannerView.loadAd(adRequest);
+
+        admobBannerView.setAdListener(new com.google.android.gms.ads.AdListener() {
+            @Override
+            public void onAdLoaded() {
+                Log.d(TAG, "AdMob banner loaded");
+            }
+
+            @Override
+            public void onAdFailedToLoad(LoadAdError adError) {
+                Log.e(TAG, "AdMob banner failed: " + adError.getMessage());
+            }
+        });
+
+        return admobBannerView;
+    }
+
+    private void loadAndShowAdMobInterstitial(Activity activity) {
+        if (!isInterstitialEnabled || !isAdmobInitialized) {
+            return;
+        }
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        com.google.android.gms.ads.interstitial.InterstitialAd.load(
+                context,
+                interstitialAdId,
+                adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull com.google.android.gms.ads.interstitial.InterstitialAd interstitialAd) {
+                        admobInterstitialAd = interstitialAd;
+                        Log.d(TAG, "AdMob interstitial loaded");
+
+                        if (activity != null && !activity.isFinishing()) {
+                            admobInterstitialAd.show(activity);
+
+                            admobInterstitialAd.setFullScreenContentCallback(
+                                    new com.google.android.gms.ads.FullScreenContentCallback() {
+                                        @Override
+                                        public void onAdDismissedFullScreenContent() {
+                                            Log.d(TAG, "AdMob interstitial dismissed");
+                                            admobInterstitialAd = null;
+                                            lastInterstitialShowTime = System.currentTimeMillis();
+                                            backPressCount = 0;
+                                        }
+
+                                        @Override
+                                        public void onAdFailedToShowFullScreenContent(com.google.android.gms.ads.AdError adError) {
+                                            Log.e(TAG, "AdMob interstitial failed to show: " + adError.getMessage());
+                                            admobInterstitialAd = null;
+                                        }
+
+                                        @Override
+                                        public void onAdShowedFullScreenContent() {
+                                            Log.d(TAG, "AdMob interstitial showed");
+                                        }
+                                    });
+                        }
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        Log.e(TAG, "AdMob interstitial failed to load: " + loadAdError.getMessage());
+                        admobInterstitialAd = null;
+                    }
+                });
+    }
+
+    private void loadAdMobRewardedAd() {
+        if (!isRewardedEnabled || !isAdmobInitialized) {
+            return;
+        }
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        com.google.android.gms.ads.rewarded.RewardedAd.load(
+                context,
+                rewardedAdId,
+                adRequest,
+                new RewardedAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull com.google.android.gms.ads.rewarded.RewardedAd rewardedAd) {
+                        admobRewardedAd = rewardedAd;
+                        Log.d(TAG, "AdMob rewarded ad loaded");
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        Log.e(TAG, "AdMob rewarded ad failed to load: " + loadAdError.getMessage());
+                        admobRewardedAd = null;
+                    }
+                });
+    }
+
+    public void showAdMobRewardedAd(Activity activity, RewardCallback callback) {
+        if (!isRewardedEnabled || !isAdmobInitialized) {
+            if (callback != null) callback.onAdNotAvailable();
+            return;
+        }
+
+        if (admobRewardedAd != null) {
+            admobRewardedAd.show(activity, rewardItem -> {
+                Log.d(TAG, "AdMob rewarded ad - user rewarded");
+                if (callback != null) callback.onUserRewarded();
+            });
+
+            admobRewardedAd.setFullScreenContentCallback(
+                    new com.google.android.gms.ads.FullScreenContentCallback() {
+                        @Override
+                        public void onAdDismissedFullScreenContent() {
+                            Log.d(TAG, "AdMob rewarded ad dismissed");
+                            admobRewardedAd = null;
+                            loadAdMobRewardedAd();
+                        }
+
+                        @Override
+                        public void onAdFailedToShowFullScreenContent(com.google.android.gms.ads.AdError adError) {
+                            Log.e(TAG, "AdMob rewarded ad failed to show: " + adError.getMessage());
+                            admobRewardedAd = null;
+                            if (callback != null) callback.onAdNotAvailable();
+                        }
+
+                        @Override
+                        public void onAdShowedFullScreenContent() {
+                            Log.d(TAG, "AdMob rewarded ad showed");
+                        }
+                    });
+        } else {
+            if (callback != null) callback.onAdNotAvailable();
+            loadAdMobRewardedAd();
+        }
+    }
+
     // ======================== UNIVERSAL METHODS ========================
 
     public void loadBanner(Activity activity, FrameLayout container) {
@@ -487,8 +686,10 @@ public class AdManager implements Application.ActivityLifecycleCallbacks {
             BannerView bannerView = loadUnityBanner(activity);
             if (bannerView != null) container.addView(bannerView);
         } else if ("Vungle".equalsIgnoreCase(providerName)) {
-            // ✅ FIXED: loadVungleBanner now returns View directly
             View bannerView = loadVungleBanner(activity);
+            if (bannerView != null) container.addView(bannerView);
+        } else if ("AdMob".equalsIgnoreCase(providerName)) {
+            View bannerView = loadAdMobBanner(activity);
             if (bannerView != null) container.addView(bannerView);
         }
     }
@@ -498,6 +699,8 @@ public class AdManager implements Application.ActivityLifecycleCallbacks {
             showUnityRewardedAd(activity, callback);
         } else if ("Vungle".equalsIgnoreCase(providerName)) {
             showVungleRewardedAd(activity, callback);
+        } else if ("AdMob".equalsIgnoreCase(providerName)) {
+            showAdMobRewardedAd(activity, callback);
         } else {
             if (callback != null) callback.onAdNotAvailable();
         }
@@ -506,8 +709,334 @@ public class AdManager implements Application.ActivityLifecycleCallbacks {
     public boolean isRewardedAdReady() {
         if ("Vungle".equalsIgnoreCase(providerName)) {
             return vungleRewardedAd != null && vungleRewardedAd.canPlayAd();
+        } else if ("AdMob".equalsIgnoreCase(providerName)) {
+            return admobRewardedAd != null;
         }
         return isUnityInitialized;
+    }
+
+    // ✅ PRELOAD INTERSTITIAL AD
+    public void preloadInterstitial() {
+        if (!isInterstitialEnabled) {
+            return;
+        }
+
+        if ("Unity".equalsIgnoreCase(providerName) && isUnityInitialized) {
+            UnityAds.load(interstitialAdId, new IUnityAdsLoadListener() {
+                @Override
+                public void onUnityAdsAdLoaded(String placementId) {
+                    Log.d(TAG, "Unity interstitial preloaded");
+                }
+
+                @Override
+                public void onUnityAdsFailedToLoad(String placementId, UnityAds.UnityAdsLoadError error, String message) {
+                    Log.e(TAG, "Unity interstitial preload failed: " + message);
+                }
+            });
+        } else if ("Vungle".equalsIgnoreCase(providerName) && isVungleInitialized) {
+            vungleInterstitialAd = new InterstitialAd(context, interstitialAdId, new AdConfig());
+            vungleInterstitialAd.setAdListener(new InterstitialAdListener() {
+                @Override
+                public void onAdLoaded(@NonNull BaseAd baseAd) {
+                    Log.d(TAG, "Vungle interstitial preloaded");
+                }
+
+                @Override
+                public void onAdFailedToLoad(@NonNull BaseAd baseAd, @NonNull VungleError vungleError) {
+                    Log.e(TAG, "Vungle interstitial preload failed: " + vungleError.getErrorMessage());
+                }
+
+                @Override
+                public void onAdFailedToPlay(@NonNull BaseAd baseAd, @NonNull VungleError vungleError) {}
+                @Override
+                public void onAdEnd(@NonNull BaseAd baseAd) {}
+                @Override
+                public void onAdImpression(@NonNull BaseAd baseAd) {}
+                @Override
+                public void onAdClicked(@NonNull BaseAd baseAd) {}
+                @Override
+                public void onAdLeftApplication(@NonNull BaseAd baseAd) {}
+                @Override
+                public void onAdStart(@NonNull BaseAd baseAd) {}
+            });
+            vungleInterstitialAd.load(null);
+        } else if ("AdMob".equalsIgnoreCase(providerName) && isAdmobInitialized) {
+            AdRequest adRequest = new AdRequest.Builder().build();
+            com.google.android.gms.ads.interstitial.InterstitialAd.load(
+                    context,
+                    interstitialAdId,
+                    adRequest,
+                    new InterstitialAdLoadCallback() {
+                        @Override
+                        public void onAdLoaded(@NonNull com.google.android.gms.ads.interstitial.InterstitialAd interstitialAd) {
+                            admobInterstitialAd = interstitialAd;
+                            Log.d(TAG, "AdMob interstitial preloaded");
+                        }
+
+                        @Override
+                        public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                            Log.e(TAG, "AdMob interstitial preload failed: " + loadAdError.getMessage());
+                            admobInterstitialAd = null;
+                        }
+                    });
+        }
+    }
+
+    // ✅ SHOW INTERSTITIAL AD WITH CALLBACK
+    public void showInterstitialAd(Activity activity, InterstitialCallback callback) {
+        if (!isInterstitialEnabled) {
+            if (callback != null) callback.onAdClosed();
+            return;
+        }
+
+        if ("Unity".equalsIgnoreCase(providerName) && isUnityInitialized) {
+            showUnityInterstitialWithCallback(activity, callback);
+        } else if ("Vungle".equalsIgnoreCase(providerName) && isVungleInitialized) {
+            showVungleInterstitialWithCallback(activity, callback);
+        } else if ("AdMob".equalsIgnoreCase(providerName) && isAdmobInitialized) {
+            showAdMobInterstitialWithCallback(activity, callback);
+        } else {
+            Log.d(TAG, "No ad provider available");
+            if (callback != null) callback.onAdClosed();
+        }
+    }
+
+    // Unity Interstitial with callback
+    private void showUnityInterstitialWithCallback(Activity activity, InterstitialCallback callback) {
+        UnityAds.load(interstitialAdId, new IUnityAdsLoadListener() {
+            @Override
+            public void onUnityAdsAdLoaded(String placementId) {
+                if (activity != null && !activity.isFinishing()) {
+                    UnityAds.show(activity, placementId, new UnityAdsShowOptions(), new IUnityAdsShowListener() {
+                        @Override
+                        public void onUnityAdsShowComplete(String placementId, UnityAds.UnityAdsShowCompletionState state) {
+                            Log.d(TAG, "Unity interstitial completed");
+                            lastInterstitialShowTime = System.currentTimeMillis();
+                            backPressCount = 0;
+                            if (callback != null) {
+                                activity.runOnUiThread(() -> callback.onAdClosed());
+                            }
+                            // Preload next ad
+                            preloadInterstitial();
+                        }
+
+                        @Override
+                        public void onUnityAdsShowFailure(String placementId, UnityAds.UnityAdsShowError error, String message) {
+                            Log.e(TAG, "Unity interstitial failed: " + message);
+                            if (callback != null) {
+                                activity.runOnUiThread(() -> callback.onAdClosed());
+                            }
+                        }
+
+                        @Override
+                        public void onUnityAdsShowStart(String placementId) {
+                            Log.d(TAG, "Unity interstitial started");
+                        }
+
+                        @Override
+                        public void onUnityAdsShowClick(String placementId) {
+                            Log.d(TAG, "Unity interstitial clicked");
+                        }
+                    });
+                } else {
+                    if (callback != null) callback.onAdClosed();
+                }
+            }
+
+            @Override
+            public void onUnityAdsFailedToLoad(String placementId, UnityAds.UnityAdsLoadError error, String message) {
+                Log.e(TAG, "Unity interstitial load failed: " + message);
+                if (callback != null) {
+                    activity.runOnUiThread(() -> callback.onAdClosed());
+                }
+            }
+        });
+    }
+
+    // Vungle Interstitial with callback
+    private void showVungleInterstitialWithCallback(Activity activity, InterstitialCallback callback) {
+        if (vungleInterstitialAd != null && vungleInterstitialAd.canPlayAd()) {
+            vungleInterstitialAd.setAdListener(new InterstitialAdListener() {
+                @Override
+                public void onAdEnd(@NonNull BaseAd baseAd) {
+                    Log.d(TAG, "Vungle interstitial ended");
+                    lastInterstitialShowTime = System.currentTimeMillis();
+                    backPressCount = 0;
+                    if (callback != null) {
+                        activity.runOnUiThread(() -> callback.onAdClosed());
+                    }
+                    // Preload next ad
+                    preloadInterstitial();
+                }
+
+                @Override
+                public void onAdFailedToPlay(@NonNull BaseAd baseAd, @NonNull VungleError vungleError) {
+                    Log.e(TAG, "Vungle interstitial failed to play: " + vungleError.getErrorMessage());
+                    if (callback != null) {
+                        activity.runOnUiThread(() -> callback.onAdClosed());
+                    }
+                }
+
+                @Override
+                public void onAdLoaded(@NonNull BaseAd baseAd) {}
+                @Override
+                public void onAdFailedToLoad(@NonNull BaseAd baseAd, @NonNull VungleError vungleError) {}
+                @Override
+                public void onAdImpression(@NonNull BaseAd baseAd) {}
+                @Override
+                public void onAdClicked(@NonNull BaseAd baseAd) {}
+                @Override
+                public void onAdLeftApplication(@NonNull BaseAd baseAd) {}
+                @Override
+                public void onAdStart(@NonNull BaseAd baseAd) {}
+            });
+
+            vungleInterstitialAd.play(activity);
+        } else {
+            Log.d(TAG, "Vungle interstitial not ready, loading now...");
+            // Load and show
+            vungleInterstitialAd = new InterstitialAd(context, interstitialAdId, new AdConfig());
+            vungleInterstitialAd.setAdListener(new InterstitialAdListener() {
+                @Override
+                public void onAdLoaded(@NonNull BaseAd baseAd) {
+                    Log.d(TAG, "Vungle interstitial loaded, showing now");
+                    if (activity != null && !activity.isFinishing()) {
+                        vungleInterstitialAd.play(activity);
+                    } else {
+                        if (callback != null) callback.onAdClosed();
+                    }
+                }
+
+                @Override
+                public void onAdFailedToLoad(@NonNull BaseAd baseAd, @NonNull VungleError vungleError) {
+                    Log.e(TAG, "Vungle interstitial failed to load: " + vungleError.getErrorMessage());
+                    if (callback != null) {
+                        activity.runOnUiThread(() -> callback.onAdClosed());
+                    }
+                }
+
+                @Override
+                public void onAdEnd(@NonNull BaseAd baseAd) {
+                    Log.d(TAG, "Vungle interstitial ended");
+                    if (callback != null) {
+                        activity.runOnUiThread(() -> callback.onAdClosed());
+                    }
+                    preloadInterstitial();
+                }
+
+                @Override
+                public void onAdFailedToPlay(@NonNull BaseAd baseAd, @NonNull VungleError vungleError) {
+                    Log.e(TAG, "Vungle interstitial failed to play: " + vungleError.getErrorMessage());
+                    if (callback != null) {
+                        activity.runOnUiThread(() -> callback.onAdClosed());
+                    }
+                }
+
+                @Override
+                public void onAdImpression(@NonNull BaseAd baseAd) {}
+                @Override
+                public void onAdClicked(@NonNull BaseAd baseAd) {}
+                @Override
+                public void onAdLeftApplication(@NonNull BaseAd baseAd) {}
+                @Override
+                public void onAdStart(@NonNull BaseAd baseAd) {}
+            });
+            vungleInterstitialAd.load(null);
+        }
+    }
+
+    // AdMob Interstitial with callback
+    private void showAdMobInterstitialWithCallback(Activity activity, InterstitialCallback callback) {
+        if (admobInterstitialAd != null) {
+            admobInterstitialAd.setFullScreenContentCallback(
+                    new com.google.android.gms.ads.FullScreenContentCallback() {
+                        @Override
+                        public void onAdDismissedFullScreenContent() {
+                            Log.d(TAG, "AdMob interstitial dismissed");
+                            admobInterstitialAd = null;
+                            lastInterstitialShowTime = System.currentTimeMillis();
+                            backPressCount = 0;
+                            if (callback != null) {
+                                activity.runOnUiThread(() -> callback.onAdClosed());
+                            }
+                            // Preload next ad
+                            preloadInterstitial();
+                        }
+
+                        @Override
+                        public void onAdFailedToShowFullScreenContent(com.google.android.gms.ads.AdError adError) {
+                            Log.e(TAG, "AdMob interstitial failed to show: " + adError.getMessage());
+                            admobInterstitialAd = null;
+                            if (callback != null) {
+                                activity.runOnUiThread(() -> callback.onAdClosed());
+                            }
+                        }
+
+                        @Override
+                        public void onAdShowedFullScreenContent() {
+                            Log.d(TAG, "AdMob interstitial showed");
+                        }
+                    });
+
+            admobInterstitialAd.show(activity);
+        } else {
+            Log.d(TAG, "AdMob interstitial not ready, loading now...");
+            // Load and show
+            AdRequest adRequest = new AdRequest.Builder().build();
+            com.google.android.gms.ads.interstitial.InterstitialAd.load(
+                    context,
+                    interstitialAdId,
+                    adRequest,
+                    new InterstitialAdLoadCallback() {
+                        @Override
+                        public void onAdLoaded(@NonNull com.google.android.gms.ads.interstitial.InterstitialAd interstitialAd) {
+                            admobInterstitialAd = interstitialAd;
+                            Log.d(TAG, "AdMob interstitial loaded, showing now");
+
+                            if (activity != null && !activity.isFinishing()) {
+                                admobInterstitialAd.setFullScreenContentCallback(
+                                        new com.google.android.gms.ads.FullScreenContentCallback() {
+                                            @Override
+                                            public void onAdDismissedFullScreenContent() {
+                                                Log.d(TAG, "AdMob interstitial dismissed");
+                                                admobInterstitialAd = null;
+                                                if (callback != null) {
+                                                    activity.runOnUiThread(() -> callback.onAdClosed());
+                                                }
+                                                preloadInterstitial();
+                                            }
+
+                                            @Override
+                                            public void onAdFailedToShowFullScreenContent(com.google.android.gms.ads.AdError adError) {
+                                                Log.e(TAG, "AdMob interstitial failed to show: " + adError.getMessage());
+                                                admobInterstitialAd = null;
+                                                if (callback != null) {
+                                                    activity.runOnUiThread(() -> callback.onAdClosed());
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onAdShowedFullScreenContent() {
+                                                Log.d(TAG, "AdMob interstitial showed");
+                                            }
+                                        });
+
+                                admobInterstitialAd.show(activity);
+                            } else {
+                                if (callback != null) callback.onAdClosed();
+                            }
+                        }
+
+                        @Override
+                        public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                            Log.e(TAG, "AdMob interstitial failed to load: " + loadAdError.getMessage());
+                            admobInterstitialAd = null;
+                            if (callback != null) {
+                                activity.runOnUiThread(() -> callback.onAdClosed());
+                            }
+                        }
+                    });
+        }
     }
 
     public boolean handleBackPress(Activity activity) {
@@ -527,6 +1056,8 @@ public class AdManager implements Application.ActivityLifecycleCallbacks {
                     loadAndShowUnityInterstitial(activity);
                 } else if ("Vungle".equalsIgnoreCase(providerName)) {
                     loadAndShowVungleInterstitial(activity);
+                } else if ("AdMob".equalsIgnoreCase(providerName)) {
+                    loadAndShowAdMobInterstitial(activity);
                 }
                 return true;
             }
@@ -554,6 +1085,8 @@ public class AdManager implements Application.ActivityLifecycleCallbacks {
                 loadAndShowUnityInterstitial(activity);
             } else if ("Vungle".equalsIgnoreCase(providerName)) {
                 loadAndShowVungleInterstitial(activity);
+            } else if ("AdMob".equalsIgnoreCase(providerName)) {
+                loadAndShowAdMobInterstitial(activity);
             }
         }
     }
@@ -569,10 +1102,19 @@ public class AdManager implements Application.ActivityLifecycleCallbacks {
     @Override
     public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle bundle) {}
     @Override
-    public void onActivityDestroyed(@NonNull Activity activity) {}
+    public void onActivityDestroyed(@NonNull Activity activity) {
+        if (admobBannerView != null) {
+            admobBannerView.destroy();
+        }
+    }
 
+    // ✅ CALLBACK INTERFACES
     public interface RewardCallback {
         void onUserRewarded();
         void onAdNotAvailable();
+    }
+
+    public interface InterstitialCallback {
+        void onAdClosed();
     }
 }

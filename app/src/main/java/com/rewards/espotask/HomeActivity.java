@@ -1299,6 +1299,8 @@ CardItemHelper.bindCardData(cardView, premiumFeature);
     }
 
     // ADD these new methods:
+    // Find this method in HomeActivity.java and UPDATE it:
+
     private void fetchAndSetupAdsUnified() {
         String url = getString(R.string.app_url) + "/get_active_ads.php";
 
@@ -1323,6 +1325,10 @@ CardItemHelper.bindCardData(cardView, premiumFeature);
                             boolean showOnOpen = data.optBoolean("show_on_app_open", false);
                             boolean preloadRewarded = data.optBoolean("preload_rewarded", true);
 
+                            Log.d("HOME_ADS", "Provider: " + provider);
+                            Log.d("HOME_ADS", "Interstitial Enabled: " + isInterstitialEnabled);
+                            Log.d("HOME_ADS", "Interstitial ID: " + interstitialAdId);
+
                             AdManager.getInstance().setupWithConfig(
                                     provider, appId,
                                     bannerAdId, isBannerEnabled,
@@ -1331,8 +1337,11 @@ CardItemHelper.bindCardData(cardView, premiumFeature);
                                     backClicks, seconds, showOnOpen, preloadRewarded
                             );
 
+                            // Load banner
                             FrameLayout bannerContainer = findViewById(R.id.banner_container);
                             AdManager.getInstance().loadBanner(this, bannerContainer);
+
+                            Log.d("HOME_ADS", "AdManager setup complete");
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

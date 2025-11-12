@@ -36,11 +36,6 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-import com.unity3d.ads.IUnityAdsShowListener;
-import com.unity3d.ads.UnityAds;
-import com.unity3d.ads.IUnityAdsLoadListener;
-import com.unity3d.ads.UnityAdsShowOptions;
-import com.unity3d.ads.IUnityAdsInitializationListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,10 +62,8 @@ public class TournamentMatchDetail extends AppCompatActivity {
     String entryType = "coin";
     String joinType = "coin";
 
-    // Unity Ads variables
-    private boolean isUnityAdsEnabled = false;
-    private String unityInterstitialId = null;
-    private boolean isUnityInitialized = false;
+    // ✅ Flag to prevent multiple join requests
+    private boolean isJoining = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,8 +92,11 @@ public class TournamentMatchDetail extends AppCompatActivity {
         }
         Log.d(TAG, "User ID from SharedPreferences: " + userId);
 
-        // Fetch and setup Unity ads from backend
-        fetchAndSetupUnityAds();
+        // ✅ Preload interstitial ads
+        new android.os.Handler().postDelayed(() -> {
+            AdManager.getInstance().preloadInterstitial();
+            Log.d(TAG, "Interstitial ad preloaded");
+        }, 2000);
 
         // Get userId and tournamentId values before this
         if (userId > 0 && tournamentId > 0) {
@@ -127,77 +123,6 @@ public class TournamentMatchDetail extends AppCompatActivity {
         // Fetch and show match details
         updateMatchDetails(tournamentId);
         fetchUserData(userId);
-    }
-
-    // Fetch Unity Ads configuration from backend
-    private void fetchAndSetupUnityAds() {
-        String url = getString(R.string.app_url) + "/get_active_ads.php";
-
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                response -> {
-                    try {
-                        JSONObject json = new JSONObject(response);
-                        if (json.getString("status").equals("success")) {
-                            JSONObject data = json.getJSONObject("data");
-                            String provider = data.getString("provider_name");
-
-                            Log.d(TAG, "Ad Provider: " + provider);
-
-                            if (provider.equalsIgnoreCase("Unity")) {
-                                String unityAppId = data.getString("app_id");
-
-                                // Initialize Unity Ads if not already initialized
-                                if (!UnityAds.isInitialized()) {
-                                    UnityAds.initialize(this, unityAppId, false, new IUnityAdsInitializationListener() {
-                                        @Override
-                                        public void onInitializationComplete() {
-                                            isUnityInitialized = true;
-                                            Log.d(TAG, "Unity Ads initialized successfully");
-                                        }
-
-                                        @Override
-                                        public void onInitializationFailed(UnityAds.UnityAdsInitializationError error, String message) {
-                                            isUnityInitialized = false;
-                                            Log.e(TAG, "Unity Ads initialization failed: " + message);
-                                        }
-                                    });
-                                } else {
-                                    isUnityInitialized = true;
-                                }
-
-                                // Check if interstitial ads are enabled
-                                if (data.optBoolean("is_interstitial_enabled", false)) {
-                                    isUnityAdsEnabled = true;
-                                    unityInterstitialId = data.optString("interstitial_ad_id", "");
-                                    loadUnityInterstitialAd(unityInterstitialId);
-                                }
-                            }
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Log.e(TAG, "Error fetching ads: " + e.getMessage());
-                    }
-                },
-                error -> Log.e(TAG, "Ad Fetch Error: " + error.toString())
-        );
-
-        RequestQueue queue = Volley.newRequestQueue(this);
-        queue.add(stringRequest);
-    }
-
-    // Load Unity Interstitial Ad
-    private void loadUnityInterstitialAd(String adUnitId) {
-        UnityAds.load(adUnitId, new IUnityAdsLoadListener() {
-            @Override
-            public void onUnityAdsAdLoaded(String placementId) {
-                Log.d(TAG, "Unity Interstitial Loaded: " + placementId);
-            }
-
-            @Override
-            public void onUnityAdsFailedToLoad(String placementId, UnityAds.UnityAdsLoadError error, String message) {
-                Log.e(TAG, "Interstitial Load Failed: " + message);
-            }
-        });
     }
 
     private void fetchUserData(int userId) {
@@ -329,6 +254,12 @@ public class TournamentMatchDetail extends AppCompatActivity {
     }
 
     private void sendJoinRequest(String joinType, String inGameUsername) {
+        // ✅ Prevent multiple simultaneous join requests
+        if (isJoining) {
+            Log.d(TAG, "Join already in progress, ignoring duplicate request");
+            return;
+        }
+
         if (matchType.isEmpty() || matchType.equalsIgnoreCase("Unknown")) {
             Toast.makeText(this, "Match type not loaded: " + matchType, Toast.LENGTH_LONG).show();
             return;
@@ -339,6 +270,7 @@ public class TournamentMatchDetail extends AppCompatActivity {
             return;
         }
 
+        isJoining = true; // ✅ Set flag to prevent duplicate requests
         Log.d(TAG, "Join button clicked - user_id: " + userId + ", match_id: " + tournamentId + ", match_type: " + matchType);
 
         String url = getString(R.string.app_url) + "/join_tournament_api.php";
@@ -364,6 +296,7 @@ public class TournamentMatchDetail extends AppCompatActivity {
         } catch (UnsupportedEncodingException e) {
             Log.e(TAG, "Error encoding request body: " + e.getMessage());
             Toast.makeText(this, "Request encoding error", Toast.LENGTH_LONG).show();
+            isJoining = false; // ✅ Reset flag on error
             return;
         }
 
@@ -374,10 +307,12 @@ public class TournamentMatchDetail extends AppCompatActivity {
                         Log.e(TAG, "Empty server response");
                         if (retryCount < MAX_RETRIES) {
                             retryCount++;
+                            isJoining = false; // ✅ Reset flag before retry
                             Log.d(TAG, "Retrying request (attempt " + retryCount + ")");
                             sendJoinRequest(joinType, inGameUsername);
                         } else {
                             Toast.makeText(this, "Empty server response after retries", Toast.LENGTH_LONG).show();
+                            isJoining = false; // ✅ Reset flag
                         }
                         return;
                     }
@@ -385,22 +320,43 @@ public class TournamentMatchDetail extends AppCompatActivity {
                     try {
                         JSONObject jsonResponse = new JSONObject(response);
                         if (jsonResponse.getBoolean("status")) {
-                            Toast.makeText(this, "Joined successfully", Toast.LENGTH_SHORT).show();
-                            joinButton.setEnabled(false);
-                            joinButton.setText("Already Joined");
-                            joinButton.setBackgroundTintList(ColorStateList.valueOf(0xFF888888));
+                            // ✅ Show 2nd interstitial ad AFTER joining (only once)
+                            Log.d(TAG, "Join successful, showing 2nd interstitial ad");
+                            AdManager.getInstance().showInterstitialAd(this, new AdManager.InterstitialCallback() {
+                                private boolean callbackExecuted = false; // ✅ Prevent multiple callbacks
+
+                                @Override
+                                public void onAdClosed() {
+                                    if (callbackExecuted) {
+                                        Log.d(TAG, "Callback already executed, ignoring");
+                                        return;
+                                    }
+                                    callbackExecuted = true;
+
+                                    runOnUiThread(() -> {
+                                        Toast.makeText(TournamentMatchDetail.this, "Joined successfully", Toast.LENGTH_SHORT).show();
+                                        joinButton.setEnabled(false);
+                                        joinButton.setText("Already Joined");
+                                        joinButton.setBackgroundTintList(ColorStateList.valueOf(0xFF888888));
+                                        isJoining = false; // ✅ Reset flag after success
+                                    });
+                                }
+                            });
                         } else {
                             String message = jsonResponse.optString("message", "Failed to join");
                             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+                            isJoining = false; // ✅ Reset flag on failure
                         }
                     } catch (JSONException e) {
                         Log.e(TAG, "Join JSON error: " + e.getMessage() + ", Raw response: " + response);
                         if (retryCount < MAX_RETRIES) {
                             retryCount++;
+                            isJoining = false; // ✅ Reset flag before retry
                             Log.d(TAG, "Retrying request due to JSON error (attempt " + retryCount + ")");
                             sendJoinRequest(joinType, inGameUsername);
                         } else {
                             Toast.makeText(this, "Invalid server response: " + response, Toast.LENGTH_LONG).show();
+                            isJoining = false; // ✅ Reset flag
                         }
                     }
                 },
@@ -424,10 +380,12 @@ public class TournamentMatchDetail extends AppCompatActivity {
                     Log.e(TAG, "Join Volley error: " + errorMsg + " (HTTP " + statusCode + ", Response: " + responseData + ")");
                     if (retryCount < MAX_RETRIES && error instanceof ServerError) {
                         retryCount++;
+                        isJoining = false; // ✅ Reset flag before retry
                         Log.d(TAG, "Retrying request due to server error (attempt " + retryCount + ")");
                         sendJoinRequest(joinType, inGameUsername);
                     } else {
                         Toast.makeText(this, errorMsg + " (Response: " + responseData + ")", Toast.LENGTH_LONG).show();
+                        isJoining = false; // ✅ Reset flag on error
                     }
                 }) {
             @Override
@@ -489,6 +447,12 @@ public class TournamentMatchDetail extends AppCompatActivity {
     }
 
     private void showJoinMethodPopup(int userCoins, int userTickets, int entryCoins, int entryTickets, String entryType) {
+        // ✅ Prevent showing popup if already joining
+        if (isJoining) {
+            Log.d(TAG, "Join already in progress, ignoring popup request");
+            return;
+        }
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Join Match");
 
@@ -540,6 +504,12 @@ public class TournamentMatchDetail extends AppCompatActivity {
 
         // Override positive button to prevent dialog auto-dismiss
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            // ✅ Check if already joining
+            if (isJoining) {
+                Log.d(TAG, "Join already in progress, ignoring button click");
+                return;
+            }
+
             String inGameUsername = editInGameUsername.getText().toString().trim();
             int selectedId = radioGroupJoinType.getCheckedRadioButtonId();
 
@@ -557,60 +527,51 @@ public class TournamentMatchDetail extends AppCompatActivity {
             if (selectedType.equals("coin") && userCoins >= entryCoins) {
                 joinType = "coin";
                 dialog.dismiss();
-                // Show ad before joining
-                showInterstitialAdBeforeJoin(joinType, inGameUsername);
+                // ✅ Show 1st interstitial ad BEFORE joining
+                Log.d(TAG, "Showing 1st interstitial ad before joining");
+                showInterstitialBeforeJoin(joinType, inGameUsername);
             } else if (selectedType.equals("tickets") && userTickets >= entryTickets) {
                 joinType = "tickets";
                 dialog.dismiss();
-                // Show ad before joining
-                showInterstitialAdBeforeJoin(joinType, inGameUsername);
+                // ✅ Show 1st interstitial ad BEFORE joining
+                Log.d(TAG, "Showing 1st interstitial ad before joining");
+                showInterstitialBeforeJoin(joinType, inGameUsername);
             } else {
                 Toast.makeText(this, "Not enough " + selectedType, Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    // Show Unity Interstitial Ad before joining match
-    private void showInterstitialAdBeforeJoin(String joinType, String inGameUsername) {
-        // Check if Unity Ads are enabled and initialized
-        if (isUnityAdsEnabled && isUnityInitialized && unityInterstitialId != null && !unityInterstitialId.isEmpty()) {
-            Log.d(TAG, "Attempting to show Unity Interstitial Ad");
+    // ✅ Show 1st interstitial ad BEFORE joining match
+    private void showInterstitialBeforeJoin(String joinType, String inGameUsername) {
+        Log.d(TAG, "showInterstitialBeforeJoin called");
+        AdManager.getInstance().showInterstitialAd(this, new AdManager.InterstitialCallback() {
+            private boolean callbackExecuted = false; // ✅ Prevent multiple callbacks
 
-            UnityAds.show(this, unityInterstitialId, new UnityAdsShowOptions(), new IUnityAdsShowListener() {
-                @Override
-                public void onUnityAdsShowComplete(String placementId, UnityAds.UnityAdsShowCompletionState state) {
-                    Log.d(TAG, "Unity Ad completed with state: " + state);
-                    // Ad completed, proceed with join request
-                    runOnUiThread(() -> sendJoinRequest(joinType, inGameUsername));
-
-                    // Reload the ad for next time
-                    loadUnityInterstitialAd(unityInterstitialId);
+            @Override
+            public void onAdClosed() {
+                if (callbackExecuted) {
+                    Log.d(TAG, "Callback already executed, ignoring");
+                    return;
                 }
+                callbackExecuted = true;
 
-                @Override
-                public void onUnityAdsShowFailure(String placementId, UnityAds.UnityAdsShowError error, String message) {
-                    Log.e(TAG, "Unity Ad failed to show: " + message);
-                    // Ad failed, still proceed with join request
-                    runOnUiThread(() -> {
-                        Toast.makeText(TournamentMatchDetail.this, "Ad not available", Toast.LENGTH_SHORT).show();
-                        sendJoinRequest(joinType, inGameUsername);
-                    });
-                }
+                // Ad closed or skipped, proceed with join request
+                Log.d(TAG, "1st interstitial ad closed, proceeding with join");
+                runOnUiThread(() -> sendJoinRequest(joinType, inGameUsername));
+            }
+        });
+    }
 
-                @Override
-                public void onUnityAdsShowStart(String placementId) {
-                    Log.d(TAG, "Unity Ad started showing");
-                }
-
-                @Override
-                public void onUnityAdsShowClick(String placementId) {
-                    Log.d(TAG, "Unity Ad clicked");
-                }
-            });
+    @Override
+    public void onBackPressed() {
+        // ✅ Show ad on back press if conditions are met
+        if (AdManager.getInstance().handleBackPress(this)) {
+            new android.os.Handler().postDelayed(() -> {
+                super.onBackPressed();
+            }, 100);
         } else {
-            // Unity Ads not configured or not ready, proceed directly
-            Log.d(TAG, "Unity Ads not enabled/ready, proceeding without ad");
-            sendJoinRequest(joinType, inGameUsername);
+            super.onBackPressed();
         }
     }
 }
