@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">EspoTask : Rewards</string>
-    <string name="app_url">https://espotask.in/app-apis</string>
+    <string name="app_name">EarnStation</string>
+    <string name="app_url">https://earnstation.site/app-apis</string>
     <string name="login_eneter_phone_text">Login with Number</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

@@ -5,14 +5,14 @@ plugins {
 }
 
 android {
-    namespace 'com.rewards.espotask'
+    namespace 'com.app.earnstation'
     compileSdk 35
 
     defaultConfig {
-        applicationId "com.rewards.espotask"
+        applicationId "com.app.earnstation"
         minSdk 25
         targetSdk 35
-        versionCode 5
+        versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

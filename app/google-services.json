@@ -1,26 +1,36 @@
 {
   "project_info": {
-    "project_number": "313674456974",
-    "project_id": "espotask-64086",
-    "storage_bucket": "espotask-64086.firebasestorage.app"
+    "project_number": "553441150202",
+    "project_id": "earnstation-ba5bb",
+    "storage_bucket": "earnstation-ba5bb.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:313674456974:android:5e02d62afee5dcf7470edf",
+        "mobilesdk_app_id": "1:553441150202:android:da3765b4ba120df6623543",
         "android_client_info": {
-          "package_name": "com.rewards.espotask"
+          "package_name": "com.app.earnstation"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "553441150202-76899casog7epb1k93rhn5t0d0f58jpj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyCycagKy9ECoyA_oYXmFJaCKGSC1kaeVzU"
+          "current_key": "AIzaSyDv8HZwvLSdkrN6wf0UDm1O6c6hrNdIXMQ"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "553441150202-76899casog7epb1k93rhn5t0d0f58jpj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

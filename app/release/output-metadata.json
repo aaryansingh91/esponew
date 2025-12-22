@@ -4,14 +4,14 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.rewards.espotask",
+  "applicationId": "com.app.earnstation",
   "variantName": "release",
   "elements": [
     {
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 5,
+      "versionCode": 1,
       "versionName": "1.0",
       "outputFile": "app-release.apk"
     }
